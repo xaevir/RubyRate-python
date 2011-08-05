@@ -10,17 +10,4 @@
     <b>email: </b>hello@rubyrate.com
 </p>
             
-	
-<form action="${save_url}" method="post">
-    <label>Name</label>
-    <input name="name" type="text"/>
-
-    <label>Email</label>
-    <input name="email" type="text"/>
-
-    <label>Message</label>
-    <textarea name="message"></textarea>
-
-    <input type="submit" name="submit" class="button" value="Send"/>
-</form>	
-
+${literal(form)}

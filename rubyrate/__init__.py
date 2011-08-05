@@ -5,6 +5,7 @@ from pyramid.events import subscriber
 from pyramid.events import BeforeRender
 from pyramid.url import static_url
 
+
 import os
 
 from pyramid_beaker import session_factory_from_settings
@@ -19,7 +20,8 @@ def main(global_config, **settings):
 
     settings['mako.directories'] = 'rubyrate:templates'
     settings['mako.module_directory'] = 'rubyrate:data/templates'
-    settings['mako.imports'] = ['from webhelpers.html import escape']
+    settings['mako.imports'] = ['from webhelpers.html import escape',
+                                'from webhelpers.html import literal']
     settings['mako.default_filters'] = ['escape']
 
     config = Configurator(root_factory=Root, settings=settings)
@@ -34,4 +36,5 @@ def main(global_config, **settings):
 
 #@subscriber(BeforeRender)
 #def add_global(event):
-#    event['h'] = static_url
+    #event['h'] = static_url
+#    eventt['literal'] = 

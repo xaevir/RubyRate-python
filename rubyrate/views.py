@@ -9,12 +9,19 @@ from pyramid.httpexceptions import HTTPFound
 
 import transaction
 
-import formencode
-from formencode.schema import Schema
-from formencode.validators import String, PlainText, MaxLength, MinLength, Email
-from formencode.validators import Invalid, FancyValidator 
-from formencode import htmlfill
+from colander import MappingSchema
+from colander import SequenceSchema
+from colander import SchemaNode
+from colander import String
+from colander import Boolean
+from colander import Integer
+from colander import Length
+from colander import OneOf
+from colander import Email
 
+from deform import ValidationFailure
+from deform import Form
+from deform import widget
 
 import smtplib
 
@@ -25,89 +32,72 @@ def home_page(context, request):
     return {} 
 
 
-class Quote(Schema):
-    allow_extra_fields = True
-    filter_extra_fields = True
-    name = formencode.All(String(not_empty=True),
-                              MaxLength(200),
-                              MinLength(2))
-    email = formencode.All(Email(not_empty=True),
-                              MaxLength(200))
-    product              = String()
-    specs                = String()
-    quantity             = String()
-    lead_time            = String()
-    shipping_destination = String()
-    payment_terms        = String()
+class QuoteSchema(MappingSchema):
+    name                 = SchemaNode(String(),
+                                      validator = Length(min=2, max=200))
+    email                = SchemaNode(String(),
+                                      validator = Email())
+    product              = SchemaNode(String(), missing='')
+    specs                = SchemaNode(String(), missing='')
+    quantity             = SchemaNode(String(), missing='')
+    lead_time            = SchemaNode(String(), missing='')
+    shipping_destination = SchemaNode(String(), missing='')
+    payment_terms        = SchemaNode(String(), missing='')
 
-
-@view_config(name="quote", context=Root)
+@view_config(name="quote", context=Root, renderer="quote.mako")
 def quote(context, request):
-    tpl = 'quote.mako'
-    tpl_vars = {'save_url': request.path_url}
+    schema = QuoteSchema()
+    myform = Form(schema, buttons=('submit',))
     if request.method == "GET": 
-        html =  render(tpl, tpl_vars, request)
-        return Response(html)
-    schema = Quote() 
+        return {'form':myform.render()}
+    controls = request.POST.items()
     try:
-        params = schema.to_python(request.params, request)
-        # get the email's body
-        quote_email_tpl = render('/email/quote.mako', params)
-        message = Message(subject='Quote page',
-                          sender='RubyRate_QuotePage@rubyrate.com',
-                          recipients=['bobby.chambers33@gmail.com'],
-                          html=quote_email_tpl)
+        appstruct = myform.validate(controls)
+        # email the controls
+        readonly_form = myform.render(appstruct, readonly=True)
+        email = Message(subject='Quote page',
+                        sender='RubyRate_QuotePage@rubyrate.com',
+                        recipients=['bobby.chambers33@gmail.com'],
+                        html=readonly_form)
         mailer = get_mailer(request)
-        mailer.send(message)
+        mailer.send(email)
         transaction.commit()
         request.session.flash('Thank you!')
-        this_page =  resource_url(context, request, 'quote')
-        return HTTPFound(location = this_page)                           
-    except formencode.Invalid, e:
-        html =  render(tpl, tpl_vars, request)
-        html = htmlfill.render(html, defaults=e.value, errors=e.error_dict)
-        return Response(html)
-
-
+        return HTTPFound(location = request.path_url)             
+    except ValidationFailure, e:
+        return {'form':e.render()}
 #____________________________________________________________________Contact__
 
+class ContactSchema(MappingSchema):
+    name    = SchemaNode(String(),
+                         validator = Length(min=2, max=200))
+    email   = SchemaNode(String(),
+                         validator = Email())
+    message = SchemaNode(String(),
+                         validator = Length(max=2000),
+                         widget=widget.TextAreaWidget())
 
-class ContactForm(formencode.Schema):
-    allow_extra_fields = True
-    filter_extra_fields = True
-    name = formencode.All(String(not_empty=True),
-                              MaxLength(200),
-                              MinLength(2))
-    email = formencode.All(Email(not_empty=True),
-                              MaxLength(200))
-    message = formencode.All(String(not_empty=True),
-                              MaxLength(3000))
 
-@view_config(name='contact', context=Root)
+@view_config(name='contact', context=Root, renderer="contact.mako")
 def contact(context, request):
-    tpl = 'contact.mako'
-    tpl_vars = {'save_url': request.path_url}
+    schema = ContactSchema()
+    myform = Form(schema, buttons=('submit',))
     if request.method == "GET": 
-        html =  render(tpl, tpl_vars, request)
-        return Response(html)
-    schema = ContactForm() 
+        return {'form':myform.render()}
+    controls = request.POST.items()
     try:
-        params = schema.to_python(request.params, request)
-        # get the email's body
-        contact_email_tpl = render('/email/contact.mako', params)
-        message = Message(subject='Contact page',
-                          sender='RubyRate_ContactPage@rubyrate.com',
-                          recipients=['bobby.chambers33@gmail.com'],
-                          html=contact_email_tpl)
+        appstruct = myform.validate(controls)
+        # email the controls
+        readonly_form = myform.render(appstruct, readonly=True)
+        email = Message(subject='Contact page',
+                        sender='RubyRate_ContactPage@rubyrate.com',
+                        recipients=['bobby.chambers33@gmail.com'],
+                        html=readonly_form)
         mailer = get_mailer(request)
-        mailer.send(message)
+        mailer.send(email)
         transaction.commit()
         request.session.flash('Thank you!')
-        this_page =  resource_url(context, request, 'contact')
-        return HTTPFound(location = this_page)                           
-    except formencode.Invalid, e:
-        html =  render(tpl, tpl_vars, request)
-        html = htmlfill.render(html, defaults=e.value, errors=e.error_dict)
-        return Response(html)
-
+        return HTTPFound(location = request.path_url)             
+    except ValidationFailure, e:
+        return {'form':e.render()}
 
