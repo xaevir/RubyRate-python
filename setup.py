@@ -10,7 +10,8 @@ requires = ['pyramid',
             'WebError', 
             'webhelpers', 
             'pyramid_mailer', 
-            'pyramid_beaker']
+            'pyramid_beaker',
+            'formencode']
 
 setup(name='rubyrate',
       version='0.0',
