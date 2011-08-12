@@ -6,9 +6,11 @@
 
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
         
+    <link rel="shortcut icon" href=${request.static_url('rubyrate:static/favicon.png')} />
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/main.css')}"/>
     <meta name="google-site-verification" content="FEhVgca4t1L-9-6SYatkLmhXwd4TtlapTRDh7h4qQtM" />
-    </head>
+    ${self.head()}
+</head>
 
 <body id="page-${self.page_name()}" >
 <div id="doc2" class="clearfix">
@@ -23,7 +25,7 @@
         </ul>
     </div>
 
-    <div id="bd" class="rounded shadow ">
+    <div id="bd">
         % if request.session.peek_flash():
         <div id="flash">
             <% flash = request.session.pop_flash() %>
@@ -51,11 +53,13 @@
 
 </div>
 
+${self.js()}
 </body>
 </html>
 
-<% page_name = 'home' %>
-
 <%def name="title()">Ruby Rate</%def>
+<%def name="head()"></%def>
+<%def name="js()">
+</%def>
 <%def name="page_name()">regular</%def>
 
