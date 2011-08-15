@@ -56,7 +56,7 @@
     </p>
     <p> 
         If you are not ready for a bulk purchase yet. Sign up to recieve
-        <a href="/price-alerts">price alerts.</a>    
+        <a href="/price-alert">price alerts.</a>    
     </p>
 
 </div>
