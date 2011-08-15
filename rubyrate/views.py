@@ -27,53 +27,31 @@ from deform import Form
 from deform.widget import TextInputWidget
 from deform.widget import TextAreaWidget
 from deform.widget import Widget
+from deform.widget import RadioChoiceWidget
+
+from rubyrate.form.form import Button
 
 import smtplib
 
 from rubyrate.resources import Root
 
-class CheckPlaceholder(TextAreaWidget):
-    def serialize(self, field, cstruct, readonly=False):
-        if cstruct is null:
-            cstruct = field.widget.placeholder
-            field.widget.css_class = 'ui-placeholder' 
-        # sets the css_class above if I dont write this if statement
-        # maybe its in deform template.py there is a cache 
-        if cstruct != field.widget.placeholder:
-            field.widget.css_class = '' 
-        template = readonly and self.readonly_template or self.template
-        return field.renderer(template, field=field, cstruct=cstruct)
-
-    def deserialize(self, field, pstruct):
-        if pstruct is null or pstruct == field.widget.placeholder:
-            return null
-        if self.strip:
-            pstruct = pstruct.strip()
-        if not pstruct:
-            return null
-        return pstruct
-
-
 class QuoteSchema(MappingSchema):
     email = SchemaNode(
         String(),
         validator = Email())
-
     product = SchemaNode(
         String(),
-        widget = CheckPlaceholder(placeholder='example: \r\nkitchen sink with dimensions'),
-        )
-
+        widget = TextAreaWidget())
     quantity = SchemaNode(
-        String(),
-        widget = TextInputWidget())
+        Integer())
 
 
 @view_config(name="", context=Root, renderer='home_page.mako')
 def home_page(context, request):
     schema = QuoteSchema()
-    settings = request.registry.settings
-    myform = Form(schema, buttons=('get quote',), renderer=settings['deform.renderer'])
+    myform = Form(schema, 
+                  buttons=(Button('get quote',css_class='button blue center'),), 
+                  renderer=request.registry.settings['deform.renderer'])
     if request.method == "GET": 
         return {'form':myform.render()}
     controls = request.POST.items()
@@ -88,7 +66,9 @@ def home_page(context, request):
         mailer = get_mailer(request)
         mailer.send(email)
         transaction.commit()
-        request.session.flash('Thank you!')
+
+        thank_you = render('mini/thankyou_homepage.mako', request)    
+        request.session.flash(thank_you)
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
@@ -107,7 +87,52 @@ class ContactSchema(MappingSchema):
 @view_config(name='contact', context=Root, renderer="contact.mako")
 def contact(context, request):
     schema = ContactSchema()
-    myform = Form(schema, buttons=('submit',))
+    myform = Form(schema, buttons=('send',))
+    if request.method == "GET": 
+        return {'form':myform.render()}
+    controls = request.POST.items()
+    try:
+        appstruct = myform.validate(controls)
+        # email the controls
+        readonly_form = myform.render(appstruct, readonly=True)
+        email = Message(subject='Contact page',
+                        sender='RubyRate_ContactPage@rubyrate.com',
+                        recipients=['bobby.chambers33@gmail.com'],
+                        html=readonly_form)
+        mailer = get_mailer(request)
+        mailer.send(email)
+        transaction.commit()
+        request.session.flash('Thank you!')
+        return HTTPFound(location = request.path_url)             
+    except ValidationFailure, e:
+        return {'form':e.render()}
+
+
+#____________________________________________________________________Contact__
+
+class PriceAlertSchema(MappingSchema):
+    name               = SchemaNode(String(),
+                             validator = Length(min=2, max=200))
+    email              = SchemaNode(String(),
+                             validator = Email())
+    zip                = SchemaNode(Integer())
+
+    specified_products = SchemaNode(String(),
+                             validator = Length(max=1000),
+                             widget=TextAreaWidget())
+
+    choices            = (('new', 'New'), ('used', 'Used'))                      
+    condition          = SchemaNode(String(),
+                            widget = RadioChoiceWidget(values=choices),
+                            validator = OneOf([x[0] for x in choices]))
+    how_long           = SchemaNode(String(),
+                            title = 'How long would you like to recieve alerts for this product?')
+
+
+@view_config(name='price-alert', context=Root, renderer="price_alert.mako")
+def price_alert(context, request):
+    schema = PriceAlertSchema()
+    myform = Form(schema, buttons=('send',))
     if request.method == "GET": 
         return {'form':myform.render()}
     controls = request.POST.items()

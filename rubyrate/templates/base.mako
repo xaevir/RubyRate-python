@@ -20,17 +20,22 @@
             <img src="${request.static_url('rubyrate:static/rubyrate_logo.png')}" />
         </a>
         <ul id="nav" class="clearfix">
-            <li><a href="/quote">Quote</a></li>
+            <li><a href="/price-alert">Price Alert</a></li>
             <li><a href="/contact">Contact</a></li>
         </ul>
     </div>
 
+    <div id="bd-hd">
+        <div class="content clearfix">
+            ${next.bd_hd()}
+        </div>
+    </div>
     <div id="bd">
         % if request.session.peek_flash():
-        <div id="flash">
+        <div id="flash" class="content">
             <% flash = request.session.pop_flash() %>
                 % for message in flash:
-                ${message}<br>
+                ${literal(message)}<br>
                 % endfor
         </div>
         % endif
@@ -62,4 +67,4 @@ ${self.js()}
 <%def name="js()">
 </%def>
 <%def name="page_name()">regular</%def>
-
+<%def name="bd_hd()"></%def>

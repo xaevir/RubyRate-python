@@ -1,6 +1,0 @@
-<textarea tal:attributes="rows field.widget.rows;
-                          cols field.widget.cols;
-                          placeholder field.widget.placeholder;
-                          class field.widget.css_class"
-          id="${field.oid}"
-          name="${field.name}">${cstruct}</textarea>

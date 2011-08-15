@@ -1,13 +1,14 @@
 <%inherit file="/base.mako"/>
-<%def name="page_name()">quote</%def>
+<%def name="page_name()">contact</%def>
 
-<h1>Say <span>hello...</span></h1>
+<%def name="bd_hd()">
+    <h1>Say <span>hello...</span> we would love to hear from you.</h1>
+</%def>
 
-<p>
-    We would love to hear from you.
-</p>
-<p>
-    <b>email: </b>hello@rubyrate.com
-</p>
-            
-${literal(form)}
+    <p>
+        <b>email: </b>hello@rubyrate.com
+    </p>
+
+    ${literal(form)}
+
+

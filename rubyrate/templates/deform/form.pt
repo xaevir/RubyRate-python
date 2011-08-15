@@ -30,15 +30,27 @@
       
       <li class="buttons">
         <tal:block repeat="button field.buttons">
-          <button
+          
+            <b tal:condition="exists: button.css_class" tal:omit-tag="">
+                <b tal:define="global css_class button.css_class" tal:omit-tag=""></b>
+            </b>
+
+            <b tal:condition="not:exists: button.css_class" tal:omit-tag="">
+                <b tal:define="global css_class 'assfuck'" tal:omit-tag=""></b>
+            </b>
+
+
+          <button  
               tal:attributes="disabled button.disabled"
               id="${field.formid+button.name}"
               name="${button.name}"
               type="${button.type}"
-              class="btnText submit"
+              class="btnText submit ${css_class}"
               value="${button.value}">
             <span>${button.title}</span>
           </button>
+                
+
         </tal:block>
       </li>
       
