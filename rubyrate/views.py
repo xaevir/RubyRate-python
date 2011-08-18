@@ -59,9 +59,9 @@ def home_page(context, request):
         appstruct = myform.validate(controls)
         # email the controls
         readonly_form = myform.render(appstruct, readonly=True)
-        email = Message(subject='Quote page',
-                        sender='RubyRate_QuotePage@rubyrate.com',
-                        recipients=['bobby.chambers33@gmail.com'],
+        email = Message(subject='Home Page',
+                        sender='HomePage@rubyrate.com',
+                        recipients=[request.registry.settings['email_forms_send_to']],
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)
@@ -72,7 +72,7 @@ def home_page(context, request):
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
-#____________________________________________________________________Contact__
+
 
 class ContactSchema(MappingSchema):
     name    = SchemaNode(String(),
@@ -82,7 +82,6 @@ class ContactSchema(MappingSchema):
     message = SchemaNode(String(),
                          validator = Length(max=2000),
                          widget=TextAreaWidget())
-
 
 @view_config(name='contact', context=Root, renderer="contact.mako")
 def contact(context, request):
@@ -96,8 +95,8 @@ def contact(context, request):
         # email the controls
         readonly_form = myform.render(appstruct, readonly=True)
         email = Message(subject='Contact page',
-                        sender='RubyRate_ContactPage@rubyrate.com',
-                        recipients=['bobby.chambers33@gmail.com'],
+                        sender='ContactPage@rubyrate.com',
+                        recipients=[request.registry.settings['email_forms_send_to']],
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)
@@ -108,7 +107,6 @@ def contact(context, request):
         return {'form':e.render()}
 
 
-#____________________________________________________________________Contact__
 
 class PriceAlertSchema(MappingSchema):
     name               = SchemaNode(String(),
@@ -140,9 +138,9 @@ def price_alert(context, request):
         appstruct = myform.validate(controls)
         # email the controls
         readonly_form = myform.render(appstruct, readonly=True)
-        email = Message(subject='Contact page',
-                        sender='RubyRate_ContactPage@rubyrate.com',
-                        recipients=['bobby.chambers33@gmail.com'],
+        email = Message(subject='Price Alert Page',
+                        sender='PriceAlertPage@rubyrate.com',
+                        recipients=[request.registry.settings['email_forms_send_to']],
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)

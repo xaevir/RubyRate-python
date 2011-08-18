@@ -264,14 +264,10 @@ div.deformReplaces {
     display: inline-block;
 }
 .deform .errorLi {
-    border: 1px solid red;
-    border-radius: 10px 10px 10px 10px;
     text-align: center;
+    padding-top: 10px;
 }
-.deform li.error {
-    background-color: #FFDFDF;
-}
-.deform li.error label.desc, .deform p.error, deform h3.errorMsgLbl {
+.deform p.error, .deform p.errorMsg {
     color: #DF0000;
 }
 .deform p.error {
@@ -281,19 +277,10 @@ div.deformReplaces {
 .deform li.error textarea {
     border: 1px solid #EE6666;
 }
-
-.deform li.error {
-    background-color: #fff;
-}
-.deform li.error label.desc  {
-    color: inherit;
-}
-
 .deform p.error {
     font-size: 13px;
     margin-bottom: 0;
 }
-
 
 /*__________________________________________________________________Classes_*/
 
@@ -372,8 +359,6 @@ div.deformReplaces {
     padding-bottom: 20px;
     clear: both;
 }
-
-
 
 .buttons button {
     color: #6e6e6e;

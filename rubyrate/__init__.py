@@ -18,6 +18,8 @@ here = os.path.dirname(os.path.abspath(__file__))
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # email to send forms
+    settings['email_forms_send_to'] = 'hello@rubyrate.com'
 
     settings['session.secret'] = os.urandom(32)
     settings['session.key'] = 'rubyrate' 
