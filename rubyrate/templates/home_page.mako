@@ -13,33 +13,32 @@
 
 <%def name="bd_hd()">
     <div class="col_1">
-        <h1>What if you could compare prices 
-            to get the best product for the best price in the World?</h1>
-        <p style="font-size: 16px; color: #626262">Here you can do it.
-           Just enter your information in the form and we will send you an easy
-           to read email so you can compare quotes from the US and world 
-           suppliers.</p>
+        <h1>We will do your product  pricing research</h1>
+        <p style="font-size: 16px; color: #626262">
+            Enter information about a specific product in the form. We will 
+            then perform pricing research for that specific item. After we 
+            have compiled our results we will send you an email with the 
+            pricing information.
+        </p>
     </div>
     <div class="col_2">
         ${literal(form)}
     </div>
 </%def>
 
-<div class="col_1" style="padding-top: 20px">
+<div class="col_1">
     <ul class="arrows">
-        <li><h3>We negotiate the prices for you.</h3>
-            We are in the business to get you the best possible product at the
-            best possible price.
+        <li><h3>Make you sure are getting the best price</h3>
+            We price many suppliers to ensure you are getting the best 
+            prices.
         </li>
 
-        <li><h3>Its 100% free</h3>
-            Its 100 percent free to receive a quote.
+        <li><h3>Make sure you are not missing out on any discounts</h3>
+            We send you notifications if there are sales or discounts for your item.
         </li>
 
-        <li><h3>Must be a bulk purchase</h3>
-            In order for our service to work quotes for Bulk orders are only
-            accepted. What is a bulk order: an order of 30 or more of the same
-            units.
+        <li><h3>Saves you time and its free</h3>       
+            We will do all the research for you for free
         </li>
     </ul>
 </div>
@@ -47,16 +46,11 @@
 
     <h3>More about our service</h3>
     <p>
-        We specialize  Eco-friendly building products ie water saving
-        products, Eco-friendly flooring, stainless steel products, kitchens,
-        tiles. However we are not just limited to building supplies. You name
-        we can can quote it. If you need assistance with purchasing of a
-        product to importing we are here to help. We believe you should be
-        getting the best product for the best price.
+        Our service is ideal for those that plan ahead or know they will need 
+        a particular item in the future. Allowing us to perform the research 
+        as well as notify you of the sales, that approaching or discounts 
+        for that product.     
     </p>
-    <p> 
-        If you are not ready for a bulk purchase yet. Sign up to recieve
-        <a href="/price-alert">price alerts.</a>    
     </p>
 
 </div>

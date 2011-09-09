@@ -20,7 +20,7 @@
             <img src="${request.static_url('rubyrate:static/rubyrate_logo.png')}" />
         </a>
         <ul id="nav" class="clearfix">
-            <li><a href="/price-alert">Price Alert</a></li>
+            <li><a href="/supplier">Suppliers</a></li>
             <li><a href="/contact">Contact</a></li>
         </ul>
     </div>

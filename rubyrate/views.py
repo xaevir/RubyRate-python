@@ -39,12 +39,8 @@ class QuoteSchema(MappingSchema):
     email = SchemaNode(
         String(),
         validator = Email())
-    product = SchemaNode(
-        String(),
-        widget = TextAreaWidget())
-    quantity = SchemaNode(
-        Integer())
-
+    product = SchemaNode(String())
+    quantity = SchemaNode(String())
 
 @view_config(name="", context=Root, renderer='home_page.mako')
 def home_page(context, request):
@@ -140,6 +136,41 @@ def price_alert(context, request):
         readonly_form = myform.render(appstruct, readonly=True)
         email = Message(subject='Price Alert Page',
                         sender='PriceAlertPage@rubyrate.com',
+                        recipients=[request.registry.settings['email_forms_send_to']],
+                        html=readonly_form)
+        mailer = get_mailer(request)
+        mailer.send(email)
+        transaction.commit()
+        request.session.flash('Thank you!')
+        return HTTPFound(location = request.path_url)             
+    except ValidationFailure, e:
+        return {'form':e.render()}
+
+
+class SupplierSchema(MappingSchema):
+    company_name = SchemaNode(String())
+    phone_number = SchemaNode(String())
+    locations = SchemaNode(String())
+    products_you_sell = SchemaNode(String())
+    area_you_serve = SchemaNode(String())
+    email = SchemaNode(
+        String(),
+        validator = Email())
+
+
+@view_config(name='supplier', context=Root, renderer="supplier.mako")
+def supplier(context, request):
+    schema = SupplierSchema()
+    myform = Form(schema, buttons=('send',))
+    if request.method == "GET": 
+        return {'form':myform.render()}
+    controls = request.POST.items()
+    try:
+        appstruct = myform.validate(controls)
+        # email the controls
+        readonly_form = myform.render(appstruct, readonly=True)
+        email = Message(subject='Supplier Page',
+                        sender='SupplierPage@rubyrate.com',
                         recipients=[request.registry.settings['email_forms_send_to']],
                         html=readonly_form)
         mailer = get_mailer(request)
