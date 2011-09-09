@@ -46,7 +46,7 @@ class QuoteSchema(MappingSchema):
 def home_page(context, request):
     schema = QuoteSchema()
     myform = Form(schema, 
-                  buttons=(Button('get quote',css_class='button blue center'),), 
+                  buttons=(Button('get quote',css_class='button blue'),), 
                   renderer=request.registry.settings['deform.renderer'])
     if request.method == "GET": 
         return {'form':myform.render()}

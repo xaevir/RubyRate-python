@@ -358,6 +358,7 @@ div.deformReplaces {
     float: left;
     padding-bottom: 20px;
     clear: both;
+    text-align: center;
 }
 
 .buttons button {
@@ -386,8 +387,8 @@ div.deformReplaces {
     color: #333;
     border-color: #999;
     -moz-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) 
-    -webkit-box-shadow:0 2px 5px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow:0 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
     behavior: url(/static/PIE.htc);
 }
 .buttons button:active {
@@ -407,6 +408,7 @@ div.deformReplaces {
 
 .buttons button.blue{
     color: #fff;
+    background: #4D90FE; /*fallback for non-CSS3 browsers*/
     background: -moz-linear-gradient(center top , #4D90FE, #4787ED) repeat scroll 0 0 #4D90FE;
 	background: -webkit-gradient(linear, left top, left bottom, from(#4D90FE), to(#4787ED));
     background: linear-gradient(#4D90FE, #4787ED);
@@ -417,15 +419,14 @@ div.deformReplaces {
     text-transform: uppercase;
 }
 
-.buttons button.center {
-    display: block;
-    margin: 0 auto;
-}
-
 .buttons button.blue:hover {
-    background-image: -moz-linear-gradient(center top, #4d90fe, #357ae8);
-    background-color: #357ae8;
     border-color: #2f5bb7;
+    background: #357ae8;
+    background: -moz-linear-gradient(center top , #4D90FE, #357ae8);
+	background: -webkit-gradient(linear, left top, left bottom, from(#4D90FE), to(#357ae8));
+    background: linear-gradient(#4D90FE, #357ae8);
+    -pie-background: linear-gradient(#4D90FE,  #357ae8);
+    behavior: url(/static/PIE.htc);
 }
 
 #page-home .red:hover {
