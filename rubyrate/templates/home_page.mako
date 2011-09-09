@@ -51,7 +51,6 @@
         as well as notify you of the sales, that approaching or discounts 
         for that product.     
     </p>
-    </p>
 
 </div>
 
