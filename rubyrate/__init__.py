@@ -3,15 +3,22 @@ from rubyrate.resources import Root
 
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender
+from pyramid.events import NewRequest
 from pyramid.url import static_url
 
 from pkg_resources import resource_filename
 from deform import Form
 from deform import ZPTRendererFactory
 
+from gridfs import GridFS
+import pymongo
+
 import os
 
 from pyramid_beaker import session_factory_from_settings
+
+import logging
+log = logging.getLogger(__name__)
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,9 +26,11 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     # email to send forms
-    settings['email_forms_send_to'] = 'hello@rubyrate.com'
+    settings['from'] = 'ruby_robot@rubyrate.com'
+    settings['to'] = 'ruby@rubyrate.com'
 
-    settings['session.secret'] = os.urandom(32)
+    settings['session.secret'] = 'u3wawf7jmvypAz8hpE8Yfu7J4fGZzbkg'
+
     settings['session.key'] = 'rubyrate' 
     settings['session.auto'] = True 
 
@@ -44,11 +53,22 @@ def main(global_config, **settings):
     config.scan('rubyrate')
     config.include('pyramid_mailer')
 
+    # Mongo Setup
+    conn = pymongo.Connection('mongodb://localhost/')
+    config.registry.settings['db_conn'] = conn
 
     return config.make_wsgi_app()
 
+
+@subscriber(NewRequest)
+def add_mongo_db(event):
+    settings = event.request.registry.settings
+    db = settings['db_conn'][settings['db_name']]
+    event.request.db = db
+    event.request.fs = GridFS(db)  
 
 #@subscriber(BeforeRender)
 #def add_global(event):
     #event['h'] = static_url
 #    eventt['literal'] = 
+

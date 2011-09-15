@@ -6,7 +6,7 @@
 </%def>
 
     <p>
-        <b>email: </b>hello@rubyrate.com
+        <b>email: </b>ruby@rubyrate.com
     </p>
 
     ${literal(form)}

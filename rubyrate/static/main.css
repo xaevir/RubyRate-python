@@ -117,7 +117,7 @@ ol li {
 }
 ul li {
    /*giving UL's LIs generated disc markers*/
-   list-style: disc outside;
+   /*list-style: disc outside;*/
 }
 dl dd {
    /*giving UL's LIs generated numbers*/
@@ -386,9 +386,9 @@ div.deformReplaces {
 .buttons button:hover {
     color: #333;
     border-color: #999;
-    -moz-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) 
-    -webkit-box-shadow:0 2px 0 rgba(0, 0, 0, 0.2);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) 
+    -webkit-box-shadow:0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     behavior: url(/static/PIE.htc);
 }
 .buttons button:active {
@@ -396,18 +396,9 @@ div.deformReplaces {
     border-color: #444;
 }
 
-.button-red{
-    margin: 0 auto;
-    display: block;
-    background: -moz-linear-gradient(center top , #DD4B39, #D14836) repeat scroll 0 0 #D14836;
-    color: #fff;
-    text-transform: uppercase;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-    border: 1px solid transparent;
-}
-
 .buttons button.blue{
     color: #fff;
+    font-size: 12px;
     background: #4D90FE; /*fallback for non-CSS3 browsers*/
     background: -moz-linear-gradient(center top , #4D90FE, #4787ED) repeat scroll 0 0 #4D90FE;
 	background: -webkit-gradient(linear, left top, left bottom, from(#4D90FE), to(#4787ED));
@@ -417,6 +408,7 @@ div.deformReplaces {
     border: 1px solid #3079ED;
     text-shadow: 0 1px rgba(0, 0, 0, 0.1);
     text-transform: uppercase;
+
 }
 
 .buttons button.blue:hover {
@@ -429,7 +421,7 @@ div.deformReplaces {
     behavior: url(/static/PIE.htc);
 }
 
-#page-home .red:hover {
+#home .red:hover {
     border:1px solid #b0281a;
     border-bottom:1px solid #af301f;
     color:#fff;background:#c53727;
@@ -547,18 +539,17 @@ a.down-big {
 /*___________________________________________________________Main Div Setup_*/
 
 #doc2 {
-    /*width: 750px;
-    margin: 0 auto;*/
+    width: 750px;
+    margin: 0 auto;
 }
 
 #hd {
-    padding-top: 25px;
-    width: 750px;
+    padding-top: 15px;
     margin: 0 auto;
     padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 #bd {
-    width: 750px;
     margin: 0 auto;
 }
 
@@ -607,77 +598,80 @@ a.down-big {
 }
 
 /*__________________________________________________________________Home*/
-#page-home #flash{
+#home #flash{
     display: none;
 }
 
-.gray-to-white{
-    height: 46px;
-}
-
-#bd-hd{
-    background: url(/static/bg-grad-grey-to-white-inverse.png) repeat-x bottom left,
-                url(/static/bg-grad-grey-to-white.png) repeat-x top left;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 35px;
-    margin-bottom: 30px;
-    padding-top: 46px;
-    border-top: 1px solid #ccc;
-    -pie-background:url(/static/bg-grad-grey-to-white-inverse.png) repeat-x bottom left,
-                    url(/static/bg-grad-grey-to-white.png) repeat-x top left;
-}
-
-
-.content{
-    width: 750px;
-    margin: 0 auto;
-}
 .col_1, .col_2{
+    width: 47%; 
+}
+.col_1 {
     float: left;
-    width: 48.5%; 
-    padding-top: 20px;
 }
-.col_2 {
-    margin-left: 3% ;/*each col is 49%, so in 49+49=98. 2% is the difference */ 
+.col_2{
+    float: right; 
 }
-#page-home h1 {
-    border-bottom: 1px solid #e7e7e7;
-}
-#page-home form{
-    padding-top: 30px;
-    padding-bottom: 10px;
-    border: 1px solid #eee;
-    width: 286px;
-    margin: 0 auto;
-    padding-right: 39px;
-    padding-left: 39px;
+#home h2 {
+    font-size: 24px;
+    margin-bottom: 1em;
 }
 
-#page-home .buttons{
+#home h1 {
+    margin-bottom: 1em;
+}
+.alt-row {
+    background-color: #f7f7f7;
+}
+#home form{
+    /*border: 1px solid #eee;*/
+    /*width: 522px;
+    margin: 0 auto;*/
+    color: #666;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    background-color: #fafafa;
+}
+
+/*#home .buttons{
     float: none;
 }
-
-#page-home input[type=text], 
-#page-home textarea{
-    width: 200px; 
-    font-family: arial, sans-serif;
+*/
+#home input[type=text], 
+#home textarea{
     font-size: 14px;  
+    width: 300px;
+        height: 35px;
+    padding: 0 10px;
+    /*background: #f6f6f6;*/
 }
-#page-home .deform li {
-    margin: 0;
-    padding: 0;
-    margin-bottom: 15px;
+#home .deform li p{
+    text-align: left;
+    width: 300px;
 }
-#page-home label{
-    font-size: 16px;
-    float: left;
-    width: 70px;
+#home .deform li {
+    position: relative;
 }
 
-#page-home .deform li.error p.error {
+#home #item-deformField7 label{
+    position: static;
+    color: #666;
+    float: left;
+}
+
+#home label{
+    font-size: 14px;
+}
+
+
+#home .buttons{
+    float: none;
+}
+/*
+#home .deform li.error p.error {
     margin-left: 70px;    
 }
-
+*/
 #lightbox {
     font-family: georgia, serif;
     font-style: italic;
@@ -687,33 +681,33 @@ a.down-big {
 }
 
 
-#page-home .arrows li{
+#home .arrows li{
     background: url(/static/arrow_red.png) no-repeat top left;
     padding-left: 50px;
     margin-bottom: 30px;
     list-style: none;
 }
 
-#page-home h3 {
+#home h3 {
     font-size: 16px;
     font-weight: bold;
 
 }
 
-/*__________________________________________________________________Quote*/
-#page-quote form{
-    width: 420px;
-    margin: 0 auto;
-}
 
+/*______________________________________________________________Need Pricing*/
+#need-pricing th{
+    font-weight: bold;
+    text-align: left;
+}
 
 
 /*__________________________________________________________________Contact*/
-#page-contact{
+#contact{
     font-size: 16px;
 }
 
-#page-contact form{
+#contact form{
     width: 420px;
     margin: 0 auto;
 

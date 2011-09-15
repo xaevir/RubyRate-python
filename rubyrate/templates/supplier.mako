@@ -4,7 +4,7 @@
 <%def name="bd_hd()">
     <h1>Suppliers</h1>
 </%def>
-<p>
+<p style="font-size: 24px;">
     Sign up to recieve a notification when someone is shopping for your product.
     Please enter the information below and we will contact you.
 </p>

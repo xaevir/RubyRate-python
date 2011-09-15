@@ -12,7 +12,7 @@
     ${self.head()}
 </head>
 
-<body id="page-${self.page_name()}" >
+<body id="${self.page_name()}" >
 <div id="doc2" class="clearfix">
 
     <div id="hd" class="clearfix">
@@ -20,19 +20,16 @@
             <img src="${request.static_url('rubyrate:static/rubyrate_logo.png')}" />
         </a>
         <ul id="nav" class="clearfix">
+            <li><a href="/need-pricing">Need Pricing</a></li>
             <li><a href="/supplier">Suppliers</a></li>
             <li><a href="/contact">Contact</a></li>
+            <li><a href="/login">Contact</a></li>
         </ul>
     </div>
 
-    <div id="bd-hd">
-        <div class="content clearfix">
-            ${next.bd_hd()}
-        </div>
-    </div>
     <div id="bd">
         % if request.session.peek_flash():
-        <div id="flash" class="content">
+        <div id="flash">
             <% flash = request.session.pop_flash() %>
                 % for message in flash:
                 ${literal(message)}<br>

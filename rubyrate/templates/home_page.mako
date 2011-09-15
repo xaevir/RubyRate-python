@@ -11,22 +11,18 @@
 </%def>
 
 
-<%def name="bd_hd()">
     <div class="col_1">
-        <h1>We will do your product  pricing research</h1>
+        <h1>We do your product pricing research</h1>
+        <h2>Here is how it works</h2>
         <p style="font-size: 16px; color: #626262">
-            Enter information about a specific product in the form. We will 
-            then perform pricing research for that specific item. After we 
-            have compiled our results we will send you an email with the 
-            pricing information.
+            After you fill in the form on the right, we contact suppliers for 
+            pricing, find out if they have any sales, coupons, or 
+            discounts. We will than email you with pricing 
+            infromation regarding your product. We want to keep you 
+            informed if you can get better pricing for your product. Thats it. 
         </p>
-    </div>
-    <div class="col_2">
-        ${literal(form)}
-    </div>
-</%def>
 
-<div class="col_1">
+        <h2>Benefits to you</h2>
     <ul class="arrows">
         <li><h3>Make you sure are getting the best price</h3>
             We price many suppliers to ensure you are getting the best 
@@ -41,9 +37,6 @@
             We will do all the research for you for free
         </li>
     </ul>
-</div>
-<div class="col_2">
-
     <h3>More about our service</h3>
     <p>
         Our service is ideal for those that plan ahead or know they will need 
@@ -51,6 +44,16 @@
         as well as notify you of the sales, that approaching or discounts 
         for that product.     
     </p>
+
+    </div>
+    <div class="col_2">
+        ${literal(form)}
+    </div>
+
+<div class="col_1">
+</div>
+<div class="col_2">
+
 
 </div>
 

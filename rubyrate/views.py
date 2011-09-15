@@ -31,9 +31,12 @@ from deform.widget import RadioChoiceWidget
 
 from rubyrate.form.form import Button
 
+from rubyrate.resources import Items
+from rubyrate.resources import Item
+from rubyrate.resources import Root
+
 import smtplib
 
-from rubyrate.resources import Root
 
 class QuoteSchema(MappingSchema):
     email = SchemaNode(
@@ -41,43 +44,64 @@ class QuoteSchema(MappingSchema):
         validator = Email())
     product = SchemaNode(String())
     quantity = SchemaNode(String())
+    lead_time = SchemaNode(String())
+    area_code = SchemaNode(String())
+    price_range = SchemaNode(
+        String(),
+        missing = '',
+        title= 'Price Range (optional)')
+    choices = (('yes', 'Yes'), ('no', 'No'))                      
+    international = SchemaNode(
+        String(),
+        validator = OneOf([x[0] for x in choices]),
+        widget = RadioChoiceWidget(values=choices, css_class='reg-position'),
+        title = 'Would you like pricing from international suppliers?')
+        
 
 @view_config(name="", context=Root, renderer='home_page.mako')
 def home_page(context, request):
     schema = QuoteSchema()
-    myform = Form(schema, 
-                  buttons=(Button('get quote',css_class='button blue'),), 
-                  renderer=request.registry.settings['deform.renderer'])
+    form = Form(schema, 
+        buttons=(Button(title='Get Pricing',css_class='button blue'),), 
+        renderer=request.registry.settings['deform.renderer'],
+        formid='product_needed_form')
     if request.method == "GET": 
-        return {'form':myform.render()}
-    controls = request.POST.items()
+        return {'form':form.render()}
     try:
-        appstruct = myform.validate(controls)
-        # email the controls
-        readonly_form = myform.render(appstruct, readonly=True)
-        email = Message(subject='Home Page',
-                        sender='HomePage@rubyrate.com',
-                        recipients=[request.registry.settings['email_forms_send_to']],
-                        html=readonly_form)
+        pricing_data = form.validate(request.POST.items())
+        item = Item(pricing_data)
+        item.save()
+        # email notification
+        settings = request.registry.settings
+        email = Message(subject='Pricing Needed',
+            sender=settings['to'],
+            recipients=[settings['to']],
+            body=' ')
         mailer = get_mailer(request)
         mailer.send(email)
         transaction.commit()
 
+        # show message
         thank_you = render('mini/thankyou_homepage.mako', request)    
         request.session.flash(thank_you)
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
 
+@view_config(name='', context=Items, renderer='need_pricing.mako')
+def need_pricing(items, request):
+    items = items.get_recent() 
+    return {'items': items}
+    
 
 class ContactSchema(MappingSchema):
-    name    = SchemaNode(String(),
-                         validator = Length(min=2, max=200))
-    email   = SchemaNode(String(),
-                         validator = Email())
+    name = SchemaNode(String(),
+        validator = Length(min=2, max=200))
+    email = SchemaNode(String(),
+        validator = Email())
     message = SchemaNode(String(),
-                         validator = Length(max=2000),
-                         widget=TextAreaWidget())
+        validator = Length(max=2000),
+        widget=TextAreaWidget())
 
 @view_config(name='contact', context=Root, renderer="contact.mako")
 def contact(context, request):
@@ -90,9 +114,10 @@ def contact(context, request):
         appstruct = myform.validate(controls)
         # email the controls
         readonly_form = myform.render(appstruct, readonly=True)
+        settings = request.registry.settings
         email = Message(subject='Contact page',
-                        sender='ContactPage@rubyrate.com',
-                        recipients=[request.registry.settings['email_forms_send_to']],
+                        sender=settings['from'],
+                        recipients=[settings['to']],
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)
@@ -136,7 +161,7 @@ def price_alert(context, request):
         readonly_form = myform.render(appstruct, readonly=True)
         email = Message(subject='Price Alert Page',
                         sender='PriceAlertPage@rubyrate.com',
-                        recipients=[request.registry.settings['email_forms_send_to']],
+                        recipients=[request.registry.settings['to']],
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)
@@ -170,7 +195,7 @@ def supplier(context, request):
         # email the controls
         readonly_form = myform.render(appstruct, readonly=True)
         email = Message(subject='Supplier Page',
-                        sender='SupplierPage@rubyrate.com',
+                        sender='ruby_robot@rubyrate.com',
                         recipients=[request.registry.settings['email_forms_send_to']],
                         html=readonly_form)
         mailer = get_mailer(request)
