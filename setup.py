@@ -9,6 +9,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = ['pyramid', 
             'WebError', 
             'webhelpers', 
+            'pymongo',
             'pyramid_mailer', 
             'pyramid_beaker',
             'cryptacular',
