@@ -11,6 +11,7 @@ requires = ['pyramid',
             'webhelpers', 
             'pyramid_mailer', 
             'pyramid_beaker',
+            'cryptacular',
             'deform']
 
 setup(name='rubyrate',

@@ -23,26 +23,36 @@ from colander import Invalid
 from colander import null
 
 from deform import ValidationFailure
-from deform import Form
 from deform.widget import TextInputWidget
 from deform.widget import TextAreaWidget
 from deform.widget import Widget
 from deform.widget import RadioChoiceWidget
 
-from rubyrate.form.form import Button
+from rubyrate.my_deform.form import Button
+from rubyrate.my_deform.form import Form
+from pkg_resources import resource_filename
+from deform import ZPTRendererFactory
 
+
+from rubyrate.resources import Root
 from rubyrate.resources import Items
 from rubyrate.resources import Item
-from rubyrate.resources import Root
+from rubyrate.resources import Users
+from rubyrate.resources import User
+from rubyrate.resources import Admin
+
 
 import smtplib
 
+from mako.template import Template
 
-class QuoteSchema(MappingSchema):
+class ItemSchema(MappingSchema):
     email = SchemaNode(
         String(),
         validator = Email())
-    product = SchemaNode(String())
+    product = SchemaNode(
+        String(),
+        widget= TextAreaWidget())
     quantity = SchemaNode(String())
     lead_time = SchemaNode(String())
     area_code = SchemaNode(String())
@@ -50,20 +60,20 @@ class QuoteSchema(MappingSchema):
         String(),
         missing = '',
         title= 'Price Range (optional)')
-    choices = (('yes', 'Yes'), ('no', 'No'))                      
+    choices = (('yes', 'Yes'), )                      
     international = SchemaNode(
         String(),
+        missing='',
         validator = OneOf([x[0] for x in choices]),
         widget = RadioChoiceWidget(values=choices, css_class='reg-position'),
         title = 'Would you like pricing from international suppliers?')
         
 
 @view_config(name="", context=Root, renderer='home_page.mako')
-def home_page(context, request):
-    schema = QuoteSchema()
+def create_item_on_home_page(context, request):
+    schema = ItemSchema()
     form = Form(schema, 
         buttons=(Button(title='Get Pricing',css_class='button blue'),), 
-        renderer=request.registry.settings['deform.renderer'],
         formid='product_needed_form')
     if request.method == "GET": 
         return {'form':form.render()}
@@ -88,11 +98,46 @@ def home_page(context, request):
     except ValidationFailure, e:
         return {'form':e.render()}
 
-@view_config(name='', context=Items, renderer='need_pricing.mako')
-def need_pricing(items, request):
+
+@view_config(context=Items, renderer='/item/list.mako')
+def list_items(items, request):
     items = items.get_recent() 
     return {'items': items}
-    
+
+@view_config(context=Item, renderer='/item/view.mako')
+def view_item(item, request):
+    return {'item': item}
+
+@view_config(name='edit', context=Item, renderer='form.mako')
+def edit_item(item, request):
+    schema = ItemSchema()
+    form = Form(schema, 
+        buttons=(Button(title='Update'),),)
+    if request.method == "GET": 
+        return {'form':form.render(item.__dict__)}
+    try:
+        pricing_data = form.validate(request.POST.items())
+        item = Item(pricing_data)
+        item.save()
+        # email notification
+        settings = request.registry.settings
+        email = Message(subject='Pricing Needed',
+            sender=settings['to'],
+            recipients=[settings['to']],
+            body=' ')
+        mailer = get_mailer(request)
+        mailer.send(email)
+        transaction.commit()
+
+        # show message
+        thank_you = render('mini/thankyou_homepage.mako', request)    
+        request.session.flash(thank_you)
+        return HTTPFound(location = request.path_url)             
+    except ValidationFailure, e:
+        return {'form':e.render()}
+
+
+
 
 class ContactSchema(MappingSchema):
     name = SchemaNode(String(),
@@ -129,49 +174,6 @@ def contact(context, request):
 
 
 
-class PriceAlertSchema(MappingSchema):
-    name               = SchemaNode(String(),
-                             validator = Length(min=2, max=200))
-    email              = SchemaNode(String(),
-                             validator = Email())
-    zip                = SchemaNode(Integer())
-
-    specified_products = SchemaNode(String(),
-                             validator = Length(max=1000),
-                             widget=TextAreaWidget())
-
-    choices            = (('new', 'New'), ('used', 'Used'))                      
-    condition          = SchemaNode(String(),
-                            widget = RadioChoiceWidget(values=choices),
-                            validator = OneOf([x[0] for x in choices]))
-    how_long           = SchemaNode(String(),
-                            title = 'How long would you like to recieve alerts for this product?')
-
-
-@view_config(name='price-alert', context=Root, renderer="price_alert.mako")
-def price_alert(context, request):
-    schema = PriceAlertSchema()
-    myform = Form(schema, buttons=('send',))
-    if request.method == "GET": 
-        return {'form':myform.render()}
-    controls = request.POST.items()
-    try:
-        appstruct = myform.validate(controls)
-        # email the controls
-        readonly_form = myform.render(appstruct, readonly=True)
-        email = Message(subject='Price Alert Page',
-                        sender='PriceAlertPage@rubyrate.com',
-                        recipients=[request.registry.settings['to']],
-                        html=readonly_form)
-        mailer = get_mailer(request)
-        mailer.send(email)
-        transaction.commit()
-        request.session.flash('Thank you!')
-        return HTTPFound(location = request.path_url)             
-    except ValidationFailure, e:
-        return {'form':e.render()}
-
-
 class SupplierSchema(MappingSchema):
     company_name = SchemaNode(String())
     phone_number = SchemaNode(String())
@@ -205,4 +207,11 @@ def supplier(context, request):
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
+
+
+@view_config(name='', context=Admin, renderer='/admin/home.mako', 
+    permission='view')
+def item_admin(admin, request):
+    items = admin.get_items()
+    return {'items': items}
 
