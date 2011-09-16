@@ -20,10 +20,19 @@
             <img src="${request.static_url('rubyrate:static/rubyrate_logo.png')}" />
         </a>
         <ul id="nav" class="clearfix">
-            <li><a href="/need-pricing">Need Pricing</a></li>
+            <li><a href="/items">Items Needing Pricing</a></li>
+            <li>|</li>
             <li><a href="/supplier">Suppliers</a></li>
+            <li>|</li>
             <li><a href="/contact">Contact</a></li>
-            <li><a href="/login">Contact</a></li>
+        </ul>
+        <ul id="login-nav" class="clearfix">
+            % if request.loggedin:
+                <li><a href="/logout">Logout</a></li>
+            % else:
+                <li><a href="/users/create">Create Account</a></li>
+                <li><a href="/users/login">Login</a></li>
+            % endif
         </ul>
     </div>
 

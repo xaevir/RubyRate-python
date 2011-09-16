@@ -14,7 +14,14 @@
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${field.formid}"/>
     <ul>
-      
+      <tal:block tal:condition="field.error" tal:omit-tag="">
+        <tal:block tal:condition="field.error.msg" tal:omit-tag="">
+          <li class="errorLi" >
+            <p class="errorMsg" tal:condition="field.error.msg"
+               >${field.error.msg}</p>
+          </li>      
+          </tal:block>
+       </tal:block>       
       
       <li class="section first" tal:condition="field.title">
         <h3>${field.title}</h3>
@@ -36,7 +43,7 @@
             </b>
 
             <b tal:condition="not:exists: button.css_class" tal:omit-tag="">
-                <b tal:define="global css_class 'assfuck'" tal:omit-tag=""></b>
+                <b tal:define="global css_class 'checkthis'" tal:omit-tag=""></b>
             </b>
 
 

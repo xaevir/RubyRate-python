@@ -67,14 +67,11 @@ h1,h2,h3,h4,h5,h6,strong {
     margin-bottom: .3em;
 }
 h1 {
-    font-weight: bold;
-    font-family: georgia, serif;
-    font-style: italic;
-    font-size: 32px;
-    color: #000;
-    font-weight: normal;
-    padding-bottom: 10px;
-    margin-bottom: 16px;
+    font-size: 28px;
+    margin-bottom: 1em;
+    border-bottom: 3px dotted #ccc;
+    color: #999;
+
 
 }
 h2 {
@@ -187,6 +184,7 @@ th {
 
 tr.odd {
 	background-color:#EDF5FF;
+
 }
 th,td {
     padding:4px 10px;
@@ -328,12 +326,12 @@ div.deformReplaces {
 	color: #cd0000;
 }
 #flash {
+    background-color: #FFFFCC;
+    border: 1px solid #FFFF66;
+    font-size: 15px;
+    margin-bottom: 15px;
     padding: 20px;
     text-align: center;
-    border: 3px solid yellow;
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 15px;
 }
 
 .shadow {
@@ -407,8 +405,7 @@ div.deformReplaces {
     behavior: url(/static/PIE.htc);
     border: 1px solid #3079ED;
     text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-    text-transform: uppercase;
-
+    /*text-transform: uppercase;*/
 }
 
 .buttons button.blue:hover {
@@ -559,7 +556,7 @@ a.down-big {
 
 #ft {
     margin: 0 auto;
-	margin-top: 20px;
+	margin-top: 70px;
 	margin-bottom: 20px;
     border-top: 1px solid #f3f3f3;
     text-align: center;
@@ -568,39 +565,38 @@ a.down-big {
 
 #nav {
     margin: 0;
-    float: right;
-    padding-left: 0;
-    margin-left: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    float: left;
+    margin-top: 15px;
+    margin-left: 25px;
+    
 }
 
 #nav li {
     list-style-type: none;
     float: left;
+	font-size: 13px;
+    margin: 0 5px;
+    color: #ccc;
 }
 
 #nav a{
-	font-size: 16px;
     text-decoration: none;
-    margin-left: 25px;
     display: block;
-    float: left;
-    padding: 3px;
-    padding-bottom: 2px;
-    padding-top: 4px;
-    -moz-border-radius: 4px;
+    text-transform: uppercase;
 }
 #nav .active a{
     /*font-weight: bold;*/
     /*border-bottom: 2px solid DeepSkyBlue;*/
-
 }
 
+#login-nav {
+    float: right;
+}
 /*__________________________________________________________________Home*/
 #home #flash{
     display: none;
 }
+
 
 .col_1, .col_2{
     width: 47%; 
@@ -611,16 +607,68 @@ a.down-big {
 .col_2{
     float: right; 
 }
-#home h2 {
-    font-size: 24px;
-    margin-bottom: 1em;
-}
+
 
 #home h1 {
+    font-weight: bold;
+    font-family: georgia, serif;
+    font-style: italic;
+    font-size: 32px;
+    color: #000;
+    font-weight: normal;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
     margin-bottom: 1em;
 }
-.alt-row {
-    background-color: #f7f7f7;
+#home h2 {
+    font-size: 28px;
+    margin-bottom: .5em;
+    border-bottom: 3px dotted #ccc;
+    color: #999;
+}
+
+#home h3 {
+}
+
+#home .how-works h3{
+    font-size: 18px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+}
+    
+
+.circle{
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    -moz-border-radius: 15px;
+    color: #fff;
+    background-color: #B8181E;
+    text-align: center;
+    line-height: 1.6;
+    margin-right: 10px;
+    font-size: 18px;
+    background: -moz-linear-gradient(#C91E24, #8E0609);
+    font-weight: bold;
+}
+
+#points {
+   font-size: 18px; 
+}
+
+#points li {
+    margin-bottom: 1em;
+    width: 30%;
+    float: left;
+    margin-right: 3%;
+}
+
+#home #bd p{
+   font-size: 15px;
+}
+.how-works li {
+    margin-bottom: 2em;
 }
 #home form{
     /*border: 1px solid #eee;*/
@@ -633,6 +681,20 @@ a.down-big {
     background-color: #fafafa;
 }
 
+#home #item-deformField7{
+}
+#home #item-deformField7 label{
+    color: #222 !important;
+}
+#item-deformField7 label.desc{
+    width: 250px;  
+    float: left;
+}
+
+#item-deformField7 li {
+    float: left;
+    margin-bottom: 20px; 
+}
 /*#home .buttons{
     float: none;
 }
@@ -641,9 +703,13 @@ a.down-big {
 #home textarea{
     font-size: 14px;  
     width: 300px;
-        height: 35px;
+    height: 25px;
     padding: 0 10px;
     /*background: #f6f6f6;*/
+}
+
+#home textarea{
+    height: 50px;
 }
 #home .deform li p{
     text-align: left;
@@ -688,27 +754,17 @@ a.down-big {
     list-style: none;
 }
 
-#home h3 {
-    font-size: 16px;
-    font-weight: bold;
-
-}
 
 
-/*______________________________________________________________Need Pricing*/
-#need-pricing th{
+/*_________________________________________________________________Item List*/
+#items th{
     font-weight: bold;
     text-align: left;
 }
 
+#items table{
+    width: 100%;
+}
 
 /*__________________________________________________________________Contact*/
-#contact{
-    font-size: 16px;
-}
 
-#contact form{
-    width: 420px;
-    margin: 0 auto;
-
-}

@@ -2,10 +2,6 @@ from copy import deepcopy
 from rubyrate.utility import DictDiffer
 from pyramid.threadlocal import get_current_request 
 
-def get_db():
-    request = get_current_request()
-    return request.db
-
 def remove_extra(dct):
     cleaned = {}
     # the value cld be empty from form submit of non required field
@@ -59,21 +55,15 @@ def restore(cls, attrs):
     obj.__dict__ = attrs
     return obj
 
-class BaseMeta(type): 
-    def __new__(cls, name, bases, dct):
-        dct['clsname'] = name
-        return type.__new__(cls, name, bases, dct)
 
 class Base(object):
-    __metaclass__ = BaseMeta
     def save(self):
-        db = get_db()
+        db = get_current_request().db
         collection = db[self.__collection__]
         dct = remove_extra(self.__dict__)
-        dct = unmangle(dct, self.clsname)
+        dct = unmangle(dct, self.__class__.__name__)
         if not hasattr(self, '_id'):
-            collection.insert(dct)
-            return 
+            return collection.insert(dct)
         changed, removed = get_altered(dct, self.__origdict__) 
         if changed: #cld be calling save on obj not changed so not need for db   
             collection.update({'_id': self._id}, {'$set': changed})  # safe = True
@@ -83,10 +73,5 @@ class Base(object):
         db = get_db()
         collection = db[self.__collection__]
         collection.remove({'_id':context._id})
-
-    def setFlexAttrs(self, attrs):
-        """set the attr if it does not already exist so I cld set vars in any order"""
-        for key, value in attrs.iteritems():
-            if not hasattr(self, key):
-                setattr(self, key, value)
+    
 
