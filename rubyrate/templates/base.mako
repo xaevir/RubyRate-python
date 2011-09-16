@@ -8,6 +8,9 @@
         
     <link rel="shortcut icon" href=${request.static_url('rubyrate:static/favicon.png')} />
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/main.css')}"/>
+    <!--[if lt IE 7]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js"></script>
+    <![endif]-->
     <meta name="google-site-verification" content="FEhVgca4t1L-9-6SYatkLmhXwd4TtlapTRDh7h4qQtM" />
     ${self.head()}
 </head>
@@ -16,8 +19,8 @@
 <div id="doc2" class="clearfix">
 
     <div id="hd" class="clearfix">
-        <a id="logo" href="/">
-            <img src="${request.static_url('rubyrate:static/rubyrate_logo.png')}" />
+        <a href="/">
+            <h2 id="logo" class="ir">Ruby Rate</h2>
         </a>
         <ul id="nav" class="clearfix">
             <li><a href="/items">Items Needing Pricing</a></li>
