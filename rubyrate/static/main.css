@@ -683,9 +683,6 @@ a.down-big {
     background: linear-gradient(#C91E24, #8E0609);
     -pie-background: linear-gradient(#C91E24, #8E0609);
     behavior: url(/static/PIE.htc);
-   
-
-
 }
 
 #points h3{
@@ -720,20 +717,24 @@ a.down-big {
     border: 1px solid #E5E5E5;
 }
 
-#home #item-deformField7{
+#item-deformField7 {
+    margin-bottom: 10px; 
+    float: left;
+    width: 300px;
 }
-#home #item-deformField7 label{
-    color: #222 !important;
-}
+
 #item-deformField7 label.desc{
-    width: 250px;  
+    width: 200px;  
+    float: left;
+    display: block;
+}
+
+#item-deformField7 label{
     float: left;
 }
 
-#item-deformField7 li {
-    float: left;
-    margin-bottom: 20px; 
-}
+
+
 
 #item-deformField7 .deformSet{
     float: right;
@@ -760,10 +761,7 @@ a.down-big {
     width: 300px;
 }
 
-#home #item-deformField7 label{
-    color: #666;
-    float: left;
-}
+
 
 #home label{
     font-size: 14px;
