@@ -19,16 +19,9 @@
 <div id="doc2" class="clearfix">
 
     <div id="hd" class="clearfix">
-        <a href="/">
+        <a href="/" class="clearfix" style="float: left">
             <h2 id="logo" class="ir">Ruby Rate</h2>
         </a>
-        <ul id="nav" class="clearfix">
-            <li><a href="/items">Items Needing Pricing</a></li>
-            <li>|</li>
-            <li><a href="/supplier">Suppliers</a></li>
-            <li>|</li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
         <ul id="login-nav" class="clearfix">
             % if request.loggedin:
                 <li><a href="/logout">Logout</a></li>
@@ -37,6 +30,15 @@
                 <li><a href="/users/login">Login</a></li>
             % endif
         </ul>
+        <div class="clear"></div>
+        <ul id="nav" class="clearfix">
+            <li><a href="/items">Items Needing Pricing</a></li>
+            <li>|</li>
+            <li><a href="/supplier">Suppliers</a></li>
+            <li>|</li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+
     </div>
 
     <div id="bd">
