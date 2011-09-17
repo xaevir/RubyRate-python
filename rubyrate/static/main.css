@@ -677,20 +677,24 @@ a.down-big {
     -moz-box-shadow: #666 0px 1px 1px;
     box-shadow: #666 0px 1px 1px;
     background: #C91E24;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#C91E24), to(#8E0609));
-    background: -webkit-linear-gradient(#C91E24, #8E0609);
+    /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#C91E24), to(#8E0609));*/
     background: -moz-linear-gradient(#C91E24, #8E0609);
-    background: -ms-linear-gradient(#C91E24, #8E0609);
-    background: -o-linear-gradient(#C91E24, #8E0609);
+    background: -webkit-linear-gradient(#C91E24, #8E0609);
     background: linear-gradient(#C91E24, #8E0609);
     -pie-background: linear-gradient(#C91E24, #8E0609);
     behavior: url(/static/PIE.htc);
+   
+
+
 }
 
-#points {
+#points h3{
    font-size: 18px; 
 }
 
+#points {
+    font-size: 15px;
+}
 #points li {
     margin-bottom: 1em;
     width: 30%;
