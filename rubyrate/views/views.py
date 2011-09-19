@@ -54,8 +54,10 @@ class ItemSchema(MappingSchema):
         String(),
         widget= TextAreaWidget())
     quantity = SchemaNode(String())
-    lead_time = SchemaNode(String())
-    area_code = SchemaNode(String())
+    by_when = SchemaNode(
+        String(),
+        title="When would you like to buy this product/service")
+    zip_code = SchemaNode(String())
     price_range = SchemaNode(
         String(),
         missing = '',
@@ -106,7 +108,13 @@ def list_items(items, request):
 
 @view_config(context=Item, renderer='/item/view.mako')
 def view_item(item, request):
-    return {'item': item}
+    #something going on with how python stores the vars in this func
+    form = Form(ItemSchema())
+    node = form.children.pop(0)
+    if node.name != 'email':
+        raise Exception
+    readonly = form.render(item.__dict__, readonly=True)
+    return {'form': readonly}
 
 @view_config(name='edit', context=Item, renderer='form.mako')
 def edit_item(item, request):
@@ -135,7 +143,6 @@ def edit_item(item, request):
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
-
 
 
 

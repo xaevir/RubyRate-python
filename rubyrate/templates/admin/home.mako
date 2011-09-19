@@ -11,7 +11,6 @@ def altrow(index):
 <table id="items">
     <tr>
         <th>Product</th>
-        <th>Description</th>
         <th>Update</th>
         <th>Delete</th>
     </tr>
@@ -19,10 +18,9 @@ def altrow(index):
     % for item in items:
         <% index +=1 %>
     <tr class="${altrow(index)}">
-        <td><a href="/items/${item['name']}">${item['prooduct']}</a></td>
-        <td>${item['description']}</td>
-        <td><a href="/items/${item['name']}/edit">edit</a></td>
-        <td><a href="/items/${item['name']}/delete">delete</a></td>
+        <td><a href="/items/${item['_id']}">${item['product']}</a></td>
+        <td><a href="/items/${item['_id']}/edit">edit</a></td>
+        <td><a href="/items/${item['_id']}/delete">delete</a></td>
     </tr>
     % endfor
 </table>
