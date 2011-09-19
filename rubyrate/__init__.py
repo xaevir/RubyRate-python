@@ -50,7 +50,7 @@ def main(global_config, **settings):
 
     # adding the renderer to my own version of form
     deform_templates = resource_filename('deform', 'templates')
-    search_path = (here + '/templates/deform', deform_templates)
+    search_path = (here + '/templates/deform') #, deform_templates
     #settings['deform.renderer'] = ZPTRendererFactory(search_path)
     settings['deform.searchpath'] = here + '/templates/deform'
 

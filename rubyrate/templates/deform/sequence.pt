@@ -17,7 +17,7 @@
 
     <div tal:repeat="tup subfields"
          tal:replace="structure rndr(item_tmpl, field=tup[1], cstruct=tup[0],
-                      parent=field, repeat=repeat.tup)"/>
+                      parent=field)"/>
 
     <span class="deformInsertBefore" 
           tal:attributes="min_len min_len; 
