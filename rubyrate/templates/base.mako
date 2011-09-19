@@ -11,7 +11,6 @@
     <!--[if lt IE 7]>
     <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js"></script>
     <![endif]-->
-    <meta name="google-site-verification" content="FEhVgca4t1L-9-6SYatkLmhXwd4TtlapTRDh7h4qQtM" />
     ${self.head()}
 </head>
 
@@ -69,7 +68,12 @@
 
 </div>
 
+<a title="Real Time Web Analytics" href="http://getclicky.com/66480413"><img alt="Real Time Web Analytics" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
+<script src="//static.getclicky.com/js" type="text/javascript"></script>
+<script type="text/javascript">try{ clicky.init(66480413); }catch(e){}</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66480413ns.gif" /></p></noscript>
 ${self.js()}
+
 </body>
 </html>
 
