@@ -5,6 +5,7 @@ from pyramid.threadlocal import get_current_request
 from cryptacular import bcrypt 
 from pyramid.security import authenticated_userid
 from pyramid.security import Allow, Everyone
+from pymongo.objectid import ObjectId
 
 class Root(object):
     __name__ = None
@@ -45,7 +46,7 @@ class Items(object):
         return db.item.find()
 
     def __getitem__(self, key):
-        item = Item.by_name(key)
+        item = Item.by_id(key)
         if not item:
             raise KeyError
         item.__name__   = key
@@ -57,15 +58,15 @@ class Items(object):
 class Item(Base):
     __collection__ = 'item'
     def __init__(self, data):
-        self.created = datetime.datetime.now()
+        self.created = datetime.datetime.utcnow()
         for key, value in data.iteritems():
             setattr(self, key, value)
 
     @staticmethod
-    def by_name(name):
+    def by_id(_id):
         """Restore the user from DB or return None"""
         db = get_current_request().db
-        doc = db.item.find_one({'name': name})
+        doc = db.item.find_one({'_id': ObjectId(_id)})
         if doc is None:
             return 
         return restore(Item, doc)

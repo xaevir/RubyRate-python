@@ -54,9 +54,9 @@ class ItemSchema(MappingSchema):
         String(),
         widget= TextAreaWidget())
     quantity = SchemaNode(String())
-    by_when = SchemaNode(
+    when = SchemaNode(
         String(),
-        title="When would you like to buy this product/service")
+        title="When would you like this")
     zip_code = SchemaNode(String())
     price_range = SchemaNode(
         String(),

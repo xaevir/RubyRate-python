@@ -1,6 +1,14 @@
 from copy import deepcopy
 from rubyrate.utility import DictDiffer
 from pyramid.threadlocal import get_current_request 
+#write later as list comprehension
+def remove_empty(dct):
+    cleaned = {}
+    for key, value in dct.items():
+        if not value:
+            continue 
+    cleaned[key] = value
+    return cleaned
 
 def remove_extra(dct):
     cleaned = {}

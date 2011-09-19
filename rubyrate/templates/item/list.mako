@@ -26,7 +26,7 @@ def altrow(index):
     % for item in items:
         <% index +=1 %>
     <tr class="${altrow(index)}">
-        <td><a href="/items/${item['product']}">${item['product']}</a></td>
+        <td><a href="/items/${item['_id']}">${item['product']}</a></td>
         <td>${item['quantity']}</td>
         <td>${item['lead_time']}</td>
         <td>${item['area_code']}</td>

@@ -1,8 +1,8 @@
 <li tal:attributes="class field.error and field.widget.error_class"
     tal:omit-tag="field.widget.hidden"
-    title="${field.description}ass" i18n:domain="deform">shit
+    title="${field.description}" i18n:domain="deform">
   <!-- sequence_item -->
-  <h1 tal:content=repeat.item.number>Shit
+
   <span class="deformClosebutton"
         id="${field.oid}-close"
         tal:condition="not field.widget.hidden"
