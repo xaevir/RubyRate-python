@@ -127,19 +127,7 @@ def edit_item(item, request):
         pricing_data = form.validate(request.POST.items())
         item = Item(pricing_data)
         item.save()
-        # email notification
-        settings = request.registry.settings
-        email = Message(subject='Pricing Needed',
-            sender=settings['to'],
-            recipients=[settings['to']],
-            body=' ')
-        mailer = get_mailer(request)
-        mailer.send(email)
-        transaction.commit()
-
-        # show message
-        thank_you = render('mini/thankyou_homepage.mako', request)    
-        request.session.flash(thank_you)
+        request.session.flash('Updated')
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
