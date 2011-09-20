@@ -7,6 +7,8 @@ from pyramid.security import authenticated_userid
 from pyramid.security import Allow, Everyone
 from pymongo.objectid import ObjectId
 
+from pprint import pprint
+
 class Root(object):
     __name__ = None
     __parent__ = None
@@ -71,6 +73,8 @@ class Item(Base):
             return 
         return restore(Item, doc)
 
+
+
 def groupfinder(name, request):
     user = User.by_username(name)
     # If the user is in the db then they have passed validation and are 
@@ -100,6 +104,7 @@ class Users(object):
 
 class User(Base):
     __collection__ = 'user'
+    __uses_descriptor__ = True
     def __init__(self, data):
         self.created  = datetime.datetime.now()
         for key, value in data.iteritems():

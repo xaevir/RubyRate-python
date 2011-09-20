@@ -1,26 +1,19 @@
 from copy import deepcopy
 from rubyrate.utility import DictDiffer
 from pyramid.threadlocal import get_current_request 
+from pprint import pprint
 #write later as list comprehension
+
 def remove_empty(dct):
-    cleaned = {}
-    for key, value in dct.items():
-        if not value:
-            continue 
-    cleaned[key] = value
+    non_empty = dict((key, dct[key]) for key,value in dct.iteritems() 
+        if value != '')
+    return non_empty
+
+def remove_traversal(dct):
+    cleaned = dict((key, dct[key]) for key,value in dct.iteritems() 
+        if not key.startswith('__'))
     return cleaned
 
-def remove_extra(dct):
-    cleaned = {}
-    # the value cld be empty from form submit of non required field
-    for key, value in dct.items():
-        if not value:
-            continue 
-        # traversal needs the __name__, __parent__ attrs
-        if key.startswith('__'):
-            continue
-        cleaned[key] = value
-    return cleaned
 
 def unmangle(dct, classname):
     """undo mangling of private vars"""
@@ -53,33 +46,39 @@ def get_altered(dct, origdict):
 def restore(cls, attrs):
     cls.__origdict__ = deepcopy(attrs) #otherwise its getting updated by shallow copy     
     obj = cls.__new__(cls)
-    # chk if propery name same as class name 
-    # which wld be a property decorator
-    a = set(dir(obj))
-    b = set(attrs.keys())
-    intersect = a.intersection(b)
-    if intersect:
-        attrs = mangle_keys(intersect, attrs, obj.__class__.__name__) 
+    try:
+        obj.__uses_descriptor__
+        # check for intersection of class properties and database keys 
+        # Using a property decorator, the function name would be the same as 
+        # the database key
+        a = set(dir(obj))
+        b = set(attrs.keys())
+        intersect = a.intersection(b)
+        if intersect:
+            attrs = mangle_keys(intersect, attrs, obj.__class__.__name__) 
+    except AttributeError: 
+        pass
     obj.__dict__ = attrs
     return obj
 
-
-class Base(object):
-    def save(self):
+class Base(object): 
+    def save(self, dct = None):
+        attrs = dct or self.__dict__
+        collection = self.__collection__
         db = get_current_request().db
-        collection = db[self.__collection__]
-        dct = remove_extra(self.__dict__)
-        dct = unmangle(dct, self.__class__.__name__)
+        non_empty = remove_empty(attrs)
+        cleaned = remove_traversal(non_empty)
         if not hasattr(self, '_id'):
-            return collection.insert(dct)
-        changed, removed = get_altered(dct, self.__origdict__) 
+            return db.collection.insert(cleaned)
+        # record already exists so check for altered
+        changed, removed = get_altered(cleaned, self.__origdict__) 
         if changed: #cld be calling save on obj not changed so not need for db   
-            collection.update({'_id': self._id}, {'$set': changed})  # safe = True
+            db.collection.update({'_id': self._id}, {'$set': changed})  # safe = True
         if removed:
-            collection.update({'_id': self._id}, {'$unset': removed})
+            db.collection.update({'_id': self._id}, {'$unset': removed})
+
     def remove(self):
-        db = get_db()
-        collection = db[self.__collection__]
-        collection.remove({'_id':context._id})
-    
+        db = get_current_request().db
+        db.collection.remove({'_id':self._id})
+
 

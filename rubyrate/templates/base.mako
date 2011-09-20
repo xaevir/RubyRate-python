@@ -72,8 +72,10 @@
 <script src="//static.getclicky.com/js" type="text/javascript"></script>
 <script type="text/javascript">try{ clicky.init(66480413); }catch(e){}</script>
 <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66480413ns.gif" /></p></noscript>
-${self.js()}
 
+<script type="text/javascript" src="${request.static_url('rubyrate:static/jquery-1.6.2.min.js')}"></script>
+${self.js()}
+<script type="text/javascript" src="${request.static_url('rubyrate:static/main.js')}"></script>
 </body>
 </html>
 

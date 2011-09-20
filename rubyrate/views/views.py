@@ -125,14 +125,19 @@ def edit_item(item, request):
         return {'form':form.render(item.__dict__)}
     try:
         pricing_data = form.validate(request.POST.items())
-        item = Item(pricing_data)
-        item.save()
+        item.save(pricing_data)
         request.session.flash('Updated')
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
 
+@view_config(name='delete', context=Item, renderer='form.mako')
+def delete_item(item, request):
+    item.remove()
+    request.session.flash('Deleted')
+    return HTTPFound(location = '/admin')
 
+    
 
 class ContactSchema(MappingSchema):
     name = SchemaNode(String(),

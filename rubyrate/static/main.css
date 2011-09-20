@@ -331,10 +331,10 @@ div.deformReplaces {
 }
 #flash {
     background-color: #FFFFCC;
-    border: 1px solid #FFFF66;
+    border: 2px solid #FFFF00;
     font-size: 15px;
     margin-bottom: 15px;
-    padding: 20px;
+    padding: 10px 20px;
     text-align: center;
 }
 
