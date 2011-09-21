@@ -1,7 +1,6 @@
 <%inherit file="/base.mako"/>
 <%def name="page_name()">home</%def>
 <%def name="js()">
-    <script type="text/javascript" src="${request.static_url('rubyrate:static/jquery-1.6.2.min.js')}"></script>
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.fancybox-1.3.4.pack.js')}"></script>
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.easing-1.3.pack.js')}"></script>
 </%def>

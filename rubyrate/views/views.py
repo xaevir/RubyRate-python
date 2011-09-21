@@ -20,9 +20,9 @@ from colander import OneOf
 from colander import Email
 from colander import Function
 from colander import Invalid
-from colander import null
+import colander
 
-from deform import ValidationFailure
+import deform
 from deform.widget import TextInputWidget
 from deform.widget import TextAreaWidget
 from deform.widget import Widget
@@ -33,6 +33,8 @@ from rubyrate.my_deform.form import Form
 from pkg_resources import resource_filename
 from deform import ZPTRendererFactory
 
+from pprint import pprint
+p = pprint
 
 from rubyrate.resources import Root
 from rubyrate.resources import Items
@@ -46,43 +48,37 @@ import smtplib
 
 from mako.template import Template
 
-class ItemSchema(MappingSchema):
-    email = SchemaNode(
-        String(),
-        validator = Email())
-    product = SchemaNode(
-        String(),
-        widget= TextAreaWidget())
-    quantity = SchemaNode(String())
-    when = SchemaNode(
-        String(),
-        title="When would you like this")
-    zip_code = SchemaNode(String())
-    price_range = SchemaNode(
-        String(),
-        missing = '',
-        title= 'Price Range (optional)')
-    choices = (('yes', 'Yes'), )                      
-    international = SchemaNode(
-        String(),
-        missing='',
-        validator = OneOf([x[0] for x in choices]),
-        widget = RadioChoiceWidget(values=choices, css_class='reg-position'),
-        title = 'Would you like pricing from international suppliers?')
-        
+
+
+def render_form(form, request, appstruct=colander.null, submitted='submit',
+                success=None, readonly=False):
+    captured = None
+    if submitted in request.POST:
+        # the request represents a form submission
+        try:
+            # try to validate the submitted values
+            controls = request.POST.items()
+            captured = form.validate(controls)
+            if success:
+                response = success(captured, form.schema)
+                if response is not None:
+                    return response
+            html = form.render(captured)
+        except deform.ValidationFailure, e:
+            # the submitted values could not be validated
+            html = e.render()
+    else:
+        # the request requires a simple form rendering
+        html = form.render(appstruct, readonly=readonly)
+    return {'form': html}
+
 
 @view_config(name="", context=Root, renderer='home_page.mako')
-def create_item_on_home_page(context, request):
-    schema = ItemSchema()
-    form = Form(schema, 
-        buttons=(Button(title='Get Pricing',css_class='button blue'),), 
-        formid='product_needed_form')
-    if request.method == "GET": 
-        return {'form':form.render()}
-    try:
-        pricing_data = form.validate(request.POST.items())
-        item = Item(pricing_data)
-        item.save()
+def create_item(context, request):
+    item = Item(after_bind=Item.on_creation)
+    item = item.bind()
+    def succeed(captured, item):
+        item.insert(captured)
         # email notification
         settings = request.registry.settings
         email = Message(subject='Pricing Needed',
@@ -93,18 +89,46 @@ def create_item_on_home_page(context, request):
         mailer.send(email)
         transaction.commit()
 
-        # show message
+        # show modal message
         thank_you = render('mini/thankyou_homepage.mako', request)    
         request.session.flash(thank_you)
         return HTTPFound(location = request.path_url)             
-    except ValidationFailure, e:
-        return {'form':e.render()}
 
+    form = Form(item, 
+        buttons=(Button(title='Get Pricing', css_class='button blue'),), 
+        formid='product_needed_form')
+    return render_form(form, request, success=succeed)
 
-@view_config(context=Items, renderer='/item/list.mako')
+from colander import SequenceSchema
+
+@view_config(context=Items, renderer='list.mako') #renderer='/item/list.mako'
 def list_items(items, request):
-    items = items.get_recent() 
-    return {'items': items}
+    cursor = items.get_without_email() 
+    lst = []
+    for record in cursor:
+        lst.append(record)
+    appstruct={'items':lst}
+
+
+    class Seq(SequenceSchema):
+        item = Item(after_bind=Item.safe_show).bind()
+
+    schema = Seq()
+    deserialized = Seq().serialize(lst)
+    titles = {}
+    for n in Seq.item.children:
+        titles[n.name] = n.title 
+    
+    raise Exception
+    return {'list': deserialized}
+
+    #settings = request.registry.settings
+    #orig = settings['deform.searchpath'] 
+    #specific = settings['deform.searchpath'] + '/list'
+    #renderer = ZPTRendererFactory((specific, ))
+
+    #return Response(form) 
+    #return {'items': items}
 
 @view_config(context=Item, renderer='/item/view.mako')
 def view_item(item, request):
@@ -116,11 +140,27 @@ def view_item(item, request):
     readonly = form.render(item.__dict__, readonly=True)
     return {'form': readonly}
 
-@view_config(name='edit', context=Item, renderer='form.mako')
-def edit_item(item, request):
+
+
+@view_config(name='edit', context=Item, renderer='rubyrate:templates/deform/form.pt')
+def edit_item(context, request):
+    class Person(colander.MappingSchema):
+        name = colander.SchemaNode(colander.String())
+        age = colander.SchemaNode(colander.Integer(),
+                                  validator=colander.Range(0,200))
+    class People(colander.SequenceSchema):
+        person = Person()
+    class Wow(colander.MappingSchema):
+        people = People()
+    schema = Wow()
+    form = Form(schema, buttons=('submit',))
+    html = form.render(schema)
+    return Response(form)
+"""
     schema = ItemSchema()
     form = Form(schema, 
         buttons=(Button(title='Update'),),)
+
     if request.method == "GET": 
         return {'form':form.render(item.__dict__)}
     try:
@@ -130,7 +170,7 @@ def edit_item(item, request):
         return HTTPFound(location = request.path_url)             
     except ValidationFailure, e:
         return {'form':e.render()}
-
+"""
 @view_config(name='delete', context=Item, renderer='form.mako')
 def delete_item(item, request):
     item.remove()

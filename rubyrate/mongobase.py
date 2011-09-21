@@ -61,24 +61,23 @@ def restore(cls, attrs):
     obj.__dict__ = attrs
     return obj
 
-class Base(object): 
-    def save(self, dct = None):
-        attrs = dct or self.__dict__
-        collection = self.__collection__
-        db = get_current_request().db
-        non_empty = remove_empty(attrs)
-        cleaned = remove_traversal(non_empty)
-        if not hasattr(self, '_id'):
-            return db.collection.insert(cleaned)
-        # record already exists so check for altered
-        changed, removed = get_altered(cleaned, self.__origdict__) 
-        if changed: #cld be calling save on obj not changed so not need for db   
-            db.collection.update({'_id': self._id}, {'$set': changed})  # safe = True
-        if removed:
-            db.collection.update({'_id': self._id}, {'$unset': removed})
+def mongosave(collection, dct = None):
+    attrs = dct or self.__dict__
+    collection = self.__collection__
+    db = get_current_request().db
+    non_empty = remove_empty(attrs)
+    cleaned = remove_traversal(non_empty)
+    if not hasattr(self, '_id'):
+        return db.collection.insert(cleaned)
+    # record already exists so check for altered
+    changed, removed = get_altered(cleaned, self.__origdict__) 
+    if changed: #cld be calling save on obj not changed so not need for db   
+        db.collection.update({'_id': self._id}, {'$set': changed})  # safe = True
+    if removed:
+        db.collection.update({'_id': self._id}, {'$unset': removed})
 
-    def remove(self):
-        db = get_current_request().db
-        db.collection.remove({'_id':self._id})
+def remove(self):
+    db = get_current_request().db
+    db.collection.remove({'_id':self._id})
 
 

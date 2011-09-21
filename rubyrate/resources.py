@@ -1,4 +1,5 @@
-from rubyrate.mongobase import Base
+from rubyrate.mongobase import mongosave
+from rubyrate.mongobase import remove
 from rubyrate.mongobase import restore
 import datetime
 from pyramid.threadlocal import get_current_request 
@@ -8,6 +9,33 @@ from pyramid.security import Allow, Everyone
 from pymongo.objectid import ObjectId
 
 from pprint import pprint
+p = pprint
+import logging
+from pprint import pprint
+log = logging.getLogger(__name__)
+
+
+from colander import MappingSchema
+from colander import SequenceSchema
+from colander import SchemaNode
+from colander import String
+from colander import Boolean
+from colander import Integer
+from colander import Length
+from colander import OneOf
+from colander import Email
+from colander import Function
+from colander import Invalid
+import colander
+
+import deform
+from deform.widget import TextInputWidget
+from deform.widget import TextAreaWidget
+from deform.widget import Widget
+from deform.widget import RadioChoiceWidget
+from deform.widget import HiddenWidget 
+
+
 
 class Root(object):
     __name__ = None
@@ -38,31 +66,70 @@ class Admin(object):
         return db.item.find()
 
 
-class Items(object):
-    def __init__(self, name, parent):
-        self.__name__   = name
-        self.__parent__ = parent 
 
-    def get_recent(self):
+
+class NoShowWidget(HiddenWidget):
+    def serialize(self, field, cstruct=None, readonly=False):
+        return ''
+
+def remove_empty(dct):
+    non_empty = dict((key, dct[key]) for key,value in dct.iteritems() 
+        if value != '')
+    return non_empty
+
+def mongosave(collection, dct = None):
+    attrs = dct or self.__dict__
+    collection = self.__class__.__name___
+    db = get_current_request().db
+    non_empty = remove_empty(attrs)
+    cleaned = remove_traversal(non_empty)
+    if not hasattr(self, '_id'):
+        return db.collection.insert(cleaned)
+    # record already exists so check for altered
+    changed, removed = get_altered(cleaned, self.__origdict__) 
+    if changed: #cld be calling save on obj not changed so not need for db   
+        db.collection.update({'_id': self._id}, {'$set': changed})  # safe = True
+    if removed:
+        db.collection.update({'_id': self._id}, {'$unset': removed})
+
+
+class Item(MappingSchema):
+    _id = SchemaNode(String()) 
+    created = SchemaNode(String())
+    email = SchemaNode(
+        String(),
+        validator = Email())
+    product = SchemaNode(
+        String(),
+        widget= TextAreaWidget())
+    quantity = SchemaNode(String())
+    when = SchemaNode(
+        String(),
+        title="When would you like this")
+    zip_code = SchemaNode(String())
+    price_range = SchemaNode(
+        String(),
+        missing = '',
+        title= 'Price Range (optional)')
+   
+    def insert(self, dct):
         db = get_current_request().db
-        return db.item.find()
+        clean = remove_empty(dct)
+        db.item.insert(clean)
 
-    def __getitem__(self, key):
-        item = Item.by_id(key)
-        if not item:
-            raise KeyError
-        item.__name__   = key
-        item.__parent__ = self
-        item.__acl__ = [ (Allow, Everyone, 'view'),
-                         (Allow, 'group:admin', 'edit') ]
-        return item
+    def save(self, dct):
+        mongosave(self, dct)
+        
 
-class Item(Base):
-    __collection__ = 'item'
-    def __init__(self, data):
-        self.created = datetime.datetime.utcnow()
-        for key, value in data.iteritems():
-            setattr(self, key, value)
+    @staticmethod
+    def on_creation(node, kw):
+        del node['_id']
+        node['created'].widget=NoShowWidget()
+        node['created'].missing = datetime.datetime.utcnow()
+
+    @staticmethod
+    def safe_show(node, kw):
+        del node['email']
 
     @staticmethod
     def by_id(_id):
@@ -72,6 +139,30 @@ class Item(Base):
         if doc is None:
             return 
         return restore(Item, doc)
+
+
+class Items(object):
+    def __init__(self, name, parent):
+        self.__name__   = name
+        self.__parent__ = parent 
+
+        
+        self.ItemsSeq = ItemsSeq
+
+    def get_without_email(self):
+        db = get_current_request().db
+        return db.item.find( {}, { 'email' : 0 } )
+
+    def __getitem__(self, key):
+        raise Exception
+        item = Item.by_id(key)
+        if not item:
+            raise KeyError
+        item.__name__   = key
+        item.__parent__ = self
+        item.__acl__ = [ (Allow, Everyone, 'view'),
+                         (Allow, 'group:admin', 'edit') ]
+        return item
 
 
 
@@ -102,7 +193,7 @@ class Users(object):
 
         return user
 
-class User(Base):
+class User(object):
     __collection__ = 'user'
     __uses_descriptor__ = True
     def __init__(self, data):

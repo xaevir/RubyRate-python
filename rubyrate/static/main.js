@@ -15,9 +15,6 @@ if ( $("#lightbox").length ) {
     });
 }
 
-
- //show notification, default type is 'message'  
-
 /* emulate placeholder */
 //var inputs = $('#product_needed_form [type=text]')
 
