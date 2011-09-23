@@ -837,6 +837,7 @@ table#list {
 
 #summary div#list .odd{
     float: right; 
+    clear: right;
 }
 #summary #list ul {
     width: 300px;

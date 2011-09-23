@@ -151,16 +151,17 @@ def update_wish(context, request):
     schema = WishSchema(after_bind=del_autos).bind()
     form = Form(schema, buttons=(Button(title='Update'),))
     return render_form(form, request, appstruct=context.__dict__, rest='PUT')
-
-
    
-
-
 @view_config(name="", context=Root, renderer='home_page.mako')
+def homepage(root, request):
+    actual_context = root['wishes'] 
+    return create_wish(actual_context, request) 
+
+
 def create_wish(context, request):
     schema = WishSchema(after_bind=WishSchema.on_creation).bind()
     def succeed(captured):
-        Wish.insert(captured)
+        context.insert(captured)
         # email notification
         settings = request.registry.settings
         email = Message(subject='Pricing Needed',
@@ -264,7 +265,7 @@ def create_answer(context, request):
     try:
         appstruct = form.validate(controls)
         appstruct['parent'] = context.__parent__.__name__
-        Answer.insert(appstruct)
+        request.context.insert(appstruct)
         request.session.flash('Thank you!')
         return HTTPFound(location = request.path_url)             
 
@@ -373,21 +374,40 @@ def summary(context, request):
     conclusion = context.conclusion['message']
     conclusion = markdown(conclusion)
 
-
     cursor = context.answrs
 
     lst = []
     for doc in cursor:
         lst.append(doc)
+  
+    """
+    index = 0
+    total = cursor.count()
 
-
-    class AnswersSeq(SequenceSchema):
-        answer = AnswerSchema(after_bind=AnswerSchema.show_list).bind()
+    while index < total:
+        try:
+           x = cursor[index] 
+        except:
+            x = {} #has to be iterable
+        try:
+            y = cursor[index+1]
+        except:
+            y = {} 
+        first = {'x': x} 
+        second = {'y': y} 
+        lst.append(first)
+        lst.append(second)
+        index += 2
+    """
 
     appstruct={'answers':lst}
 
-    class Composed(Schema):
-        answers = AnswersSeq()
+    class A(SequenceSchema):
+        x = AnswerSchema(after_bind=AnswerSchema.show_list).bind()
+
+
+    class Composed(MappingSchema):
+        answers = A()
 
     schema = Composed()
 
@@ -468,7 +488,7 @@ def supplier(context, request):
         return {'form':e.render()}
 
 
-@view_config(name='', context=Admin, renderer='/admin/home.mako', 
+@view_config(context=Admin, renderer='/admin/home.mako', 
     permission='view')
 def item_admin(admin, request):
     items = admin.get_items()
