@@ -1,3 +1,5 @@
+
 <li tal:define="global happy 'n/a' if not cstruct else cstruct"
     tal:attributes="class field.name"
->${happy}</li>
+        tal:content="structure happy" />
+

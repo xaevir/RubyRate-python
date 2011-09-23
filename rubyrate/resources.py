@@ -264,7 +264,17 @@ class Answers(OneChild):
 class Answer(object):
     collection = 'answers'
     pass
-    
+
+    def update(self, dct):
+        from rubyrate.mongobase import get_altered
+        db = get_current_request().db
+        clean = remove_empty(dct)
+        changed, removed = get_altered(clean, self.__origdict__) 
+        if changed: #cld be calling save on obj not changed so not need for db   
+            db[self.collection].update({'_id': self._id}, {'$set': changed}, safe = True)  # safe = True
+        #if removed:
+        #   
+
 class Conclusions(OneChild):
     collection = 'conclusions'
 
