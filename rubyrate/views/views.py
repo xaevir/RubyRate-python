@@ -11,7 +11,9 @@ import transaction
 
 from colander import MappingSchema
 from colander import SequenceSchema
+from colander import TupleSchema
 from colander import SchemaNode
+from colander import Schema
 from colander import String
 from colander import Boolean
 from colander import Integer
@@ -22,11 +24,15 @@ from colander import Function
 from colander import Invalid
 import colander
 
+
+from markdown import markdown
+
 import deform
 from deform.widget import TextInputWidget
 from deform.widget import TextAreaWidget
 from deform.widget import Widget
 from deform.widget import RadioChoiceWidget
+from deform import ValidationFailure
 
 from rubyrate.my_deform.form import Button
 from rubyrate.my_deform.form import Form
@@ -37,32 +43,50 @@ from pprint import pprint
 p = pprint
 
 from rubyrate.resources import Root
-from rubyrate.resources import Items
-from rubyrate.resources import Item
+from rubyrate.resources import Wishes
+from rubyrate.resources import Wish
+from rubyrate.resources import WishSchema
 from rubyrate.resources import Users
 from rubyrate.resources import User
 from rubyrate.resources import Admin
+from rubyrate.resources import Answers
+from rubyrate.resources import Answer
+from rubyrate.resources import AnswerSchema
+from rubyrate.resources import ConclusionSchema
+from rubyrate.resources import Conclusion
+from rubyrate.resources import Conclusions
 
 
 import smtplib
 
 from mako.template import Template
 
+from rubyrate.resources import del_autos
 
 
 def render_form(form, request, appstruct=colander.null, submitted='submit',
-                success=None, readonly=False):
+                success=None, readonly=False, rest=None, just_get_form=None):
     captured = None
     if submitted in request.POST:
-        # the request represents a form submission
         try:
-            # try to validate the submitted values
             controls = request.POST.items()
             captured = form.validate(controls)
             if success:
-                response = success(captured, form.schema)
+                response = success(captured)
                 if response is not None:
                     return response
+            elif rest == 'PUT':
+                request.context.update(captured)
+                request.session.flash('Updated')
+                if just_get_form is not None:
+                    url = request.resource_url(request.context)
+                    return HTTPound(location = url)  
+            elif rest == 'POST':
+                request.context.update(captured)
+                request.session.flash('Created')
+                if just_get_form is not None:
+                    url = request.resource_url(request.context)
+                    return HTTPFound(location = url)  
             html = form.render(captured)
         except deform.ValidationFailure, e:
             # the submitted values could not be validated
@@ -73,12 +97,70 @@ def render_form(form, request, appstruct=colander.null, submitted='submit',
     return {'form': html}
 
 
+
+@view_config(context=Wish, renderer='/form.mako')
+def show_wish(wish, request):
+    specific = request.registry.settings['deform.searchpath'] + '/table'
+    renderer = ZPTRendererFactory((specific ))
+
+    class thWidget(Widget):
+        def serialize(self, field, cstruct, readonly=True):
+            if cstruct is colander.null:
+                cstruct = u''
+            html = '<tr>'
+            for item in cstruct:
+                html += '<th>%s</th>' % item 
+            return html + '</tr>' 
+
+    wish_schema = WishSchema(after_bind=WishSchema.show_single).bind()
+
+    heads = [] 
+    children = wish_schema.children
+    for child in children:
+        heads.append(child.title)
+
+    appstruct={'headers': heads, 'wish_schema':wish.__dict__}
+
+    class Headers(SequenceSchema):
+        header = colander.SchemaNode(
+                    colander.String())
+
+    class Composed(Schema): 
+        headers = Headers(widget=thWidget())
+        wish_schema = WishSchema(after_bind=WishSchema.show_single).bind()
+
+    composed = Composed()
+
+    form = Form(composed, renderer=renderer, formid="list")
+    readonly = form.render(appstruct, readonly=True)
+
+    href = request.resource_url(wish, 'answers', 'create')
+    button = '<div class="button-wrap blue"><a href="%s" class="button">Answer</a></div>' % href
+
+    return {'form': readonly, 
+            'heading': wish.product,
+            'button': button,
+            'page': 'answer',
+            }
+
+
+
+
+@view_config(name='update', context=Wish, renderer='form.mako')
+def update_wish(context, request):
+    schema = WishSchema(after_bind=del_autos).bind()
+    form = Form(schema, buttons=(Button(title='Update'),))
+    return render_form(form, request, appstruct=context.__dict__, rest='PUT')
+
+
+   
+
+
 @view_config(name="", context=Root, renderer='home_page.mako')
-def create_item(context, request):
-    item = Item(after_bind=Item.on_creation)
-    item = item.bind()
-    def succeed(captured, item):
-        item.insert(captured)
+def create_wish(context, request):
+    schema = WishSchema(after_bind=WishSchema.on_creation).bind()
+    def succeed(captured):
+        Wish.insert(captured)
         # email notification
         settings = request.registry.settings
         email = Message(subject='Pricing Needed',
@@ -94,90 +176,227 @@ def create_item(context, request):
         request.session.flash(thank_you)
         return HTTPFound(location = request.path_url)             
 
-    form = Form(item, 
+    form = Form(schema, 
         buttons=(Button(title='Get Pricing', css_class='button blue'),), 
-        formid='product_needed_form')
+        formid='wish_form')
     return render_form(form, request, success=succeed)
 
-from colander import SequenceSchema
-
-@view_config(context=Items, renderer='list.mako') #renderer='/item/list.mako'
-def list_items(items, request):
-    cursor = items.get_without_email() 
-    lst = []
-    for record in cursor:
-        lst.append(record)
-    appstruct={'items':lst}
-
-
-    class Seq(SequenceSchema):
-        item = Item(after_bind=Item.safe_show).bind()
-
-    schema = Seq()
-    deserialized = Seq().serialize(lst)
-    titles = {}
-    for n in Seq.item.children:
-        titles[n.name] = n.title 
     
-    raise Exception
-    return {'list': deserialized}
-
-    #settings = request.registry.settings
-    #orig = settings['deform.searchpath'] 
-    #specific = settings['deform.searchpath'] + '/list'
-    #renderer = ZPTRendererFactory((specific, ))
-
-    #return Response(form) 
-    #return {'items': items}
-
-@view_config(context=Item, renderer='/item/view.mako')
-def view_item(item, request):
-    #something going on with how python stores the vars in this func
-    form = Form(ItemSchema())
-    node = form.children.pop(0)
-    if node.name != 'email':
-        raise Exception
-    readonly = form.render(item.__dict__, readonly=True)
-    return {'form': readonly}
 
 
+@view_config(context=Wishes, renderer='list.mako')
+def list_wishes(wishes, request):
+    settings = request.registry.settings
+    orig = settings['deform.searchpath'] 
+    specific = settings['deform.searchpath'] + '/table'
+    renderer = ZPTRendererFactory((specific ))
 
-@view_config(name='edit', context=Item, renderer='rubyrate:templates/deform/form.pt')
-def edit_item(context, request):
-    class Person(colander.MappingSchema):
-        name = colander.SchemaNode(colander.String())
-        age = colander.SchemaNode(colander.Integer(),
-                                  validator=colander.Range(0,200))
-    class People(colander.SequenceSchema):
-        person = Person()
-    class Wow(colander.MappingSchema):
-        people = People()
-    schema = Wow()
-    form = Form(schema, buttons=('submit',))
-    html = form.render(schema)
-    return Response(form)
-"""
-    schema = ItemSchema()
-    form = Form(schema, 
-        buttons=(Button(title='Update'),),)
+    cursor = wishes.get_without_email()
+    lst = []
+    for doc in cursor:
+        doc['prodlink'] = (doc['_id'], doc['product'])   
+        lst.append(doc)
 
-    if request.method == "GET": 
-        return {'form':form.render(item.__dict__)}
-    try:
-        pricing_data = form.validate(request.POST.items())
-        item.save(pricing_data)
-        request.session.flash('Updated')
-        return HTTPFound(location = request.path_url)             
-    except ValidationFailure, e:
-        return {'form':e.render()}
-"""
-@view_config(name='delete', context=Item, renderer='form.mako')
-def delete_item(item, request):
-    item.remove()
+
+    class thWidget(Widget):
+        def serialize(self, field, cstruct, readonly=True):
+            html = '<tr>'
+            for item in cstruct:
+                html += '<th>%s</th>' % item 
+            return html + '</tr>' 
+
+    class inputWidget(Widget):
+        def serialize(self, field, cstruct, readonly=True):
+            return '<input type="text" value="%s">' % cstruct
+
+
+    class NeedSeq(SequenceSchema):
+        wish = WishSchema(after_bind=WishSchema.show_list).bind()
+
+    headers = [] 
+    children = NeedSeq.wish.children
+    for child in children:
+        headers.append(child.title)
+    headers[0] = 'Product'
+
+    class Headers(SequenceSchema):
+        header = colander.SchemaNode(
+                    colander.String())
+
+    appstruct={'headers': headers, 'need_seq':lst}
+
+
+    class Composed(Schema):
+        headers = Headers(widget=thWidget())
+        need_seq = NeedSeq()
+
+    schema = Composed()
+
+    from pprint import pformat
+    form = Form(schema, renderer=renderer, pformat=pformat, formid="list" )
+    readonly = form.render(appstruct, readonly=True)
+    dct = {'form': readonly, 
+           'header': 'Recent items that need pricing'}
+    return dct
+
+
+
+@view_config(name='delete', context=Wish, renderer='form.mako')
+def delete_item(wish, request):
+    wish.remove()
     request.session.flash('Deleted')
     return HTTPFound(location = '/admin')
 
-    
+
+@view_config(name="create", context=Answers, renderer='form.mako')
+def create_answer(context, request):
+    schema = AnswerSchema(after_bind=AnswerSchema.on_creation).bind()
+    form = Form(schema, 
+        buttons=(Button(title='Submit Answer', css_class='button blue'),), 
+        formid='create_form')
+    if request.method == "GET": 
+        answer = show_wish(context.__parent__, request)
+        return {'form': form.render(),
+                'answer': answer['form'],
+                'heading': answer['heading'],
+                'answer_heading':'Your Answer'}
+    controls = request.POST.items()
+    try:
+        appstruct = form.validate(controls)
+        appstruct['parent'] = context.__parent__.__name__
+        Answer.insert(appstruct)
+        request.session.flash('Thank you!')
+        return HTTPFound(location = request.path_url)             
+
+    except ValidationFailure, e:
+        return {'form': e.render(),
+                'answer': answer['form'],
+                'heading': answer['heading'],
+                'answer_heading':'Your Answer'}
+
+
+
+
+@view_config(context=Answers, renderer='form.mako')
+def list_answers(answers, request):
+    settings = request.registry.settings
+    orig = settings['deform.searchpath'] 
+    specific = settings['deform.searchpath'] + '/table'
+    renderer = ZPTRendererFactory((specific ))
+
+    cursor = answers.get_answers_of_parent()
+
+    lst = []
+    for doc in cursor:
+        lst.append(doc)
+
+
+    class thWidget(Widget):
+        def serialize(self, field, cstruct, readonly=True):
+            html = '<tr>'
+            for item in cstruct:
+                html += '<th>%s</th>' % item 
+            return html + '</tr>' 
+
+    class AnswersSeq(SequenceSchema):
+        answer = AnswerSchema(after_bind=AnswerSchema.show_list).bind()
+
+
+    headers = [] 
+    children = AnswersSeq.answer.children
+    for child in children:
+        headers.append(child.title)
+
+    class Headers(SequenceSchema):
+        header = colander.SchemaNode(
+                colander.String())
+
+    appstruct={'headers': headers, 'answers':lst}
+
+
+    class Composed(Schema):
+        headers = Headers(widget=thWidget())
+        answers = AnswersSeq()
+
+    schema = Composed()
+
+    form = Form(schema, renderer=renderer, formid="list" )
+    readonly = form.render(appstruct, readonly=True)
+    dct = {'form': readonly, 
+           'heading': 'Recent items that need pricing'}
+    return dct
+
+
+@view_config(name="create", context=Conclusions, renderer='form.mako')
+def create_conclusion(conclusion, request):
+    heading = 'Closing Remarks/Conclusion'
+    schema = ConclusionSchema(after_bind=ConclusionSchema.on_creation).bind()
+    form = Form(schema, 
+        buttons=(Button(title='Submit Conclusion', css_class='button blue'),), 
+        formid='create_form')
+    if request.method == "GET": 
+        return {'form': form.render(),
+                'heading': heading,
+                'page': 'conclusion'}
+    controls = request.POST.items()
+    try:
+        appstruct = form.validate(controls)
+        appstruct['parent'] = conclusion.__parent__.__name__
+
+        Conclusion.insert(appstruct)
+        request.session.flash('Thank you!')
+        return HTTPFound(location = request.path_url)             
+
+    except ValidationFailure, e:
+        return {'form': e.render(),
+                'heading':heading,
+                'page': 'conclusion'}
+
+
+@view_config( context=Conclusion, renderer='form.mako')
+def update_conclusion(context, request):
+    schema = ConclusionSchema(after_bind=del_autos).bind()
+    form = Form(schema, buttons=(Button(title='Update'),),just_get_form=True )
+    html =  render_form(form, request, appstruct=context.__dict__, rest='PUT')
+    return {'page': 'conclusion',
+            'form': html['form']}
+
+from rubyrate.resources import Summary
+
+@view_config(context=Summary, renderer='summary.mako')
+def summary(context, request):
+    settings = request.registry.settings
+    orig = settings['deform.searchpath'] 
+    specific = settings['deform.searchpath'] + '/list'
+    renderer = ZPTRendererFactory((specific ))
+
+    conclusion = context.conclusion['message']
+    conclusion = markdown(conclusion)
+
+
+    cursor = context.answrs
+
+    lst = []
+    for doc in cursor:
+        lst.append(doc)
+
+
+    class AnswersSeq(SequenceSchema):
+        answer = AnswerSchema(after_bind=AnswerSchema.show_list).bind()
+
+    appstruct={'answers':lst}
+
+    class Composed(Schema):
+        answers = AnswersSeq()
+
+    schema = Composed()
+
+    form = Form(schema, renderer=renderer, formid="list" )
+    readonly = form.render(appstruct, readonly=True)
+    return {'heading': context.__parent__.product,
+            'answers':readonly,
+            'conclusion':conclusion }
+
 
 class ContactSchema(MappingSchema):
     name = SchemaNode(String(),
@@ -202,7 +421,7 @@ def contact(context, request):
         settings = request.registry.settings
         email = Message(subject='Contact page',
                         sender=settings['from'],
-                        recipients=[settings['to']],
+                        recipients=['bobby.chambers33@gmail.com'], #settings['to']
                         html=readonly_form)
         mailer = get_mailer(request)
         mailer.send(email)
@@ -253,5 +472,6 @@ def supplier(context, request):
     permission='view')
 def item_admin(admin, request):
     items = admin.get_items()
-    return {'items': items}
+    return {'items': items,
+            'give_pricing': '/prices/create'}
 

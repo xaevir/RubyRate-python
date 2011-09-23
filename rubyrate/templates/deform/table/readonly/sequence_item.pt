@@ -1,0 +1,9 @@
+<sequence_item tal:omit-tag="">
+
+
+
+
+  <span tal:replace="structure
+        field.serialize(cstruct, readonly=True)" />
+
+</sequence_item>
