@@ -95,9 +95,15 @@ class PrettyDate(Widget):
 
 class LinkFromId(Widget):
     def serialize(self, field, cstruct, readonly=False):
+        if cstruct is null:
+            cstruct = ''
         request = get_current_request()
         url = resource_path(request.context, cstruct[0])
         return '<td><a href="%s">%s</a></td>' % (url, cstruct[1])
+
+    def deserialize(self, field, cstruct, readonly=False):
+        # TODO should I implement this?
+        return cstruct
 
 
 
@@ -187,7 +193,7 @@ class OneChild(object):
 class Root(Container):
     __name__ = None
     __parent__ = None
-    children = ['wishes', 'users', 'admin', 'answers']
+    children = ['wishes', 'users', 'admin']
 
     def __init__(self, request):
         self.request = request
@@ -385,7 +391,20 @@ class AnswerSchema(MappingSchema):
     @staticmethod
     def show_list(node, kw):
         del node['created']
+        del node['message']
+        _id = node['_id']
         del node['_id']
+        company = node['company']
+        del node['company']
+        companylink = SchemaNode(PassThru(), name='companylink', 
+            title = 'Company', widget=LinkFromId())
+        node.children.insert(0,companylink)
+
+    @staticmethod
+    def show_for_summary(node, kw):
+        del node['created']
+        del node['_id']
+
 
 
 

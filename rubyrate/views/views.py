@@ -289,8 +289,8 @@ def list_answers(answers, request):
 
     lst = []
     for doc in cursor:
+        doc['companylink'] = (doc['_id'], doc['company'])   
         lst.append(doc)
-
 
     class thWidget(Widget):
         def serialize(self, field, cstruct, readonly=True):
@@ -382,6 +382,21 @@ def summary(context, request):
     for doc in cursor:
         lst.append(doc)
   
+    appstruct={'answers':lst}
+
+    class A(SequenceSchema):
+        x = AnswerSchema(after_bind=AnswerSchema.show_for_summary).bind()
+
+    class Composed(MappingSchema):
+        answers = A()
+
+    schema = Composed()
+    form = Form(schema, renderer=renderer, formid="list" )
+    readonly = form.render(appstruct, readonly=True)
+    return {'heading': context.__parent__.product,
+            'answers':readonly,
+            'conclusion':conclusion }
+
     """
     index = 0
     total = cursor.count()
@@ -401,23 +416,6 @@ def summary(context, request):
         lst.append(second)
         index += 2
     """
-
-    appstruct={'answers':lst}
-
-    class A(SequenceSchema):
-        x = AnswerSchema(after_bind=AnswerSchema.show_list).bind()
-
-
-    class Composed(MappingSchema):
-        answers = A()
-
-    schema = Composed()
-
-    form = Form(schema, renderer=renderer, formid="list" )
-    readonly = form.render(appstruct, readonly=True)
-    return {'heading': context.__parent__.product,
-            'answers':readonly,
-            'conclusion':conclusion }
 
 
 class ContactSchema(MappingSchema):
