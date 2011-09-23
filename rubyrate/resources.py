@@ -69,10 +69,14 @@ class Markdown(TextAreaWidget):
         return super(Markdown, self).serialize(field, cstruct, readonly=False)
 
 
-class Link(String):
-    def serialize(self, node, appstruct):   
-        cstruct = super(Link, self).serialize(node, appstruct)
-        return '<a href="http://%s">%s</a>' % (cstruct, cstruct)
+class Link(TextInputWidget):
+    def serialize(self, field, cstruct, readonly=False):
+        if cstruct is null:
+            cstruct = ''
+        if readonly is True:
+            cstruct = '<a href="http://%s">%s</a>' % (cstruct, cstruct)
+            return super(Link, self).serialize(field, cstruct, readonly=True)
+        return super(Link, self).serialize(field, cstruct, readonly=False)
 
 
 class PrettyDate(Widget):
@@ -127,71 +131,88 @@ def mongosave(collection, dct = None):
     if removed:
         db.collection.update({'_id': self._id}, {'$unset': removed})
 
+class Init(object):
+    def __init__(self, name, parent, request):
+            self.__name__   = name
+            self.__parent__ = parent 
+            self.request    = request
 
 
-class Root(object):
+class Container(object):
+    def __init__(self, name, parent, request):
+        self.__name__   = name
+        self.__parent__ = parent 
+        self.request    = request
+
+    def __getitem__(self, key):
+        if key in self.children:
+            Cls = key.capitalize()
+            return globals()[Cls](key, self, self.request)
+        raise KeyError
+
+
+class OneChild(object):
+    def __init__(self, name, parent, request):
+        self.__name__   = name
+        self.__parent__ = parent 
+        self.request    = request
+        self.get_by     = None
+
+    def __getitem__(self, key):
+        check_id(key)
+        child = self.by_id(key)
+        if not child:
+            raise KeyError
+        child.__name__   = key
+        child.__parent__ = self
+        child.request    = self.request
+        child.__acl__ = [ (Allow, Everyone, 'view'),
+                         (Allow, 'group:admin', 'edit') ]
+        return child
+
+    def insert(self, dct):
+        db = self.request.db
+        clean = remove_empty(dct)
+        db[self.collection].insert(clean)
+
+    def by_id(self, _id):
+        """Restore the user from DB or return None"""
+        db = self.request.db
+        doc = db[self.collection].find_one({'_id': ObjectId(_id)})
+        if doc is None:
+            return 
+        return restore(Wish, doc)
+
+
+class Root(Container):
     __name__ = None
     __parent__ = None
+    children = ['wishes', 'users', 'admin', 'answers']
+
     def __init__(self, request):
         self.request = request
         self.request.loggedin = authenticated_userid(request)
 
-    def __getitem__(self, key):
-        if key == 'wishes':
-            return Wishes(key, self)
-        elif key == 'users':
-            return Users(key, self)
-        elif key == 'admin':
-            return Admin(key, self)
-        elif key == 'answers':
-            return Answers(key, self)
-        else:
-            raise KeyError
 
-
-class Admin(object):
+class Admin(Init):
     __acl__ = [ (Allow, 'group:admin', 'view')]
 
-    def __init__(self, name, parent):
-        self.__name__   = name
-        self.__parent__ = parent 
-
     def get_items(self):
-        db = get_current_request().db
+        db = self.request.db
         return db.wishes.find()
 
 
-class Wishes(object):
-    def __init__(self, name, parent):
-        self.__name__   = name
-        self.__parent__ = parent 
-
-    def get_without_email(self):
-        db = get_current_request().db
-        return db.wishes.find( {}, { 'email' : 0 } )
-
-    def __getitem__(self, key):
-        check_id(key)
-        wish = Wish.by_id(key)
-        if not wish:
-            raise KeyError
-        wish.__name__   = key
-        wish.__parent__ = self
-        wish.__acl__ = [ (Allow, Everyone, 'view'),
-                         (Allow, 'group:admin', 'edit') ]
-        return wish
-
-
-
-class Wish(object):
+class Wishes(OneChild):
     collection = 'wishes'
 
-    @staticmethod
-    def insert(dct):
-        db = get_current_request().db
-        clean = remove_empty(dct)
-        db[self.collection].insert(clean)
+    def get_without_email(self):
+        db = self.request.db
+        return db.wishes.find( {}, { 'email' : 0 } )
 
+
+class Wish(Container):
+    collection = 'wishes'
+    children = ['answers', 'conclusions', 'summary']
 
     def update(self, dct):
         from rubyrate.mongobase import get_altered
@@ -204,35 +225,76 @@ class Wish(object):
         #    db[collection].update({'_id': self._id}, {'$unset': removed})
 
 
-    @staticmethod
-    def by_id(_id):
-        """Restore the user from DB or return None"""
+class Answers(OneChild):
+    collection = 'answers'
+    def get_answers_of_parent(self, id = None):
+        _id = self.__parent__.__name__
         db = get_current_request().db
-        doc = db.wishes.find_one({'_id': ObjectId(_id)})
-        if doc is None:
-            return 
-        return restore(Wish, doc)
+        return db.answers.find({'parent': _id})
 
-    def __getitem__(self, key):
-        if key == 'answers':
-            return Answers(key, self)
-        if key == 'conclusions':
-            return Conclusions(key, self)
-        if key == 'summary':
-            return Summary(key, self)
+
+class Answer(object):
+    collection = 'answers'
+    pass
+    
+class Conclusions(OneChild):
+    collection = 'conclusions'
+
+    def __getitem__(self, key, by=None):
+        if key == 'update':
+            key = self.__parent__.__name__
+            check_id(key)
+            conclusion = Conclusion.by_parent(key)
+            if not conclusion:
+                raise KeyError
+            conclusion.__name__   = key
+            conclusion.__parent__ = self
+            conclusion.__acl__ = [ (Allow, Everyone, 'view'),
+                             (Allow, 'group:admin', 'edit') ]
+            return conclusion
         else:
             raise KeyError
 
+
+
+class Conclusion(object):
+    collection = 'conclusions'
+
+    @staticmethod
+    def by_parent(_id):
+        db = get_current_request().db
+        doc = db.conclusion.find_one({'parent': _id})
+        if doc is None:
+            return 
+        return restore(Conclusion, doc)
+
+    @staticmethod
+    def insert(dct):
+        db = get_current_request().db
+        clean = remove_empty(dct)
+        db.conclusion.insert(clean)
+
+    def update(self, dct):
+        db = get_current_request().db
+        clean = remove_empty(dct)
+        changed, removed = get_altered(clean, self.__origdict__) 
+        if changed: #cld be calling save on obj not changed so not need for db   
+            db.conclusion.update({'_id': self._id}, {'$set': changed}, safe = True)  # safe = True
+
+
+
+
 class Summary(object):
-    def __init__(self, name, parent):
+    def __init__(self, name, parent, request):
         self.__name__    = name
         self.__parent__  = parent 
+        self.request     = request
         self._id         = parent.__name__
-        self.answers     = Answers(self._id, parent)
-        self.conclusions = Conclusions(self._id, parent)
+        self.answers     = Answers(self._id, parent, request)
+        self.conclusions = Conclusions(self._id, parent, request)
         self.answrs      = self.answers.get_answers_of_parent()
-        self.db          = get_current_request().db
-        self.conclusion  = self.db.conclusion.find_one({'parent': self._id})
+        db = request.db
+        self.conclusion  = db.conclusion.find_one({'parent': self._id})
 
 
 def del_autos(node, kw):
@@ -299,52 +361,12 @@ class WishSchema(MappingSchema):
         del node['product']
         
 
-class Answers(object):
-    def __init__(self, name, parent):
-        self.__name__   = name
-        self.__parent__ = parent 
-
-    def __getitem__(self, key):
-        check_id(key)
-        answer = Answer.by_id(key)
-        if not answer:
-            raise KeyError
-        answer.__name__   = key
-        answer.__parent__ = self
-        answer.__acl__ = [ (Allow, Everyone, 'view'),
-                         (Allow, 'group:admin', 'edit') ]
-        return answer
-
-    def get_answers_of_parent(self, id = None):
-        _id = self.__parent__.__name__
-        db = get_current_request().db
-        return db.answers.find({'parent': _id})
-
-class Answer(object):
-    @staticmethod
-    def insert(dct):
-        db = get_current_request().db
-        clean = remove_empty(dct)
-        db.answers.insert(clean)
-
-    def save(self, dct):
-        mongosave(self, dct)
-
-    @staticmethod
-    def by_id(_id):
-        """Restore the user from DB or return None"""
-        db = get_current_request().db
-        doc = db.answers.find_one({'_id': ObjectId(_id)})
-        if doc is None:
-            return 
-        return restore(Answer, doc)
-
 
 class AnswerSchema(MappingSchema):
     _id = SchemaNode(String()) 
     company = SchemaNode(String(),  
                 widget = TextInputWidget(css_class='name'))
-    website = SchemaNode(Link())
+    website = SchemaNode(String(), widget = Link())
     email = SchemaNode(
         String(),
         validator = Email())
@@ -366,52 +388,6 @@ class AnswerSchema(MappingSchema):
         del node['_id']
 
 
-
-class Conclusions(object):
-
-    def __init__(self, name, parent):
-        self.__name__   = name
-        self.__parent__ = parent 
-
-    def __getitem__(self, key):
-        if key == 'update':
-            key = self.__parent__.__name__
-            check_id(key)
-            conclusion = Conclusion.by_parent(key)
-            if not conclusion:
-                raise KeyError
-            conclusion.__name__   = key
-            conclusion.__parent__ = self
-            conclusion.__acl__ = [ (Allow, Everyone, 'view'),
-                             (Allow, 'group:admin', 'edit') ]
-            return conclusion
-        else:
-            raise KeyError
-
-
-
-class Conclusion(object):
-
-    @staticmethod
-    def by_parent(_id):
-        db = get_current_request().db
-        doc = db.conclusion.find_one({'parent': _id})
-        if doc is None:
-            return 
-        return restore(Conclusion, doc)
-
-    @staticmethod
-    def insert(dct):
-        db = get_current_request().db
-        clean = remove_empty(dct)
-        db.conclusion.insert(clean)
-
-    def update(self, dct):
-        db = get_current_request().db
-        clean = remove_empty(dct)
-        changed, removed = get_altered(clean, self.__origdict__) 
-        if changed: #cld be calling save on obj not changed so not need for db   
-            db.conclusion.update({'_id': self._id}, {'$set': changed}, safe = True)  # safe = True
 
 def just_key(node, kw):
     message = kw.get('message')
