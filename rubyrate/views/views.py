@@ -335,7 +335,7 @@ def create_conclusion(conclusion, request):
     form = Form(schema, 
         buttons=(Button(title='Submit Conclusion', css_class='button blue'),), 
         formid='create_form')
-    if request.method == "GET": 
+    if 'submit' not in request.POST:
         return {'form': form.render(),
                 'heading': heading,
                 'page': 'conclusion'}
@@ -346,7 +346,9 @@ def create_conclusion(conclusion, request):
 
         Conclusion.insert(appstruct)
         request.session.flash('Thank you!')
-        return HTTPFound(location = request.path_url)             
+
+        url = request.resource_url(request.context.__parent__)
+        return HTTPFound(location = url)             
 
     except ValidationFailure, e:
         return {'form': e.render(),

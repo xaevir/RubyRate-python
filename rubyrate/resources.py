@@ -405,9 +405,11 @@ class ConclusionSchema(MappingSchema):
 
     @staticmethod
     def on_creation(node, kw):
+        parent_id = kw.get('parent_id')
         del node['_id']
         node['created'].widget=NoShowWidget()
         node['created'].missing = datetime.datetime.utcnow()
+        node['parent'].missing = parent_id
 
 
 
