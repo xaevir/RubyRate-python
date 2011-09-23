@@ -68,10 +68,9 @@ def create_user(context, request):
     if request.method == "POST": 
         try:
             user_details = myform.validate(request.POST.items())
-            user = User(user_details)
-            user.save()
+            User.insert(user_details)
             request.session.flash('Thank you for signing up')
-            headers = remember(request, user.username)
+            headers = remember(request, user_details['username'])
             return HTTPFound(location = request.path_url, headers = headers)
 
         except ValidationFailure, e:

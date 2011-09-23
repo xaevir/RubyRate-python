@@ -61,7 +61,7 @@ def restore(cls, attrs):
     obj.__dict__ = attrs
     return obj
 
-def mongosave(collection, dct = None):
+def mongosave(self, dct = None):
     attrs = dct or self.__dict__
     collection = self.__collection__
     db = get_current_request().db

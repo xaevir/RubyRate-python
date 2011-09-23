@@ -1,0 +1,3 @@
+
+<td tal:define="happy 'n/a' if not cstruct else cstruct"
+id="${field.oid}">${happy}</td>

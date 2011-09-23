@@ -1,0 +1,18 @@
+<mapping tal:omit-tag="">
+
+
+  <tr>
+    <div class="mapping_inner" tal:define="rndr field.renderer;
+                     tmpl field.widget.readonly_item_template"
+         tal:repeat="f field.children" tal:omit-tag="">
+         
+    
+         
+         <p tal:replace="structure rndr(tmpl,field=f,cstruct=cstruct.get(f.name, null))"/>
+             
+                        
+      </div>                  
+                        
+  </tr>
+
+</mapping>

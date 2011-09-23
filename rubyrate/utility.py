@@ -1,3 +1,17 @@
+import re
+
+def slugify(name):
+    filter = { 
+        '&+' : 'and', # replace & with 'and'              
+        '[^a-zA-Z0-9]+' : '_', # non-alphanumeric characters with a hyphen
+        '-+' : '_' # replace multiple hyphens with a single hyphen
+    }
+    for k, v in filter.items():
+        name = re.sub(k, v, name)
+    name = name.strip('_') 
+    return name	
+
+
 class DictDiffer(object):
     """
     Calculate the difference between two dictionaries as:
@@ -27,7 +41,10 @@ def pretty_date(time=False):
     'just now', etc
     """
     from datetime import datetime
-    now = datetime.now()
+    from pytz import timezone
+    import pytz
+    now = datetime.utcnow()
+    #now = datetime.now()
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
     elif isinstance(time,datetime):

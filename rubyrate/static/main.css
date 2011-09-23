@@ -202,7 +202,7 @@ tr {
  * 2. Allow only vertical resizing
  */
 textarea{
-   height: 5em;
+   height: 400px;
    overflow: auto; 
    vertical-align: top; 
    /*resize: vertical;*/
@@ -329,6 +329,10 @@ div.deformReplaces {
 .red {
 	color: #cd0000;
 }
+
+.bold {
+    font-weight: bold;
+}   
 #flash {
     background-color: #FFFFCC;
     border: 2px solid #FFFF00;
@@ -372,7 +376,8 @@ div.deformReplaces {
     text-align: center;
 }
 
-.buttons button {
+.buttons button,
+a.button{
     color: #6e6e6e;
     font: bold 12px Helvetica, Arial, sans-serif;
     text-decoration: none;
@@ -394,7 +399,8 @@ div.deformReplaces {
     behavior: url(/static/PIE.htc);
     margin-right: 10px;
 }
-.buttons button:hover {
+.buttons button:hover,
+a.button:hover{
     color: #333;
     border-color: #999;
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) 
@@ -402,12 +408,14 @@ div.deformReplaces {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     behavior: url(/static/PIE.htc);
 }
-.buttons button:active {
+.buttons button:active,
+a.button:active {
     color: #000;
     border-color: #444;
 }
 
-.buttons button.blue{
+.buttons button.blue,
+.blue a.button{
     color: #fff;
     font-size: 12px;
     background: #4D90FE; /*fallback for non-CSS3 browsers*/
@@ -421,7 +429,8 @@ div.deformReplaces {
     /*text-transform: uppercase;*/
 }
 
-.buttons button.blue:hover {
+.buttons button.blue:hover,
+.blue a.button:hover {
     border-color: #2f5bb7;
     background: #357ae8;
     background: -moz-linear-gradient(center top , #4D90FE, #357ae8);
@@ -547,6 +556,9 @@ a.down-big {
 
 
 /*___________________________________________________________Main Div Setup_*/
+
+
+
 
 #doc2 {
     width: 750px;
@@ -793,16 +805,86 @@ a.down-big {
 }
 
 
+/*_________________________________________________________________Answers*/
+#answer .button-wrap {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+/*_________________________________________________________________Conclusion*/
+#conclusion textarea {
+    width: 600px;
+    height: 300px;
+}
 
 /*_________________________________________________________________Item List*/
-#items th{
+#list th{
     font-weight: bold;
     text-align: left;
 }
 
-#items table{
+table#list {
     width: 100%;
 }
 
-/*__________________________________________________________________Contact*/
+/*_________________________________________________________________Summary*/
+
+#summary #list {
+    
+}
+
+
+#summary div#list .odd{
+    float: right; 
+}
+#summary #list ul {
+    width: 300px;
+    float: left;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 25px;
+}
+
+
+/*__________________________________________________________________Letter*/
+#letter {
+    font-size: 16px;
+    border: 5px solid skyblue;
+    padding: 20px;
+    margin-bottom: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    behavior: url(/static/PIE.htc);
+}
+
+#letter p{
+    text-indent: 20px;
+}
+
+#salutation {
+    margin-bottom: .5em;
+    font-weight: bold;
+}
+#closing {
+    float: right;
+    margin-right: 50px;
+    margin-top: 1em;
+}   
+
+/*__________________________________________________________________Bizcard*/
+#bizcard li{
+    margin-bottom: 5px; 
+    text-align: center;
+}
+
+#bizcard .company{
+    font-weight: bold;
+    text-align: center;
+}
+#bizcard .message{
+    text-align: left;
+}
+
 

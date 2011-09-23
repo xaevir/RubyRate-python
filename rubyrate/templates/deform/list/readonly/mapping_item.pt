@@ -1,0 +1,8 @@
+<mapping_item
+    tal:omit-tag="">
+     
+
+  <span tal:replace="structure
+            field.serialize(cstruct, readonly=True)"/>
+
+</mapping_item>

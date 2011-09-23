@@ -1,0 +1,13 @@
+<table class="deform"
+     tal:attributes="id field.formid or None">
+
+      
+  <form_inner 
+      tal:define="rndr field.renderer;
+                  tmpl field.widget.readonly_item_template"
+      tal:repeat="f field.children"
+      tal:replace="structure 
+                  rndr(tmpl,field=f,cstruct=cstruct.get(f.name, null))"/>
+
+  
+</table>

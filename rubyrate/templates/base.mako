@@ -31,7 +31,7 @@
         </ul>
         <div class="clear"></div>
         <ul id="nav" class="clearfix">
-            <li><a href="/items">Items Needing Pricing</a></li>
+            <li><a href="/wishes">Items Needing Pricing</a></li>
             <li>|</li>
             <li><a href="/supplier">Suppliers</a></li>
             <li>|</li>

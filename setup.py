@@ -13,6 +13,8 @@ requires = ['pyramid',
             'pyramid_mailer', 
             'pyramid_beaker',
             'cryptacular',
+            'Markdown',
+            'pytz',
             'deform']
 
 setup(name='rubyrate',
