@@ -1,5 +1,6 @@
 <sequence_item tal:omit-tag="">
-    <ul tal:attributes="class repeat.odd or None">
+    <ul tal:attributes="class repeat.odd or None" 
+        tal:attributes="id repeat.index">
 
         <li tal:replace="structure field.serialize(cstruct, readonly=True)" />
 
