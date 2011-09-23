@@ -144,6 +144,19 @@ def show_wish(wish, request):
             }
 
 
+@view_config(name='update', context=Answer, renderer='form.mako')
+def update_answer(context, request):
+    schema = AnswerSchema(after_bind=del_autos).bind()
+    form = Form(schema, buttons=(Button(title='Update'),))
+    return render_form(form, request, appstruct=context.__dict__, rest='PUT')
+
+@view_config(context=Answer, renderer='form.mako')
+def show_answer(context, request):
+    schema = AnswerSchema(after_bind=del_autos).bind()
+    form = Form(schema, buttons=(Button(title='Update'),))
+    return render_form(form, request, appstruct=context.__dict__, readonly=True)
+
+
 
 
 @view_config(name='update', context=Wish, renderer='form.mako')
@@ -151,7 +164,9 @@ def update_wish(context, request):
     schema = WishSchema(after_bind=del_autos).bind()
     form = Form(schema, buttons=(Button(title='Update'),))
     return render_form(form, request, appstruct=context.__dict__, rest='PUT')
-   
+
+
+
 @view_config(name="", context=Root, renderer='home_page.mako')
 def homepage(root, request):
     actual_context = root['wishes'] 

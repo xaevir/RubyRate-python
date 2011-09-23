@@ -181,13 +181,6 @@ class OneChild(object):
         clean = remove_empty(dct)
         db[self.collection].insert(clean)
 
-    def by_id(self, _id):
-        """Restore the user from DB or return None"""
-        db = self.request.db
-        doc = db[self.collection].find_one({'_id': ObjectId(_id)})
-        if doc is None:
-            return 
-        return restore(Wish, doc)
 
 
 class Root(Container):
@@ -215,6 +208,14 @@ class Wishes(OneChild):
         db = self.request.db
         return db.wishes.find( {}, { 'email' : 0 } )
 
+    def by_id(self, _id):
+        """Restore the user from DB or return None"""
+        db = self.request.db
+        doc = db[self.collection].find_one({'_id': ObjectId(_id)})
+        if doc is None:
+            return 
+        return restore(Wish, doc)
+
 
 class Wish(Container):
     collection = 'wishes'
@@ -238,6 +239,27 @@ class Answers(OneChild):
         db = get_current_request().db
         return db.answers.find({'parent': _id})
 
+    def __getitem__(self, key):
+        check_id(key)
+        child = self.by_id(key)
+        if not child:
+            raise KeyError
+        child.__name__   = key
+        child.__parent__ = self
+        child.request    = self.request
+        child.__acl__ = [ (Allow, Everyone, 'view'),
+                         (Allow, 'group:admin', 'edit') ]
+        return child
+
+    def by_id(self, _id):
+        """Restore the user from DB or return None"""
+        db = self.request.db
+        doc = db[self.collection].find_one({'_id': ObjectId(_id)})
+        if doc is None:
+            return 
+        return restore(Answer, doc)
+
+
 
 class Answer(object):
     collection = 'answers'
@@ -260,7 +282,6 @@ class Conclusions(OneChild):
             return conclusion
         else:
             raise KeyError
-
 
 
 class Conclusion(object):
