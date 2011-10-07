@@ -174,7 +174,7 @@ def update_context(context, request):
     form = Form(schema, 
                 _method='PUT', 
                 buttons=(Button(title='Update', css_class='button'),))
-    return render_form(form, request, appstruct=context.__dict__)
+    return render_form(form, request, appstruct=context.model.__dict__)
 
 @view_config(context=Wishes, renderer='/wish/list.mako')
 def list_wishes(context, request):
