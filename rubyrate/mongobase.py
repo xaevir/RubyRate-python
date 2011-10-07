@@ -1,13 +1,5 @@
-from copy import deepcopy
-from rubyrate.utility import DictDiffer
-from pyramid.threadlocal import get_current_request 
-from pprint import pprint
 #write later as list comprehension
 
-def remove_empty(dct):
-    non_empty = dict((key, dct[key]) for key,value in dct.iteritems() 
-        if value != '')
-    return non_empty
 
 def remove_traversal(dct):
     cleaned = dict((key, dct[key]) for key,value in dct.iteritems() 
@@ -32,34 +24,6 @@ def mangle_keys(intersect, dct, classname):
         dct.pop(key)
     return dct
 
-def get_altered(dct, origdict):
-    differ  = DictDiffer(dct, origdict)
-    changed = differ.changed()
-    added   = differ.added()
-    removed = differ.removed()
-    # combine changed and added
-    changed.update(added) 
-    changed = dict((key, dct[key]) for key in changed)
-    removed = dict((key, 1) for key in removed)
-    return changed, removed 
-
-def restore(cls, attrs):
-    cls.__origdict__ = deepcopy(attrs) #otherwise its getting updated by shallow copy     
-    obj = cls.__new__(cls)
-    try:
-        obj.__uses_descriptor__
-        # check for intersection of class properties and database keys 
-        # Using a property decorator, the function name would be the same as 
-        # the database key
-        a = set(dir(obj))
-        b = set(attrs.keys())
-        intersect = a.intersection(b)
-        if intersect:
-            attrs = mangle_keys(intersect, attrs, obj.__class__.__name__) 
-    except AttributeError: 
-        pass
-    obj.__dict__ = attrs
-    return obj
 
 def mongosave(self, dct = None):
     attrs = dct or self.__dict__

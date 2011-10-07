@@ -1,7 +1,7 @@
 import re
 
 from deform import widget
-from deform import field
+from rubyrate.my_deform import field
 
 class Form(field.Field):
     """
@@ -88,8 +88,9 @@ class Form(field.Field):
     in the context of a Field (a Form is just another kind of Field).
     """
     css_class = 'deform'
-    def __init__(self, schema, action='', method='POST', buttons=(),
-                 formid='deform', use_ajax=False, ajax_options='{}', **kw):
+    def __init__(self, schema, action='', method='POST', _method=None, 
+                 buttons=(), formid='deform', use_ajax=False, 
+                 ajax_options='{}', **kw):
         field.Field.__init__(self, schema, **kw)
         _buttons = []
         for button in buttons:
@@ -98,6 +99,7 @@ class Form(field.Field):
             _buttons.append(button)
         self.action = action
         self.method = method
+        self._method = _method
         self.buttons = _buttons
         self.formid = formid
         self.use_ajax = use_ajax

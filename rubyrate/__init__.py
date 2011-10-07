@@ -3,6 +3,9 @@ from pyramid_beaker import session_factory_from_settings
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 
+from pyramid.security import authenticated_userid
+
+from pyramid.httpexceptions import HTTPUnauthorized
 
 from rubyrate.resources import groupfinder
 from rubyrate.resources import Root
@@ -76,6 +79,7 @@ def main(global_config, **settings):
 
     config.add_static_view('static', 'rubyrate:static')
     config.scan('rubyrate')
+
     return config.make_wsgi_app()
 
 
@@ -86,8 +90,13 @@ def add_mongo_db(event):
     event.request.db = db
     event.request.fs = GridFS(db)  
 
-#@subscriber(BeforeRender)
-#def add_global(event):
-    #event['h'] = static_url
-#    eventt['literal'] = 
 
+@subscriber(NewRequest)
+def csrf_validation_event(event):
+    request = event.request
+    user = authenticated_userid(request)
+    csrf = request.params.get('csrf_token')
+    if (request.method == 'POST' or request.is_xhr) and \
+       (user) and \
+       (csrf != unicode(request.session.get_csrf_token())):
+        raise HTTPUnauthorized

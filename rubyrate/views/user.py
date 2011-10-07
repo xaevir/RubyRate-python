@@ -41,21 +41,6 @@ import logging
 from pprint import pprint
 log = logging.getLogger(__name__)
 
-class CreateUser(MappingSchema):
-    def unique_username(node, value):
-        user = User.exists(value)
-        if user:
-            raise Invalid(node, 'That username already exists')
-    username = SchemaNode(
-        String(),
-        validator = All( Length(min=3, max=50), unique_username ) )
-    email = SchemaNode(
-        String(),
-        validator = Email())
-    password = SchemaNode(
-        String(), 
-        validator = Length(min=5, max=100),
-        widget = widget.PasswordWidget())
 
 @view_config(name='create', context=Users, renderer='/user/create.mako')
 def create_user(context, request):
@@ -105,8 +90,9 @@ class LoginSchema(MappingSchema):
         default = deferred_came_from_default)
 
 def matching_username_password(node, value):
-    user = User.by_username(value['username'])
-    if user and user.check_password(value['password']):
+    from rubyrate import models
+    doc = models.User.by_username(value['username'])
+    if doc and models.User.check_password(value['password'], doc['password']):
         return True
     raise Invalid(node, 'Please check your username or password')
 

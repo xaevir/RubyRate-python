@@ -55,10 +55,11 @@ html {
 }
 
 body {
+    height: 100%;
     color: #272727;
     font-size: 13px; /*/1.231 arial,helvetica,clean,sans-serif;*/
     line-height: 1.231;
-    font-family: Arial,sans-serif;
+    font-family: verdana, Arial,sans-serif;
     /*background: #f2f2f2 url('/static/header-gradient.png') repeat-x top left;*/
 }
 h1,h2,h3,h4,h5,h6,strong {
@@ -138,10 +139,18 @@ input[type=submit], button {
     padding: 3px;
 }
 input[type=text], input[type=password], textarea{
-  /*width:12.25em;
-  *width:11.9em;*/
-    border: 1px solid #ccc;
+    border-color:#C0C0C0 #D9D9D9 #D9D9D9;
+    border-width: 1px;
+    border-style: solid;
 }
+
+input[type=text]:hover, input[type=password]:hover, textarea:hover {
+    border-color: #a0a0a0 #b9b9b9 #b9b9b9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+}
+
+
+
 input, select {
    padding: 2px;
 }
@@ -201,15 +210,28 @@ tr {
  * 1. Remove default vertical scrollbar in IE6/7/8/9
  * 2. Allow only vertical resizing
  */
+
+form {
+    width: 400px;
+    margin: 0 auto;
+}
 textarea{
-   height: 400px;
+   height: 100px;
    overflow: auto; 
    vertical-align: top; 
    /*resize: vertical;*/
 }
+
+textarea, input {
+     width:100%;
+     -moz-box-sizing: border-box;
+     -ms-box-sizing: border-box;
+     -webkit-box-sizing: border-box;
+     box-sizing: border-box;
+}
+
 input[type=text], input[type=password], textarea{
     padding: .5em;
-    width: 400px; 
 }
 label{
     /*font-size: 18px;*/
@@ -285,6 +307,66 @@ div.deformReplaces {
 }
 
 /*__________________________________________________________________Classes_*/
+
+@font-face {
+    font-family: 'LinuxLibertineORegular';
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.eot');
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.eot?iefix') format('eot'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.woff') format('woff'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.ttf') format('truetype'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.svg#webfontIgdJI780') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'LinuxLibertineOItalic';
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.eot');
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.eot?iefix') format('eot'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.woff') format('woff'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.ttf') format('truetype'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.svg#webfontk0WmrDaO') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'LinuxLibertineOBold';
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.eot');
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.eot?iefix') format('eot'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.woff') format('woff'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.ttf') format('truetype'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.svg#webfontvwcjcclS') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'LinuxLibertineOBoldItalic';
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.eot');
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.eot?iefix') format('eot'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.woff') format('woff'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.ttf') format('truetype'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.svg#webfontmbtC8Tcg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'LinuxLibertineOCRegular';
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.eot');
+    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.eot?iefix') format('eot'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.woff') format('woff'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.ttf') format('truetype'),
+         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.svg#webfont07SwYHhC') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 
 .clear {
     clear: both;
@@ -362,7 +444,7 @@ div.deformReplaces {
 /* For image replacement */
 .ir { display: block; 
     border: 0; text-indent: -999em; 
-    overflow: hidden; 
+    overflow: hidden; #85BF00
     background-color: transparent; 
     background-repeat: no-repeat; text-align: left; direction: ltr; 
 }
@@ -370,195 +452,69 @@ div.deformReplaces {
 
 /*___________________________________________________________________Buttons*/
 .buttons {
-    float: left;
     padding-bottom: 20px;
     clear: both;
     text-align: center;
 }
 
-.buttons button,
-a.button{
-    color: #6e6e6e;
+.button{
     font: bold 12px Helvetica, Arial, sans-serif;
     text-decoration: none;
     padding: 7px 12px;
     position: relative;
     display: inline-block;
+    color: #333;
+    border: 3px solid #C3D9FF;
+
     text-shadow: 0 1px 0 #fff;
     -webkit-transition: border-color .218s;
     -moz-transition: border .218s;
     -o-transition: border-color .218s;
     transition: border-color .218s;
-    background: #f3f3f3;
-    background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
-    background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
-    border: solid 1px #dcdcdc;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    behavior: url(/static/PIE.htc);
-    margin-right: 10px;
-}
-.buttons button:hover,
-a.button:hover{
-    color: #333;
-    border-color: #999;
-    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) 
-    -webkit-box-shadow:0 1px 1px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    /*gradient*/
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#F2F6FF));
+    background: -webkit-linear-gradient(#ffffff, #F2F6FF);
+    background: -moz-linear-gradient(#ffffff, #F2F6FF);
+    background: -ms-linear-gradient(#ffffff, #F2F6FF);
+    background: -o-linear-gradient(#ffffff, #F2F6FF);
+    background: linear-gradient(#ffffff, #F2F6FF);
+    -pie-background: linear-gradient(#ffffff, #F2F6FF);
+    behavior: url(/PIE.htc);
+    /*border*/
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
     behavior: url(/static/PIE.htc);
 }
-.buttons button:active,
-a.button:active {
-    color: #000;
-    border-color: #444;
-}
-
-.buttons button.blue,
-.blue a.button{
-    color: #fff;
-    font-size: 12px;
-    background: #4D90FE; /*fallback for non-CSS3 browsers*/
-    background: -moz-linear-gradient(center top , #4D90FE, #4787ED) repeat scroll 0 0 #4D90FE;
-	background: -webkit-gradient(linear, left top, left bottom, from(#4D90FE), to(#4787ED));
-    background: linear-gradient(#4D90FE, #4787ED);
-    -pie-background: linear-gradient(#4D90FE,  #4787ED);
-    behavior: url(/static/PIE.htc);
-    border: 1px solid #3079ED;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-    /*text-transform: uppercase;*/
-}
-
-.buttons button.blue:hover,
-.blue a.button:hover {
-    border-color: #2f5bb7;
-    background: #357ae8;
-    background: -moz-linear-gradient(center top , #4D90FE, #357ae8);
-	background: -webkit-gradient(linear, left top, left bottom, from(#4D90FE), to(#357ae8));
-    background: linear-gradient(#4D90FE, #357ae8);
-    -pie-background: linear-gradient(#4D90FE,  #357ae8);
+.button:hover {
+    border-color: #89B4FF;
+    -webkit-box-shadow: #ccc 0px 1px 0px;
+    -moz-box-shadow:    #ccc 0px 1px 0px;
+    box-shadow:         #ccc 0px 1px 0px;
     behavior: url(/static/PIE.htc);
 }
 
-#home .red:hover {
-    border:1px solid #b0281a;
-    border-bottom:1px solid #af301f;
-    color:#fff;background:#c53727;
-    background-image:-webkit-gradient(linear,left top,left bottom,from(#dd4b39),to(#c53727));
-    background-image:-webkit-linear-gradient(top,#dd4b39,#c53727);
-    background-image:-moz-linear-gradient(top,#dd4b39,#c53727);
-    background-image:-ms-linear-gradient(top,#dd4b39,#c53727);
-    background-image:-o-linear-gradient(top,#dd4b39,#c53727);
-    background-image:linear-gradient(top,#dd4b39,#c53727);
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#dd4b39',EndColorStr='#c53727');
-    -webkit-box-shadow:0 1px 1px rgba(0,0,0,0.2);-moz-box-shadow:0 1px 1px rgba(0,0,0,0.2);
-    box-shadow:0 1px 1px rgba(0,0,0,0.2);
-}
 
 
-
-
-a.left {
-    -webkit-border-top-right-radius: 0;
-    -moz-border-radius-topright: 0;
-    border-top-right-radius: 0;
-    -webkit-border-bottom-right-radius: 0;
-    -moz-border-radius-bottomright: 0;
-    border-bottom-right-radius: 0;
-    margin: 0;
+.green {
+    background: #CDEB8B;
+    border-color:#CDEB8B;
+    color: #666;
+    text-shadow: none;
 }
-a.middle {
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-left: solid 1px #f3f3f3;
-    margin: 0;
-    border-left: solid 1px rgba(255, 255, 255, 0);
+.green:hover {
+    border-color:#85BF00;
 }
-a.middle:hover,
-a.right:hover { border-left: solid 1px #999 }
-a.right {
-    -webkit-border-top-left-radius: 0;
-    -moz-border-radius-topleft: 0;
-    border-top-left-radius: 0;
-    -webkit-border-bottom-left-radius: 0;
-    -moz-border-radius-bottomleft: 0;
-    border-bottom-left-radius: 0;
-    border-left: solid 1px #f3f3f3;
-    border-left: solid 1px rgba(255, 255, 255, 0);
-}
-.big {
-    font-size: 16px;
-    padding: 10px 15px;
-}
-a.supersize {
-    font-size: 20px;
-    padding: 15px 20px;
-}
-a.save {
-    background: url(/static/sprite.png) 10px 7px no-repeat #f3f3f3;
-    padding-left: 30px;
-}
-a.add {
-    background: url(/static/sprite.png)  10px -27px no-repeat #f3f3f3;
-    padding-left: 30px;
-}
-a.delete {
-    background: url(/static/sprite.png)  10px -61px no-repeat #f3f3f3;
-    padding-left: 30px;
-}
-a.flag {
-    background: url(/static/sprite.png)  10px -96px no-repeat #f3f3f3;
-    padding-left: 30px;
-}
-a.up {
-    background: url(/static/sprite.png)  13px -133px no-repeat #f3f3f3;
-    width: 18px;
-}
-a.down {
-    background: url(/static/sprite.png)  13px -168px no-repeat #f3f3f3;
-    width: 18px;
-}
-a.save-big {
-    background: url(/static/sprite.png) 15px 11px no-repeat #f3f3f3;
-    font-size: 16px;
-    padding: 10px 15px 10px 35px;
-}
-a.add-big {
-    background: url(/static/sprite.png)  15px -23px no-repeat #f3f3f3;
-    font-size: 16px;
-    padding: 10px 15px 10px 35px;
-}
-a.delete-big {
-    background: url(/static/sprite.png)  15px -57px no-repeat #f3f3f3;
-    font-size: 16px;
-    padding: 10px 15px 10px 35px;
-}
-a.flag-big {
-    background: url(/static/sprite.png)  15px -92px no-repeat #f3f3f3;
-    font-size: 16px;
-    padding: 10px 15px 10px 35px;
-}
-a.up-big {
-    background: url(/static/sprite.png)  15px -128px no-repeat #f3f3f3;
-    width: 18px;
-    font-size: 16px;
-    padding: 10px 15px;
-}
-a.down-big {
-    background: url(/static/sprite.png)  15px -163px no-repeat #f3f3f3;
-    width: 18px;
-    font-size: 16px;
-    padding: 10px 15px;
-}
-
 
 
 
 /*___________________________________________________________Main Div Setup_*/
 
 
-
+body {
+    background-color:#FDFDFD;
+/*    background: url(/static/bg.gif) repeat top left;*/
+}   
 
 #doc2 {
     width: 750px;
@@ -566,29 +522,29 @@ a.down-big {
 }
 
 #hd {
-    padding-top: 15px;
     margin: 0 auto;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
+.content {
+    width: 900px;
+    margin: 0 auto;
+}
+
 #bd {
     margin: 0 auto;
 }
 
 #hd h2#logo {
     float: left;
-    width: 214px;
-    height: 49px;
+    width: 198px;
+    height: 44px;
     border: none;
     padding: 0;
     margin: 0;
-    background: url(/static/rubyrate_logo.png) no-repeat top left;
+    background: url(/static/logo.png) no-repeat top left;
     behavior: url(/static/PIE.htc);
     -pie-png-fix: true;
 }
-
-
-
-
 #ft {
     margin: 0 auto;
 	margin-top: 70px;
@@ -600,7 +556,9 @@ a.down-big {
 
 #nav {
     margin: 0;
-    /*float: left;*/
+    float: left;
+    margin-top: 9px;
+    margin-left: 60px;
 }
 
 #nav li {
@@ -608,7 +566,7 @@ a.down-big {
     float: left;
 	font-size: 14px;
     margin: 0 5px;
-    color: #ccc;
+    color: #fff;
 }
 
 #nav a{
@@ -619,12 +577,160 @@ a.down-big {
     /*border-bottom: 2px solid DeepSkyBlue;*/
 }
 
+
+#login-nav a{
+}
+
 #login-nav {
     float: right;
 }
+
+
 /*__________________________________________________________________Home*/
+
+
+
+
+.oval-speech-border:after {
+    background: none repeat scroll 0 0 transparent;
+    border-bottom-right-radius: 40px 50px;
+    border-color: #F3961C;
+    border-style: solid;
+    border-width: 0 10px 10px 0;
+    bottom: -40px;
+    content: "";
+    display: block;
+    height: 31px;
+    margin-right: 20px;
+    position: absolute;
+    right: 50%;
+    width: 20px;
+    z-index: 2;
+}
+.oval-speech-border:before {
+    background: none repeat scroll 0 0 transparent;
+    border-bottom-right-radius: 80px 50px;
+    border-color: #F3961C;
+    border-style: solid;
+    border-width: 0 10px 10px 0;
+    bottom: -40px;
+    content: "";
+    display: block;
+    height: 30px;
+    margin-right: -10px;
+    position: absolute;
+    right: 50%;
+    width: 50px;
+    z-index: 2;
+}
+.oval-speech-border {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 10px solid #F3961C;
+    border-radius: 240px 240px 240px 240px / 140px 140px 140px 140px;
+    color: #333333;
+    margin: 1em auto 60px;
+    padding: 70px 30px;
+    position: relative;
+    text-align: center;
+}
+
+.oval-speech-border > *:first-child:after {
+    background: none repeat scroll 0 0 #FFFFFF;
+    bottom: -10px;
+    content: "";
+    height: 15px;
+    position: absolute;
+    right: 50%;
+    width: 30px;
+    z-index: 1;
+}
+.oval-speech-border > *:first-child:before {
+    background: none repeat scroll 0 0 #F3961C;
+    border-radius: 10px 10px 10px 10px;
+    bottom: -40px;
+    content: "";
+    height: 10px;
+    margin-right: 45px;
+    position: absolute;
+    right: 50%;
+    width: 10px;
+    z-index: 1;
+}
+
+.sml {
+    border-width: 5px;
+}
+
+.sml:before {
+    border-width: 0 5px 5px 0;
+}
+
+.sml:after {
+    width: 12px;
+}
+
+.sml > *:first-child:before {
+    width: 5px;
+}
+
+
 #home #flash{
     display: none;
+}
+
+.triangle-border.left:after {
+    border-color: transparent #FFFFFF;
+    border-width: 9px 21px 9px 0;
+    bottom: auto;
+    left: -21px;
+    top: 16px;
+}
+.triangle-border:after {
+    border-color: #FFFFFF transparent;
+    border-style: solid;
+    border-width: 13px 13px 0;
+    bottom: -13px;
+    content: "";
+    display: block;
+    left: 47px;
+    position: absolute;
+    width: 0;
+}
+.triangle-border.left:before {
+    border-color: transparent #5A8F00;
+    border-width: 15px 30px 15px 0;
+    bottom: auto;
+    left: -30px;
+    top: 10px;
+}
+.triangle-border:before {
+    border-color: #5A8F00 transparent;
+    border-style: solid;
+    border-width: 20px 20px 0;
+    bottom: -20px;
+    content: "";
+    display: block;
+    left: 40px;
+    position: absolute;
+    width: 0;
+}
+.triangle-border.left {
+    margin-left: 30px;
+}
+.triangle-border {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 5px solid #5A8F00;
+    border-radius: 10px 10px 10px 10px;
+    color: #333333;
+    margin: 1em 0 3em;
+    padding: 15px;
+    position: relative;
+}
+
+#third .triangle-border {
+    width: 255px;
+    float: right;
+    margin-top: 0;
 }
 
 
@@ -638,38 +744,54 @@ a.down-big {
     float: right; 
 }
 
-
 #home h1 {
-    font-weight: bold;
-    font-family: georgia, serif;
-    font-style: italic;
+    color: #272727;
+    font-family: 'LinuxLibertineOItalic', serif;
     font-size: 32px;
-    color: #000;
     font-weight: normal;
-    padding-bottom: 10px;
-    margin-bottom: 16px;
-    margin-bottom: 1em;
-    border: none;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    border-bottom: none;
+    text-align: center;
 }
 #home h2 {
-    font-size: 28px;
+    font-size: 32px;
     margin-bottom: .5em;
-    border-bottom: 3px dotted #ccc;
+    color: #111;
+    font-family: 'LinuxLibertineORegular', serif;
+    border-bottom: 1px solid #F3F3F3;
+    font-weight: normal;
 }
 
-#home h3 {
+
+#home form {
+    text-align: center;
 }
 
-#home .how-works h3{
-    font-size: 18px;
-    padding-top: 5px;
-    margin-bottom: 10px;
-    float:left;
+
+#home td{
+    font-size: 15px;
+    text-align: left;
+    padding: .5em 0;
+    border-bottom: 3px dotted #CDEB8B;
 }
-    
-.how-works li p{
-    clear: both;
+#home td p{
+    margin-bottom: 0;
 }
+
+#home .num {
+    width: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+#home .no-border td{ 
+    border-bottom: 3px dotted #fff;
+}
+#home #how-it-works span{
+    font-size: 24px;
+}
+
+
 .circle{
     display: block;
     float: left;
@@ -678,22 +800,26 @@ a.down-big {
     color: #fff;
     text-align: center;
     line-height: 1.6;
-    margin-right: 10px;
+    margin-right: 20px;
+    margin-bottom: 15px;
     font-size: 18px;
     font-weight: bold;
+
+    background-color: #5A8F00;
+
 
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
     border-radius: 15px;
+    /*
     -webkit-box-shadow: #666 0px 1px 1px;
     -moz-box-shadow: #666 0px 1px 1px;
-    box-shadow: #666 0px 1px 1px;
-    background: #C91E24;
-    /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#C91E24), to(#8E0609));*/
-    background: -moz-linear-gradient(#C91E24, #8E0609);
-    background: -webkit-linear-gradient(#C91E24, #8E0609);
-    background: linear-gradient(#C91E24, #8E0609);
-    -pie-background: linear-gradient(#C91E24, #8E0609);
+    box-shadow: #666 0px 1px 1px;*/
+    /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#C91E24), to(#8E0609));
+    background: -moz-linear-gradient(center right, #850C12, #E04E73);
+    background: -webkit-linear-gradient(#E04E73, #850C12);
+    background: linear-gradient(#E04E73, #850C12);
+    -pie-background: linear-gradient(#E04E73, #850C12);*/
     behavior: url(/static/PIE.htc);
 }
 
@@ -711,83 +837,70 @@ a.down-big {
     margin-right: 3%;
 }
 
-#home #bd p{
-   font-size: 15px;
+
+
+#home .deform .buttons{
+    float: none;
 }
-.how-works li {
-    margin-bottom: 2em;
-}
+
 #home form{
-    /*border: 1px solid #eee;*/
-    /*width: 522px;
-    margin: 0 auto;*/
-    color: #222;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 12px;
-    background-color: #f5f5f5;
-    border: 1px solid #E5E5E5;
+    width: 350px;
+    margin: 0 auto;
+    position: relative;
 }
 
-#item-deformField7 {
-    margin-bottom: 10px; 
-    float: left;
-    width: 300px;
+
+#home #field1 {
+    position: relative;
 }
 
-#item-deformField7 label.desc{
-    width: 200px;  
-    float: left;
-    display: block;
+#home #field1 label {
+    margin-bottom: 5px;
 }
 
-#item-deformField7 label{
-    float: left;
+#home #field1 textarea {
+    margin: 0 auto;
+    height: 100px;
+    font-size: 16px;
 }
 
 
 
+#home #field2, #home #field3 {
+    /*margin-top: -1px;*/
+    margin-left: 5px;
+}
 
-#item-deformField7 .deformSet{
-    float: right;
+#home #field3 input{
+    /*margin-left: -1px;*/
+}
+
+#home .buttons {
+    margin-top: 0;
+}   
+
+#home .buttons {
     margin-right: 10px;
 }
 
-/*#home .buttons{
-    float: none;
-}
-*/
-#home input[type=text], 
-#home textarea{
-    font-size: 14px;  
-    width: 300px;
-    padding: 3px 5px;
-    /*background: #f6f6f6;*/
-}
-
-#home textarea{
-    height: 50px;
-}
-#home .deform li p{
-    text-align: left;
-    width: 300px;
+#home #field2 label, #home #field3 label {
+    line-height: 1.6;
+    display: inline;
+    width: 80px;
 }
 
 
-
-#home label{
-    font-size: 14px;
+#home #field2 input,
+#home #field3 input {
+   width: 165px; 
+   padding: 2px;
+   padding-left: 5px;
 }
 
+#home #field3 label {
+    margin-left: -22px;
+}
 
-#home .buttons{
-    float: none;
-}
-/*
-#home .deform li.error p.error {
-    margin-left: 70px;    
-}
-*/
 #lightbox {
     font-family: georgia, serif;
     font-style: italic;
@@ -805,11 +918,61 @@ a.down-big {
 }
 
 
-/*_________________________________________________________________Answers*/
-#answer .button-wrap {
-    text-align: center;
-    margin-top: 20px;
+/*______________________________________________________________List  Wishes*/
+#wishes blockquote {
+    width: 240px;
 }
+#wishes li{
+    float: left;
+    margin: 0 20px 20px 0;
+}
+/*________________________________________________________________Show  Wish*/
+#wish blockquote#main{
+    width: 500px;
+    margin: 0;
+    font-size: 24px;
+    float: left;
+}
+#wish blockquote p{
+    margin-bottom: 0;
+}   
+#reply {
+    text-align: right;
+}
+
+
+#reply a{
+   width: 66px; 
+   margin:0;
+   right: 30px;
+   position: absolute;
+}
+
+
+#reply svg{
+    float: left;
+}
+
+#wish blockquote:last-child {
+}
+#reply-sign {
+    float: left;
+    margin-top: -6px;
+}
+.reply {
+    float: right; 
+    width: 200px;
+    margin-right: 10px;
+}
+
+/*_______________________________________________________________Show  Reply*/
+
+#show-reply .desc{
+   font-weight: bold; 
+}
+
+/*_________________________________________________________________Answers*/
+
 
 
 /*_________________________________________________________________Conclusion*/
@@ -886,6 +1049,127 @@ table#list {
 }
 #bizcard .message{
     text-align: left;
+}
+
+
+/*____________________________________________________________Speech Bubbles*/
+/* ============================================================================================================================
+== RECTANGLE-BORDER STYLE WITH CURVE
+** ============================================================================================================================ */
+.rectangle-speech-border {
+	position: relative; 
+	padding: 10px; 
+	margin: 1em 0 3em;
+	border: 10px solid #CDEB8B; 
+	text-align: center; 
+	color:#333;
+	background:#fff; 
+	-webkit-border-radius:40px;
+	-moz-border-radius:40px;
+	border-radius:40px;
+    behavior: url(/static/PIE.htc);
+}
+/* creates larger curve */
+.a1{
+	content:""; 
+	position:absolute; 
+	z-index:10; 
+	bottom:-40px; 
+	left:50px; 
+	width:50px; 
+	height:30px;
+	border-style:solid; 
+	border-width:0 10px 10px 0; 
+	border-color:#CDEB8B; 
+	background:transparent;
+	/* css3 */
+	-webkit-border-radius: 0 0 80px 0 / 0 0 50px 0;
+	-moz-border-radius: 0 0 80px 0 / 0 0 50px 0;
+	border-radius: 0 0 80px 0 / 0 0 50px 0;
+    behavior: url(/static/PIE.htc);
+    /* reduce the damage in FF3.0 */
+    display:block; 
+}
+/* creates smaller curve */
+
+.a2{
+	position:absolute; 
+	z-index:10; 
+	bottom:-40px; 
+	left:50px; 
+	width:20px; 
+	height:30px; 
+	border-style:solid; 
+	border-width:0 10px 10px 0; 
+	border-color:#CDEB8B; 
+	background:transparent;	
+	-webkit-border-radius: 0 0 40px 0 / 0 0 50px 0; 
+	-moz-border-radius: 0 0 40px 0 / 0 0 50px 0; 
+	border-radius: 0 0 40px 0 / 0 0 50px 0; 
+    behavior: url(/static/PIE.htc);
+    display:block; 
+}
+
+.a3 {
+	position:absolute; 
+	bottom:-40px; 
+	left:45px; 
+	width:10px; 
+	height:10px;
+	background:#CDEB8B;	
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+    behavior: url(/static/PIE.htc);
+}
+
+.a4 {
+	position:absolute; 
+	bottom:-10px; 
+	left:76px; 
+	width:24px; 
+	height:15px; 
+	background:#fff;
+}
+
+
+.light-yellow { border-color:  #FFFF88; }
+.light-yellow .a1 { border-color: #FFFF88;}
+.light-yellow .a2 { border-color: #FFFF88; }
+.light-yellow .a3 {  background: #FFFF88;}
+
+.right-tip .a1 {
+    left: auto;
+    right: 50px;
+    border-width: 0 0 10px 10px;
+	-webkit-border-radius: 0 0 0 80px / 0 0 0 50px; 
+	-moz-border-radius: 0 0 0 80px / 0 0 0 50px; 
+	border-radius: 0 0 0 80px / 0 0 0 50px; 
+    behavior: url(/static/PIE.htc);
+}
+.right-tip .a2 {
+    left: auto;
+    right: 50px;
+    border-width: 0 0 10px 10px;
+	-webkit-border-radius: 0 0 0 40px / 0 0 0 50px; 
+	-moz-border-radius: 0 0 0 40px / 0 0 0 50px; 
+	border-radius: 0 0 0 40px / 0 0 0 50px; 
+    behavior: url(/static/PIE.htc);
+}
+.right-tip .a3 {
+    left: auto;
+    right: 48px;
+}
+.right-tip .a4 {
+    left: auto;
+    right: 76px;
+}
+
+
+
+/*long stings like a link will overflow the quote */
+blockquote p{
+    overflow: hidden;
 }
 
 

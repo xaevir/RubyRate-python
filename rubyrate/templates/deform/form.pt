@@ -10,7 +10,9 @@
   <fieldset class="deformFormFieldset">
 
     <legend tal:condition="field.title">${field.title}</legend>
-
+    
+    <input tal:condition="field._method" 
+           type="hidden" name="_method" value="${field._method}"/>
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${field.formid}"/>
     <ul>

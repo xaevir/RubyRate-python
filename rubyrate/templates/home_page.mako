@@ -1,5 +1,5 @@
 <%inherit file="/base.mako"/>
-<%def name="page_name()">home</%def>
+<%def name="body_id()">home</%def>
 <%def name="js()">
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.fancybox-1.3.4.pack.js')}"></script>
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.easing-1.3.pack.js')}"></script>
@@ -9,44 +9,88 @@
 </%def>
 
 
-    <div class="col_1">
-        <h1>We do your product pricing research</h1>
+    <blockquote class="rectangle-speech-border light-yellow right-tip">
+        <h1>We connect you to people who want your business</h1>
+        <b class="a1"></b>
+        <b class="a2"></b>
+        <b class="a3"></b>
+        <b class="a4"></b>
+    
+    </blockquote>
+    <div class="col_1" id="how-it-works">
         <h2>How it works</h2>
+            <blockquote class="rectangle-speech-border">
+            <table>
+                <tr>
+                    <td class="num">
+                        <span>1</span>
+                    </td>
+                    <td>
+                        <p>You enter the product or service that 
+                        you are looking to buy</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="num">
+                        <span>2</span>
+                    </td>
+                    <td>
+                        <p>
+                        We find companies in your area who 
+                        can help because they want your business</p>
+                    </td>
+                </tr>
+                <tr class="no-border">
+                    <td class="num">
+                        <span>3</span>
+                    </td>
+                    <td>
+                        <p>
+                        In return you get helpful replies and 
+                        maybe even discount</p>
+                    </td>
+                </tr>
+            </table>
+                <b class="a1"></b>
+                <b class="a2"></b>
+                <b class="a3"></b>
+                <b class="a4"></b>
+            </blockquote>
+    </div>
+  
+ 
 
+
+
+<%doc>
         <ul class="how-works">
             <li>
                 <span class="circle">1</span>
-                <h3>We do your product researching</h3>
                 <p>
-                After you fill in the form on the right, we contact  
-                national, local, or internationl suppliers for prices, promotions, 
-                and discounts.
+                    You enter the product or service you are looking to find.
                 </p>
             </li>
             <li>
                 <span class="circle">2</span>
-                <h3>Report the research</h3>
                 <p>
-                We then email you this collected information in an easy to digest
-                email with pictures and prices of each supplier's product. 
+                    We spend several days finding the companies in your area who 
+                    can help you simply because they want your business.
                 </p>
             </li>
             <li> 
                 <span class="circle">3</span>
-                <h3>Monitor for prices changes</h3>
                 <p>
-                Within your lead time, we continue to check in with the suppliers 
-                to see if anything about their prices have changed.
+                    When the first reply comes in, you get receive an email.
                 </p>
             </li>
         </ul>
-
-    </div>
+</%doc>
     <div class="col_2">
+        <h2>Give it a try</h2>
         ${literal(form)}
     </div>
     <div class="clear"></div>
-    <h2>How it benefits you</h2>
+    <h2>Why its helpful</h2>
     <ul id="points" class="clearfix">
         <li>
             <h3>Save Time</h3>
