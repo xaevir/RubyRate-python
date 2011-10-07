@@ -40,6 +40,12 @@ class Crud(object):
         _id = collection.insert(clean)
         return _id
 
+    def update(self):
+        clean = prepare_for_db(self.__dict__)
+        collection = get_current_request().db[self.__collection__]
+        collection.update({'_id': self._id}, {'$set': clean})  # safe = True
+
+
     def remove(self):
         collection = self.__db__[self.__collection__]
         self.collection.remove({'_id':self._id})

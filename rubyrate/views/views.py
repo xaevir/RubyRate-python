@@ -75,8 +75,9 @@ def render_form(form, request, appstruct=colander.null, redirect=True,
                 if response is not None:
                     return response
             if request.method == 'PUT': 
-                request.context.model.update(captured)
+                request.context.model.update()
                 request.session.flash('Updated')
+                url = request.resource_url(request.context.__parent__.__parent__)
             if request.method == 'POST': 
                 #initialize model
                 model = request.context.Model(captured)
