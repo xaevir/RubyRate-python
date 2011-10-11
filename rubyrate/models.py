@@ -2,6 +2,7 @@ from pyramid.threadlocal import get_current_request
 from pymongo.objectid import ObjectId
 import datetime
 from cryptacular import bcrypt 
+from rubyrate.utility import DictDiffer
 
 def remove_empty(dct):
     non_empty = dict((key, dct[key]) for key,value in dct.iteritems() 
@@ -40,15 +41,36 @@ class Crud(object):
         _id = collection.insert(clean)
         return _id
 
-    def update(self):
-        clean = prepare_for_db(self.__dict__)
+    def update(self, dct):
+        # first get orginal values ready 
+        original = prepare_for_db(self.__dict__)
+        # clean the new values for empties
+        new = prepare_for_db(dct)
+        # check original vs new values for changes
+        changed, removed = self.get_altered(new, original) 
         collection = get_current_request().db[self.__collection__]
-        collection.update({'_id': self._id}, {'$set': clean})  # safe = True
+        collection.update({'_id': self._id}, {'$set': changed})  # safe = True
+        #set the obj values
+        for key, value in changed.iteritems():
+            setattr(self, key, value)
 
 
     def remove(self):
         collection = self.__db__[self.__collection__]
         self.collection.remove({'_id':self._id})
+
+
+    def get_altered(self, dct, origdict):
+        differ  = DictDiffer(dct, origdict)
+        changed = differ.changed()
+        added   = differ.added()
+        removed = differ.removed()
+        # combine changed and added
+        changed.update(added) 
+        changed = dict((key, dct[key]) for key in changed)
+        removed = dict((key, 1) for key in removed)
+        return changed, removed 
+
 
 class Wish(Crud):
     __collection__ = 'wishes'
