@@ -37,15 +37,32 @@ from rubyrate.resources import Root
 from rubyrate.resources import Users
 from rubyrate.resources import User
 
+from rubyrate.utility import allowed_methods
+from rubyrate.utility import render_form
+
+
 import logging
 from pprint import pprint
 log = logging.getLogger(__name__)
 
 
+
+
+@view_config(name="create", context=Users, renderer='form.mako',
+             custom_predicates=(allowed_methods('GET', 'POST'),))
+def create_user(context, request):
+    schema = context.schema(after_bind=context.schema.on_create)
+    schema = schema.bind(parent_name=parent_name)
+    form = Form(
+        schema, 
+        buttons=(Button(title='Submit Reply', css_class='btn'),))
+    return render_form(form, request)
+
+
 @view_config(name='create', context=Users, renderer='/user/create.mako')
 def create_user(context, request):
     myform = Form(CreateUser(),
-        buttons=(Button(title="Create Account", css_class='blue'),)) 
+        buttons=(Button(title="Create Account", css_class='btn'),)) 
 
     if request.method == "GET": 
         return {'form':myform.render()}
@@ -108,12 +125,14 @@ def login(context, request):
     came_from = request.params.get('came_from', referrer)
     schema = LoginSchema(validator = matching_username_password).bind(
         came_from = came_from)
-    myform = Form(schema, buttons=('login',), css_class="deform medium-form")
+    form = Form(schema, buttons=(
+        Button(title='Login', css_class='btn'),))
+
     if request.method == "GET": 
-        return {'form':myform.render()}
+        return {'form':form.render()}
     controls = request.POST.items()
     try:
-        appstruct = myform.validate(controls)
+        appstruct = form.validate(controls)
         headers = remember(request, appstruct['username'])
         return HTTPFound(location = came_from, headers = headers)
     except ValidationFailure, e:

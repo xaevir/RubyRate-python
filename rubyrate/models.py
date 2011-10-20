@@ -39,7 +39,7 @@ class Crud(object):
         clean = prepare_for_db(self.__dict__)
         collection = get_current_request().db[self.__collection__]
         _id = collection.insert(clean)
-        return _id
+        self._id = _id
 
     def update(self, dct):
         # first get orginal values ready 
@@ -78,7 +78,7 @@ class Wish(Crud):
     @staticmethod
     def get_all_without_email(cls):
         collection = get_current_request().db[cls.__collection__]
-        return collection.find( {}, { 'email' : 0 }).sort('created', -1)
+        return collection.find( {}, { 'email' : 0 }).sort('created', 1)
 
 
 class Reply(Crud):
@@ -90,7 +90,7 @@ class Reply(Crud):
         if not isinstance(_id, str):
             raise Exception
         collection = get_current_request().db[cls.__collection__]
-        return collection.find({'parent': _id})
+        return collection.find({'parent': _id}).sort('created', -1)
 
 
 class Email(Crud):

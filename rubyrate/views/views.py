@@ -53,59 +53,15 @@ from rubyrate.resources import Reply
 from rubyrate.resources import Emails
 from rubyrate.resources import Email
 
+from rubyrate.utility import allowed_methods
+from rubyrate.utility import render_form
+
 import smtplib
 
 from mako.template import Template
 
 from rubyrate.resources import del_autos
 
-
-def render_form(form, request, appstruct=colander.null, redirect=True,
-                success=None, readonly=False):
-    captured = None
-    url = request.resource_url(request.context.__parent__)
-    if request.method == 'GET': 
-        html = form.render(appstruct, readonly=readonly)
-    else:
-        try:
-            controls = request.POST.items()
-            captured = form.validate(controls)
-            if success:
-                response = success(captured, request)
-                if response is not None:
-                    return response
-            if request.method == 'PUT': 
-                request.context.model.update(captured)
-                request.session.flash('Updated')
-                url = request.resource_url(request.context.__parent__.__parent__)
-            if request.method == 'POST': 
-                #initialize model
-                model = request.context.Model(captured)
-                _id = model.insert()
-                request.session.flash('Created')
-            if redirect:
-                raise HTTPFound(url)  
-            else:
-                html = form.render(captured)
-        except deform.ValidationFailure, e:
-            html = e.render()
-    return {'form': html}
-
-
-def allowed_methods(*allowed):
-    '''Custom predict checking if the HTTP method in the allowed set.
-    It also changes the request.method according to "_method" form parameter
-    and "X-HTTP-Method-Override" header
-    '''
-    def predicate(info, request):
-        if request.method == 'POST':
-            request.method = (
-                request.str_POST.get('_method', '').upper() or
-                request.headers.get('X-HTTP-Method-Override', '').upper() or
-                request.method)
- 
-        return request.method in allowed
-    return predicate
 
 
 def change_context(context, request):
@@ -114,15 +70,14 @@ def change_context(context, request):
     return True 
 
 @view_config(name="", context=Root, renderer='home_page.mako', 
-             custom_predicates=(allowed_methods('GET', 'POST'),change_context))
+             custom_predicates=(allowed_methods('GET', 'POST'), 
+             change_context))
 def create_wish(context, request):
     context = request.context # actual context
     schema = context.schema(after_bind=context.schema.on_create).bind()
     form = Form(schema, buttons=(
-        Button(title='Get Replies', css_class='button'),))
-    def success(captured, request):
-        model = request.context.Model(captured)
-        _id = model.insert()
+        Button(title='Get Replies', css_class='btn'),))
+    def success(request):
         # email notification
         settings = request.registry.settings
         email = Message(subject='New Wish',
@@ -135,7 +90,8 @@ def create_wish(context, request):
         # show modal message
         thank_you = 'Thank you. We are working on your wish.'    
         request.session.flash(thank_you)
-        href = request.resource_url(context[_id])
+        model = request.context.model
+        href = request.resource_url(context[model._id])
         raise HTTPFound(href)             
     return render_form(form, request, success=success)
 
@@ -174,7 +130,7 @@ def update_context(context, request):
     schema = context.schema(after_bind=del_autos).bind()
     form = Form(schema, 
                 _method='PUT', 
-                buttons=(Button(title='Update', css_class='button'),))
+                buttons=(Button(title='Update', css_class='btn'),))
     return render_form(form, request, appstruct=context.model.__dict__)
 
 @view_config(context=Wishes, renderer='/wish/list.mako')
@@ -199,7 +155,7 @@ def create_reply(context, request):
     schema = schema.bind(parent_name=parent_name)
     form = Form(
         schema, 
-        buttons=(Button(title='Submit Reply', css_class='button'),))
+        buttons=(Button(title='Submit Reply', css_class='btn'),))
     return render_form(form, request)
 
 
@@ -208,7 +164,7 @@ def create_reply(context, request):
 def show_reply(context, request):
     schema = context.schema(after_bind=del_autos).bind()
     form = Form(schema, 
-                buttons=(Button(title='Update', css_class='button'),))
+                buttons=(Button(title='Update', css_class='btn'),))
     form_dct = render_form(form, request, appstruct=context.model.__dict__, 
                        readonly=True, redirect=False)
     return {'form': form_dct['form'], 
@@ -277,7 +233,7 @@ class ContactSchema(MappingSchema):
 def contact(context, request):
     schema = ContactSchema()
     myform = Form(schema, 
-                buttons=(Button(title='Send', css_class='button'),))
+                buttons=(Button(title='Send', css_class='btn'),))
     if request.method == "GET": 
         return {'form':myform.render()}
     controls = request.POST.items()
@@ -315,7 +271,7 @@ class SupplierSchema(MappingSchema):
 def supplier(context, request):
     schema = SupplierSchema()
     myform = Form(schema, 
-                buttons=(Button(title='Send', css_class='button'),))
+                buttons=(Button(title='Send', css_class='btn'),))
     if request.method == "GET": 
         return {'form':myform.render()}
     controls = request.POST.items()

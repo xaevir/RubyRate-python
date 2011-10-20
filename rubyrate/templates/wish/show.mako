@@ -2,56 +2,46 @@
 <%def name="body_id()">wish</%def>
 <%def name="page_width()">900px</%def>
 
-
-    <blockquote id="main" class="rectangle-speech-border">
+    <blockquote id="main-bubble" class="bubble">
         <p>${wish.wish}</p>
-    <div id="reply" class="blue">
-        <a href="${create_link}" class="button">
-            <div id="reply-sign"></div>Reply
-        </a>
-    </div>
-    <b class="a1"></b>
-    <b class="a2"></b>
-    <b class="a3"></b>
-    <b class="a4"></b>
 
+        <span id="reply">
+            <a href="${create_link}" class="btn">
+                <div id="reply-sign"></div>Reply
+            </a>
+
+        </span>
+        <div class="tip-left-green"></div>
     </blockquote>
-    
+   
     <div class="clear" style="margin-bottom: 30px;"></div>
 
 <ul id="replies" class="clearfix">
 % if replies:
     % for reply in replies:
     <li class="reply clearfix">
-        <blockquote class="rectangle-speech-border light-yellow right-tip">
+        <div class="title">
+            <a href="${request.resource_url(request.context['replies'], reply['_id'])}"
+                    style="font-size: 12px">${reply['company']}</a>
+        </div>
+        <blockquote class="bubble yellow sml">
+
             <p>
-                <b>${reply['company']}</b> <br />
-                <% 
-                from markdown import markdown
-                import re
-                brief = reply['message'][0:160]
-                brief = markdown(brief)
-                %>
-                ${literal(brief)} 
+                % if len(reply['message']) > 160:
+                    ${reply['message'][0:160]} 
+                    <a href="${request.resource_url(request.context['replies'], reply['_id'])}"
+                        style="font-size: 10px">...more</a>
+                % else:
+                    ${reply['message']}
+                % endif
             </p>
-            <div style="text-align: right; position: relative;">
-                <a 
-                style="border-radius: 20px;
-                       position: absolute;
-                       bottom: -25px;
-                       right: 0;
-                       background: #fff;
-                       padding: 5px;
-                       font-size: 11px;
-                       text-decoration: underline;
-                "
-                href="${request.resource_url(request.context['replies'], reply['_id'])}">more</a></div>
-            <b class="a1"></b>
-            <b class="a2"></b>
-            <b class="a3"></b>
-            <b class="a4"></b>
+            <div class="tip-right-yellow"></div>
+            <a href="${create_link}" class="reply-embedded">
+                reply
+            </a>
 
         </blockquote>
+
     </li>
     % endfor
 % endif

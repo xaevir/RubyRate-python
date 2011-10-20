@@ -1,5 +1,57 @@
 import re
+import colander
+from pyramid.httpexceptions import HTTPFound
 
+def render_form(form, request, appstruct=colander.null, redirect=True,
+                success=None, readonly=False, flash=True):
+    #captured = None
+    url = request.resource_url(request.context.__parent__)
+
+    if request.method == 'GET': 
+        html = form.render(appstruct, readonly=readonly)
+        return {'form': html}
+    # validate 
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render()}
+
+    # passed validation
+    if request.method == 'PUT': 
+        request.context.model.update(captured)
+        flash_msg = 'Updated'
+        url = request.resource_url(request.context.__parent__.__parent__)
+    if request.method == 'POST': 
+        #initialize model
+        request.context.model = request.context.Model(captured)
+        request.context.model.insert()
+        flash_msg = 'Created'
+    if success:
+        return success(request)
+    if flash:
+        request.session.flash(flash_msg)
+    if redirect:
+        raise HTTPFound(url)  
+    else:
+        return form.render(captured)
+
+
+
+def allowed_methods(*allowed):
+    '''Custom predict checking if the HTTP method in the allowed set.
+    It also changes the request.method according to "_method" form parameter
+    and "X-HTTP-Method-Override" header
+    '''
+    def predicate(info, request):
+        if request.method == 'POST':
+            request.method = (
+                request.str_POST.get('_method', '').upper() or
+                request.headers.get('X-HTTP-Method-Override', '').upper() or
+                request.method)
+ 
+        return request.method in allowed
+    return predicate
 
 
 def slugify(name):

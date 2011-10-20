@@ -4,17 +4,14 @@
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.fancybox-1.3.4.pack.js')}"></script>
     <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.easing-1.3.pack.js')}"></script>
 </%def>
-<%def name="head()">
+<%def name="header_css()">
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static//fancybox/jquery.fancybox-1.3.4.css')}"/>
 </%def>
 
 
-    <blockquote class="rectangle-speech-border light-yellow right-tip">
+    <blockquote class="rectangle-speech-border light-yellow right-tip" id="main-headline">
         <h1>We connect you to people who want your business</h1>
-        <b class="a1"></b>
-        <b class="a2"></b>
-        <b class="a3"></b>
-        <b class="a4"></b>
+        <div id="arc-tip"></div>
     
     </blockquote>
     <div class="col_1" id="how-it-works">

@@ -37,7 +37,7 @@ ol, ul {
 blockquote, q {
 	quotes: none;
 }
-blockquote:before, blockquote:after,
+blockquote:before, blockquote:after
 q:before, q:after {
 	content: '';
 	content: none;
@@ -59,7 +59,7 @@ body {
     color: #272727;
     font-size: 13px; /*/1.231 arial,helvetica,clean,sans-serif;*/
     line-height: 1.231;
-    font-family: verdana, Arial,sans-serif;
+    font-family: Arial,sans-serif;
     /*background: #f2f2f2 url('/static/header-gradient.png') repeat-x top left;*/
 }
 h1,h2,h3,h4,h5,h6,strong {
@@ -422,6 +422,15 @@ div.deformReplaces {
     margin-bottom: 15px;
     padding: 10px 20px;
     text-align: center;
+
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#FFFFCC));
+    background: -webkit-linear-gradient(#ffffff, #FFFFCC);
+    background: -moz-linear-gradient(#ffffff, #FFFFCC);
+    background: -ms-linear-gradient(#ffffff, #FFFFCC);
+    background: -o-linear-gradient(#ffffff, #FFFFCC);
+    background: linear-gradient(#ffffff, #FFFFCC);
+    -pie-background: linear-gradient(#ffffff, #FFFFCC);
+    behavior: url(/static/pie.htc);
 }
 
 .shadow {
@@ -457,14 +466,14 @@ div.deformReplaces {
     text-align: center;
 }
 
-.button{
+.btn{
     font: bold 12px Helvetica, Arial, sans-serif;
     text-decoration: none;
     padding: 7px 12px;
     position: relative;
     display: inline-block;
     color: #333;
-    border: 3px solid #C3D9FF;
+    border: 2px solid #C3D9FF;
 
     text-shadow: 0 1px 0 #fff;
     -webkit-transition: border-color .218s;
@@ -472,21 +481,20 @@ div.deformReplaces {
     -o-transition: border-color .218s;
     transition: border-color .218s;
     /*gradient*/
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#F2F6FF));
-    background: -webkit-linear-gradient(#ffffff, #F2F6FF);
-    background: -moz-linear-gradient(#ffffff, #F2F6FF);
-    background: -ms-linear-gradient(#ffffff, #F2F6FF);
-    background: -o-linear-gradient(#ffffff, #F2F6FF);
-    background: linear-gradient(#ffffff, #F2F6FF);
-    -pie-background: linear-gradient(#ffffff, #F2F6FF);
-    behavior: url(/PIE.htc);
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#f2f6ff));
+    background: -webkit-linear-gradient(#ffffff, #f2f6ff);
+    background: -moz-linear-gradient(#ffffff, #f2f6ff);
+    background: -ms-linear-gradient(#ffffff, #f2f6ff);
+    background: -o-linear-gradient(#ffffff, #f2f6ff);
+    background: linear-gradient(#ffffff, #f2f6ff);
+    -pie-background: linear-gradient(#ffffff, #f2f6ff);
     /*border*/
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
-    behavior: url(/static/PIE.htc);
+    behavior: url(/static/pie.htc);
 }
-.button:hover {
+.btn:hover {
     border-color: #89B4FF;
     -webkit-box-shadow: #ccc 0px 1px 0px;
     -moz-box-shadow:    #ccc 0px 1px 0px;
@@ -513,7 +521,7 @@ div.deformReplaces {
 
 body {
     background-color:#FDFDFD;
-/*    background: url(/static/bg.gif) repeat top left;*/
+    background: #BFD6EE url(/static/bg-body.gif) repeat-x top left;
 }   
 
 #doc2 {
@@ -545,6 +553,8 @@ body {
     behavior: url(/static/PIE.htc);
     -pie-png-fix: true;
 }
+
+
 #ft {
     margin: 0 auto;
 	margin-top: 70px;
@@ -571,6 +581,8 @@ body {
 
 #nav a{
     display: block;
+    color: #fff;
+    font-weight: bold;
 }
 #nav .active a{
     /*font-weight: bold;*/
@@ -579,6 +591,8 @@ body {
 
 
 #login-nav a{
+    color: #fff;
+    font-weight: bold;
 }
 
 #login-nav {
@@ -657,21 +671,6 @@ body {
     z-index: 1;
 }
 
-.sml {
-    border-width: 5px;
-}
-
-.sml:before {
-    border-width: 0 5px 5px 0;
-}
-
-.sml:after {
-    width: 12px;
-}
-
-.sml > *:first-child:before {
-    width: 5px;
-}
 
 
 #home #flash{
@@ -762,6 +761,7 @@ body {
     border-bottom: 1px solid #F3F3F3;
     font-weight: normal;
 }
+
 
 
 #home form {
@@ -927,7 +927,7 @@ body {
     margin: 0 20px 20px 0;
 }
 /*________________________________________________________________Show  Wish*/
-#wish blockquote#main{
+#main-bubble{
     width: 500px;
     margin: 0;
     font-size: 24px;
@@ -936,19 +936,36 @@ body {
 #wish blockquote p{
     margin-bottom: 0;
 }   
+
+#replies {
+    margin-left: 80px; 
+}
+
+
+#replies blockquote p{
+   height: 3em; 
+}   
+
 #reply {
     text-align: right;
+}
+
+
+#reply {
+   position: absolute;
+   right: 30px;
+   padding: 0 3px;
+   background-color: #fff;
+   bottom: -20px;
 }
 
 
 #reply a{
    width: 66px; 
    margin:0;
-   right: 30px;
-   position: absolute;
-}
+   text-decoration: none;
 
-
+}   
 #reply svg{
     float: left;
 }
@@ -960,9 +977,10 @@ body {
     margin-top: -6px;
 }
 .reply {
-    float: right; 
-    width: 200px;
+    float: left; 
+    width: 400px;
     margin-right: 10px;
+    position: relative; 
 }
 
 /*_______________________________________________________________Show  Reply*/
@@ -1081,7 +1099,7 @@ table#list {
 	border-style:solid; 
 	border-width:0 10px 10px 0; 
 	border-color:#CDEB8B; 
-	background:transparent;
+	background: #fff;
 	/* css3 */
 	-webkit-border-radius: 0 0 80px 0 / 0 0 50px 0;
 	-moz-border-radius: 0 0 80px 0 / 0 0 50px 0;
@@ -1098,9 +1116,9 @@ table#list {
 	bottom:-40px; 
 	left:50px; 
 	width:20px; 
-	height:30px; 
+	height:20px; 
 	border-style:solid; 
-	border-width:0 10px 10px 0; 
+	border-width:10px 10px 10px 0; 
 	border-color:#CDEB8B; 
 	background:transparent;	
 	-webkit-border-radius: 0 0 40px 0 / 0 0 50px 0; 
@@ -1130,8 +1148,22 @@ table#list {
 	width:24px; 
 	height:15px; 
 	background:#fff;
+
+/* border-color: red green blue orange;
+  border-style:solid;
+border-width:25px 10px 15px 30px;
+  width:0;
+  height:0;
+  border-radius: 20px;
+  */
 }
 
+#home #main-headline {
+	-webkit-border-radius:20px;
+	-moz-border-radius:20px;
+	border-radius:20px;
+    behavior: url(/static/PIE.htc);
+}
 
 .light-yellow { border-color:  #FFFF88; }
 .light-yellow .a1 { border-color: #FFFF88;}
@@ -1172,4 +1204,120 @@ blockquote p{
     overflow: hidden;
 }
 
+.bubble {
+	position: relative; 
+	padding: 10px; 
+	margin: 1em 0 3em;
+	border: 5px solid #00DEF2; 
+	text-align: center; 
+	color:#333;
+	background:#fff; 
+	-webkit-border-radius:30px;
+	-moz-border-radius:30px;
+	border-radius:30px;
+    behavior: url(/static/PIE.htc);
+}
 
+.electric-blue {
+    border-color: #00DEF2;
+}
+/*
+.speech:before {
+    content: ' ';  
+    position: absolute;  
+    width: 0;  
+    height: 0;  
+    left: 30px;  
+    top: 100px;  
+    border: 25px solid;  
+    border-color: #666 transparent transparent #666;  
+}  
+.speech:after  
+{  
+    content: ' ';  
+    position: absolute;  
+    width: 0;  
+    height: 0;  
+    left: 38px;  
+    top: 100px;  
+    border: 15px solid;  
+    border-color: #fff transparent transparent #fff;  
+}  
+*/
+
+
+svg.tip  {
+    display: block;
+    position: absolute;
+    bottom: -56px;
+
+}
+
+
+.more {
+    position: absolute;
+    bottom: -25px;
+    right: 0;
+    background: #fff;
+    padding: 5px;
+    font-size: 11px;
+    text-decoration: underline;
+}
+
+.bubble{
+	position: relative; 
+	padding: 10px; 
+	margin: 1em 0 3em;
+	border: 10px solid #CDEB8B; 
+	text-align: center; 
+	color:#333;
+	background:#fff; 
+	-webkit-border-radius:40px;
+	-moz-border-radius:40px;
+	border-radius:40px;
+    behavior: url(/static/PIE.htc);
+}
+
+.tip-left-green {
+    background: url(/static/tips.png) 0px 0px no-repeat;
+    width: 73px;
+    height: 42px;
+    position: absolute;
+    bottom: -42px;
+}
+
+.tip-right-yellow {
+    background: url(/static/tips.png) -220px 0px no-repeat;
+    width: 73px;
+    height: 42px;
+    position: absolute;
+    bottom: -42px;
+    right:44px;
+}
+.yellow { border-color:  #FFFF88; }
+.sml {border-width: 6px;}
+
+.title {
+    margin-bottom: -20px;
+    height: 1.3em;
+    overflow: hidden;
+    font-style: italic;
+    color: #888;
+    text-align: center;
+    z-index: 10;
+    position: relative;
+}
+
+.title a{
+    background-color: #fff;
+    padding: 0 5px;
+}
+.reply-embedded {
+    background: none repeat scroll 0 0 #FFFFFF;
+    bottom: -13px;
+    font-size: 11px;
+    padding: 5px;
+    position: absolute;
+    right: 10px;
+    text-decoration: underline;
+}
