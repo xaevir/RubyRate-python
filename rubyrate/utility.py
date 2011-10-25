@@ -46,7 +46,7 @@ def allowed_methods(*allowed):
     def predicate(info, request):
         if request.method == 'POST':
             request.method = (
-                request.str_POST.get('_method', '').upper() or
+                request.POST.get('_method', '').upper() or
                 request.headers.get('X-HTTP-Method-Override', '').upper() or
                 request.method)
  

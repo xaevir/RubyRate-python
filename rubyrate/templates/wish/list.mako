@@ -6,7 +6,7 @@
 % if wishes:
     % for wish in wishes:
     <li style="position: relative" class="wish">
-        <blockquote class="rectangle-speech-border">
+        <blockquote class="bubble tip-left">
             <p>
                 <a href="/wishes/${wish['_id']}">${wish['wish']}</a>
             </p>

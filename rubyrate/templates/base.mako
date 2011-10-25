@@ -15,16 +15,14 @@
 </head>
 
 <body id="${self.body_id()}" >
+
+
     <div id="hd" class="clearfix">
         <div class="content clearfix">
-            <a href="/" class="clearfix" style="float: left">
-                <h2 id="logo" class="ir">Ruby Rate</h2>
-            </a>
+            <a href="/" id="logo" class="ir">rubyrate</a>
             <ul id="nav" class="clearfix">
                 <li><a href="/wishes">Open Wishes</a></li>
-                <li>|</li>
                 <li><a href="/supplier">Suppliers</a></li>
-                <li>|</li>
                 <li><a href="/contact">Contact</a></li>
             </ul>
             <ul id="login-nav" class="clearfix">
@@ -37,7 +35,6 @@
             </ul>
         </div>
     </div>
-
 
 <div id="doc2" class="clearfix" style="width: ${self.page_width()}">
 
@@ -68,18 +65,7 @@
         &copy; Ruby Rate 2011
     </p>
 </div>
-
-
-<a title="Real Time Web Analytics" href="http://getclicky.com/66480413">
-    <img alt="Real Time Web Analytics" src="//static.getclicky.com/media/links/badge.gif" border="0" />
-</a>
-<script src="//static.getclicky.com/js" type="text/javascript"></script>
-<script type="text/javascript">try{ clicky.init(66480413); }catch(e){}</script>
-<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/66480413ns.gif" /></p></noscript>
-
 ${self.footer_js()}
-
-
 </body>
 </html>
 
@@ -102,12 +88,19 @@ ${self.footer_js()}
 </%def>
 
 <%def name="header_js()">
-    <script src="/static/js/LABjs/LAB.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
     <script>
        $LAB
-       .script("http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js").wait()
-       .script("/static/js/raphael-min.js").wait()
-       .script("/static/js/main.js").wait()
+       .setOptions({AlwaysPreserveOrder:true})
+       .script("http://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js").wait()
+       .script("http://cdnjs.cloudflare.com/ajax/libs/raphael/1.5.2/raphael-min.js")
+       .script("http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js")
+       .script("http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore-min.js")
+       .script("http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js").wait()
+
+       .script("/static/js/main.js")
+    </script>
+    <script>
     </script>
 
 </%def>

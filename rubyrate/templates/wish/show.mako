@@ -2,7 +2,7 @@
 <%def name="body_id()">wish</%def>
 <%def name="page_width()">900px</%def>
 
-    <blockquote id="main-bubble" class="bubble">
+    <blockquote id="main-bubble" class="bubble tip-left">
         <p>${wish.wish}</p>
 
         <span id="reply">
@@ -24,8 +24,7 @@
             <a href="${request.resource_url(request.context['replies'], reply['_id'])}"
                     style="font-size: 12px">${reply['company']}</a>
         </div>
-        <blockquote class="bubble yellow sml">
-
+        <blockquote class="bubble tip-right ">
             <p>
                 % if len(reply['message']) > 160:
                     ${reply['message'][0:160]} 
@@ -35,11 +34,9 @@
                     ${reply['message']}
                 % endif
             </p>
-            <div class="tip-right-yellow"></div>
-            <a href="${create_link}" class="reply-embedded">
+            <a href="${create_link}" class="create-message">
                 reply
             </a>
-
         </blockquote>
 
     </li>

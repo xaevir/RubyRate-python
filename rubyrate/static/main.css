@@ -60,7 +60,6 @@ body {
     font-size: 13px; /*/1.231 arial,helvetica,clean,sans-serif;*/
     line-height: 1.231;
     font-family: Arial,sans-serif;
-    /*background: #f2f2f2 url('/static/header-gradient.png') repeat-x top left;*/
 }
 h1,h2,h3,h4,h5,h6,strong {
    /*bringing boldness back to headers and the strong element*/
@@ -69,7 +68,7 @@ h1,h2,h3,h4,h5,h6,strong {
 }
 h1 {
     font-size: 28px;
-    margin-bottom: 1em;
+    margin-bottom: 1em;/public
     border-bottom: 3px dotted #ccc;
 }
 h2 {
@@ -368,6 +367,42 @@ div.deformReplaces {
 
 }
 
+@font-face {
+    font-family: 'ComfortaaThin';
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.eot');
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.woff') format('woff'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.ttf') format('truetype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.svg#ComfortaaThin') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'ComfortaaRegular';
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.eot');
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.woff') format('woff'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.ttf') format('truetype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.svg#ComfortaaRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'ComfortaaBold';
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.eot');
+    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.woff') format('woff'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.ttf') format('truetype'),
+         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.svg#ComfortaaBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 .clear {
     clear: both;
     float: none;
@@ -473,7 +508,7 @@ div.deformReplaces {
     position: relative;
     display: inline-block;
     color: #333;
-    border: 2px solid #C3D9FF;
+    border: 1px solid #C3D9FF;
 
     text-shadow: 0 1px 0 #fff;
     -webkit-transition: border-color .218s;
@@ -519,9 +554,17 @@ div.deformReplaces {
 /*___________________________________________________________Main Div Setup_*/
 
 
+html {
+    /*background: #BFD6EE url(/static/body.jpg) repeat-x top left;*/
+}
+
 body {
-    background-color:#FDFDFD;
-    background: #BFD6EE url(/static/bg-body.gif) repeat-x top left;
+    /*background-color:#FDFDFD;*/
+    /*
+    background: #F8F7F0 url('/static/bg-body.png') repeat top left;
+    background: #F2FBFF url('/static/square_bg.png') repeat top left;
+    background: #F2FBFF url('/static/bg.png') repeat top left;
+    */
 }   
 
 #doc2 {
@@ -531,7 +574,23 @@ body {
 
 #hd {
     margin: 0 auto;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ADCCFF;
+    background: #444444;
+
+    background: #C3D9FF;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#444444), to(#2B2B2B));
+    background: -webkit-linear-gradient(#444444, #2B2B2B);
+    background: -moz-linear-gradient(#444444, #2B2B2B);
+    background: -ms-linear-gradient(#444444, #2B2B2B);
+    background: -o-linear-gradient(#444444, #2B2B2B);
+    background: linear-gradient(#444444, #2B2B2B);
+    -pie-background: linear-gradient(#444444, #2B2B2B);
+    behavior: url(/PIE.htc);
+    background: -moz-linear-gradient(#E2EDFF, #D3E3FF)
+}
+#line {
+    height: 1px;
 }
 .content {
     width: 900px;
@@ -542,19 +601,13 @@ body {
     margin: 0 auto;
 }
 
-#hd h2#logo {
+#logo {
+    background: url('/static/logo.png') no-repeat bottom left;
+    width: 186px;
+    height: 45px;
     float: left;
-    width: 198px;
-    height: 44px;
-    border: none;
-    padding: 0;
-    margin: 0;
-    background: url(/static/logo.png) no-repeat top left;
-    behavior: url(/static/PIE.htc);
-    -pie-png-fix: true;
+    border: 1px solid transparent;
 }
-
-
 #ft {
     margin: 0 auto;
 	margin-top: 70px;
@@ -566,37 +619,51 @@ body {
 
 #nav {
     margin: 0;
-    float: left;
-    margin-top: 9px;
     margin-left: 60px;
+    float: left;
 }
-
 #nav li {
     list-style-type: none;
     float: left;
-	font-size: 14px;
-    margin: 0 5px;
-    color: #fff;
+    margin-right: 10px;
+}
+#nav a, #login-nav a{
+    margin-top: 4px;
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    color: #006EB7;
+    /*border: 1px solid #eee;*/
+    border: 1px solid transparent;
+    text-shadow: 1px 1px 0px white;
+    -webkit-border-radius: 15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
+    padding: 3px 5px;
+    behavior: url(/static/PIE.htc);
+    line-height: 2.3;
+
 }
 
-#nav a{
-    display: block;
-    color: #fff;
-    font-weight: bold;
+#nav a:hover,
+#login-nav a:hover,
+#logo:hover{
+    text-decoration: none;
+    background-color: #EDF3FF;
+    border: 1px solid #D3E3FF;
 }
 #nav .active a{
     /*font-weight: bold;*/
     /*border-bottom: 2px solid DeepSkyBlue;*/
 }
 
-
-#login-nav a{
-    color: #fff;
-    font-weight: bold;
+#login-nav li{
+    float: right;
 }
 
 #login-nav {
-    float: right;
+    float: right !important;
+    line-height: 2;
 }
 
 
@@ -745,13 +812,15 @@ body {
 
 #home h1 {
     color: #272727;
-    font-family: 'LinuxLibertineOItalic', serif;
+    font-family: 'LinuxLibertineOItalic', georgia, serif;
     font-size: 32px;
     font-weight: normal;
     padding-bottom: 0px;
     margin-bottom: 0px;
     border-bottom: none;
     text-align: center;
+    padding-top: 40px;
+    padding-bottom: 80px;
 }
 #home h2 {
     font-size: 32px;
@@ -937,6 +1006,10 @@ body {
     margin-bottom: 0;
 }   
 
+#wish textarea {
+
+}   
+
 #replies {
     margin-left: 80px; 
 }
@@ -976,11 +1049,21 @@ body {
     float: left;
     margin-top: -6px;
 }
+
+
+#reply-sign svg path{
+    fill: #fff;
+    stroke: #89B4FF;
+}
+
 .reply {
     float: left; 
     width: 400px;
     margin-right: 10px;
     position: relative; 
+}
+.reply form {
+    width: 350px;
 }
 
 /*_______________________________________________________________Show  Reply*/
@@ -1074,186 +1157,22 @@ table#list {
 /* ============================================================================================================================
 == RECTANGLE-BORDER STYLE WITH CURVE
 ** ============================================================================================================================ */
-.rectangle-speech-border {
-	position: relative; 
-	padding: 10px; 
-	margin: 1em 0 3em;
-	border: 10px solid #CDEB8B; 
-	text-align: center; 
-	color:#333;
-	background:#fff; 
-	-webkit-border-radius:40px;
-	-moz-border-radius:40px;
-	border-radius:40px;
+
+#home #main-message {
+/*	-webkit-border-radius:65px;
+	-moz-border-radius:65px;
+	border-radius:65px;
     behavior: url(/static/PIE.htc);
+    */
 }
-/* creates larger curve */
-.a1{
-	content:""; 
-	position:absolute; 
-	z-index:10; 
-	bottom:-40px; 
-	left:50px; 
-	width:50px; 
-	height:30px;
-	border-style:solid; 
-	border-width:0 10px 10px 0; 
-	border-color:#CDEB8B; 
-	background: #fff;
-	/* css3 */
-	-webkit-border-radius: 0 0 80px 0 / 0 0 50px 0;
-	-moz-border-radius: 0 0 80px 0 / 0 0 50px 0;
-	border-radius: 0 0 80px 0 / 0 0 50px 0;
-    behavior: url(/static/PIE.htc);
-    /* reduce the damage in FF3.0 */
-    display:block; 
-}
-/* creates smaller curve */
-
-.a2{
-	position:absolute; 
-	z-index:10; 
-	bottom:-40px; 
-	left:50px; 
-	width:20px; 
-	height:20px; 
-	border-style:solid; 
-	border-width:10px 10px 10px 0; 
-	border-color:#CDEB8B; 
-	background:transparent;	
-	-webkit-border-radius: 0 0 40px 0 / 0 0 50px 0; 
-	-moz-border-radius: 0 0 40px 0 / 0 0 50px 0; 
-	border-radius: 0 0 40px 0 / 0 0 50px 0; 
-    behavior: url(/static/PIE.htc);
-    display:block; 
-}
-
-.a3 {
-	position:absolute; 
-	bottom:-40px; 
-	left:45px; 
-	width:10px; 
-	height:10px;
-	background:#CDEB8B;	
-	-webkit-border-radius:5px;
-	-moz-border-radius:5px;
-	border-radius:5px;
-    behavior: url(/static/PIE.htc);
-}
-
-.a4 {
-	position:absolute; 
-	bottom:-10px; 
-	left:76px; 
-	width:24px; 
-	height:15px; 
-	background:#fff;
-
-/* border-color: red green blue orange;
-  border-style:solid;
-border-width:25px 10px 15px 30px;
-  width:0;
-  height:0;
-  border-radius: 20px;
-  */
-}
-
-#home #main-headline {
-	-webkit-border-radius:20px;
-	-moz-border-radius:20px;
-	border-radius:20px;
-    behavior: url(/static/PIE.htc);
-}
-
-.light-yellow { border-color:  #FFFF88; }
-.light-yellow .a1 { border-color: #FFFF88;}
-.light-yellow .a2 { border-color: #FFFF88; }
-.light-yellow .a3 {  background: #FFFF88;}
-
-.right-tip .a1 {
-    left: auto;
-    right: 50px;
-    border-width: 0 0 10px 10px;
-	-webkit-border-radius: 0 0 0 80px / 0 0 0 50px; 
-	-moz-border-radius: 0 0 0 80px / 0 0 0 50px; 
-	border-radius: 0 0 0 80px / 0 0 0 50px; 
-    behavior: url(/static/PIE.htc);
-}
-.right-tip .a2 {
-    left: auto;
-    right: 50px;
-    border-width: 0 0 10px 10px;
-	-webkit-border-radius: 0 0 0 40px / 0 0 0 50px; 
-	-moz-border-radius: 0 0 0 40px / 0 0 0 50px; 
-	border-radius: 0 0 0 40px / 0 0 0 50px; 
-    behavior: url(/static/PIE.htc);
-}
-.right-tip .a3 {
-    left: auto;
-    right: 48px;
-}
-.right-tip .a4 {
-    left: auto;
-    right: 76px;
-}
-
-
 
 /*long stings like a link will overflow the quote */
 blockquote p{
     overflow: hidden;
 }
-
-.bubble {
-	position: relative; 
-	padding: 10px; 
-	margin: 1em 0 3em;
-	border: 5px solid #00DEF2; 
-	text-align: center; 
-	color:#333;
-	background:#fff; 
-	-webkit-border-radius:30px;
-	-moz-border-radius:30px;
-	border-radius:30px;
-    behavior: url(/static/PIE.htc);
-}
-
 .electric-blue {
     border-color: #00DEF2;
 }
-/*
-.speech:before {
-    content: ' ';  
-    position: absolute;  
-    width: 0;  
-    height: 0;  
-    left: 30px;  
-    top: 100px;  
-    border: 25px solid;  
-    border-color: #666 transparent transparent #666;  
-}  
-.speech:after  
-{  
-    content: ' ';  
-    position: absolute;  
-    width: 0;  
-    height: 0;  
-    left: 38px;  
-    top: 100px;  
-    border: 15px solid;  
-    border-color: #fff transparent transparent #fff;  
-}  
-*/
-
-
-svg.tip  {
-    display: block;
-    position: absolute;
-    bottom: -56px;
-
-}
-
-
 .more {
     position: absolute;
     bottom: -25px;
@@ -1263,39 +1182,6 @@ svg.tip  {
     font-size: 11px;
     text-decoration: underline;
 }
-
-.bubble{
-	position: relative; 
-	padding: 10px; 
-	margin: 1em 0 3em;
-	border: 10px solid #CDEB8B; 
-	text-align: center; 
-	color:#333;
-	background:#fff; 
-	-webkit-border-radius:40px;
-	-moz-border-radius:40px;
-	border-radius:40px;
-    behavior: url(/static/PIE.htc);
-}
-
-.tip-left-green {
-    background: url(/static/tips.png) 0px 0px no-repeat;
-    width: 73px;
-    height: 42px;
-    position: absolute;
-    bottom: -42px;
-}
-
-.tip-right-yellow {
-    background: url(/static/tips.png) -220px 0px no-repeat;
-    width: 73px;
-    height: 42px;
-    position: absolute;
-    bottom: -42px;
-    right:44px;
-}
-.yellow { border-color:  #FFFF88; }
-.sml {border-width: 6px;}
 
 .title {
     margin-bottom: -20px;
@@ -1307,17 +1193,61 @@ svg.tip  {
     z-index: 10;
     position: relative;
 }
-
 .title a{
     background-color: #fff;
     padding: 0 5px;
 }
-.reply-embedded {
+.create-message {
     background: none repeat scroll 0 0 #FFFFFF;
     bottom: -13px;
     font-size: 11px;
     padding: 5px;
+    padding-top: 0;
     position: absolute;
     right: 10px;
     text-decoration: underline;
+}
+.bubble{
+	position: relative; 
+	padding: 10px; 
+	margin: 1em 0 3em;
+	text-align: center; 
+	border: 1px solid #CDEB8B; 
+    border: 1px solid #FFFF88;
+	color:#333;
+	background: #F7FFFB; 
+	-webkit-border-radius:20px;
+	-moz-border-radius:20px;
+	border-radius:20px;
+    behavior: url(/static/PIE.htc);
+}
+.tip-container{
+    position: absolute;
+    bottom: -18px;
+    z-index: 10;
+}
+.tip-right .tip-container{
+    right: 44px
+}   
+.tip-left .tip-container{
+    left: -17px;
+} 
+blockquote.tip-right {
+    background: -moz-linear-gradient(#ffffff, #F0FFCE);
+    border-color:  #DDEFB3; 
+}
+.tip-right svg path{
+    stroke: #DDEFB3;    
+    fill: #F0FFCE;
+}
+blockquote.tip-left {
+    background: -moz-linear-gradient(#ffffff, #FFFFCC);
+    border-color:  #F2F27B; 
+}
+.tip-left svg path { 
+    stroke: #F2F27B;    
+    fill: #ffffcc;
+}
+blockquote .svg-top {
+    stroke: #fff !important;
 }
