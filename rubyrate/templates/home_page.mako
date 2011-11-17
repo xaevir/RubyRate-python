@@ -1,64 +1,29 @@
 <%inherit file="/base.mako"/>
 <%def name="body_id()">home</%def>
-<%def name="js()">
-    <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.fancybox-1.3.4.pack.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.easing-1.3.pack.js')}"></script>
-</%def>
-<%def name="header_css()">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static//fancybox/jquery.fancybox-1.3.4.css')}"/>
-</%def>
+<%namespace file="/partials/heading_block.mako" import="heading_block"/>
+
+<%doc>
+    <%def name="js()">
+        <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.fancybox-1.3.4.pack.js')}"></script>
+        <script type="text/javascript" src="${request.static_url('rubyrate:static/fancybox/jquery.easing-1.3.pack.js')}"></script>
+    </%def>
+    <%def name="header_css()">
+        <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static//fancybox/jquery.fancybox-1.3.4.css')}"/>
+    </%def>
+
+</%doc>
+
+    <%def name="heading_caller()">
+        ${heading_block('We connect you to people who want your business')}
+    </%def>
 
 
-    <blockquote class="rectangle-speech-border light-yellow right-tip" id="main-headline">
-        <h1>We connect you to people who want your business</h1>
-        <div id="arc-tip"></div>
-    
-    </blockquote>
-    <div class="col_1" id="how-it-works">
-        <h2>How it works</h2>
-            <blockquote class="rectangle-speech-border">
-            <table>
-                <tr>
-                    <td class="num">
-                        <span>1</span>
-                    </td>
-                    <td>
-                        <p>You enter the product or service that 
-                        you are looking to buy</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="num">
-                        <span>2</span>
-                    </td>
-                    <td>
-                        <p>
-                        We find companies in your area who 
-                        can help because they want your business</p>
-                    </td>
-                </tr>
-                <tr class="no-border">
-                    <td class="num">
-                        <span>3</span>
-                    </td>
-                    <td>
-                        <p>
-                        In return you get helpful replies and 
-                        maybe even discount</p>
-                    </td>
-                </tr>
-            </table>
-                <b class="a1"></b>
-                <b class="a2"></b>
-                <b class="a3"></b>
-                <b class="a4"></b>
-            </blockquote>
+    <div class="col_1">
+        <h1>Step: 1<br />
+        fill out this form</h1>
     </div>
+
   
- 
-
-
-
 <%doc>
         <ul class="how-works">
             <li>
@@ -83,11 +48,52 @@
         </ul>
 </%doc>
     <div class="col_2">
-        <h2>Give it a try</h2>
         ${literal(form)}
     </div>
+
     <div class="clear"></div>
-    <h2>Why its helpful</h2>
+    <div class="col_1" id="how-it-works">
+        <h2>How it works</h2>
+        <table>
+            <tr>
+                <td class="num">
+                    <span>1</span>
+                </td>
+                <td>
+                    <p>You enter the product or service that 
+                    you are looking to buy</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="num">
+                    <span>2</span>
+                </td>
+                <td>
+                    <p>
+                    We find companies in your area who 
+                    can help because they want your business</p>
+                </td>
+            </tr>
+            <tr class="no-border">
+                <td class="num">
+                    <span>3</span>
+                </td>
+                <td>
+                    <p>
+                    In return you get helpful replies and 
+                    maybe even discount</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="col_2">
+        <h2 >If you have questions?</h2>
+        <p><b>Email:</b> ruby@rubyrate.com</p>
+        <p><b>Phone:</b> 484.452.4064</p>
+        <p>Or you can fill out the form on the <a href="/contact">contact page</a></p>
+    </div>
+    <div class="clear"></div>
+    <h2  style="margin-top: 1em;">Why its helpful</h2>
     <ul id="points" class="clearfix">
         <li>
             <h3>Save Time</h3>
@@ -106,10 +112,6 @@
         </li>
     </ul>
 
-    <h2 style="margin-top: 1em;">If you have questions?</h2>
-    <p><b>Email:</b> ruby@rubyrate.com</p>
-    <p><b>Phone:</b> 484.452.4064</p>
-    <p>Or you can fill out the form on the <a href="/contact">contact page</a></p>
 
             
 

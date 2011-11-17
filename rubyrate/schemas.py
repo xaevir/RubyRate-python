@@ -34,7 +34,6 @@ from rubyrate.my_deform.widgets import NoShowWidget
 import datetime
 
 class Base(MappingSchema):
-
     @staticmethod
     def on_create(node, kw):
         del node['_id']
@@ -44,90 +43,104 @@ class Base(MappingSchema):
     def on_update(node, kw):
         del node['_id']
         del node['created']
-   
-
-class Wish(Base):
-    _id = SchemaNode(String()) 
-    wish = SchemaNode(
-        String(),
-        widget= TextAreaWidget(),
-        title= 'What would you like help buying...',
-        )
-    email = SchemaNode(
-        String(),
-        validator = Email())
-    zip_code = SchemaNode(String())
-    created = SchemaNode(PassThru(), widget = PrettyDate())
-   
-    @staticmethod
-    def show_list(node, kw):
-        del node['email']
-        _id = node['_id']
-        del node['_id']
-        product = node['wish']
-        del node['wish']
-        prodlink = SchemaNode(PassThru(), name='prodlink', widget=LinkFromId())
-        node.children.insert(0,prodlink)
 
 
-class Reply(Base):
-    _id = SchemaNode(String()) 
-    company = SchemaNode(String(),  
-                widget = TextInputWidget(css_class='name'))
-    website = SchemaNode(String(), widget = Link())
-    email = SchemaNode(
+class Message(Base):
+    content = SchemaNode(
         String(),
-        validator = Email())
-    phone = SchemaNode(String())
-    message = SchemaNode(
-        String(),
-        widget= Markdown())
-    created = SchemaNode(PassThru(), widget=PrettyDate())
+        widget= TextAreaWidget())
     parent = SchemaNode(String(), widget=HiddenWidget())
 
-    @staticmethod
-    def on_create(node, kw):
-        parent_name = kw.get('parent_name')
-        del node['_id']
-        del node['created']
-        node['parent'].default = parent_name 
+
+class WishNoAccount(Base):
+    content = SchemaNode(
+        String(),
+        widget= TextAreaWidget(),
+        title= 'What would you like help buying...')
+    email = SchemaNode(
+        String(),
+        title= 'Email (never shared)',
+        validator = Email())
+    zip_code = SchemaNode(String(),
+        title= 'Zip Code or Relevant Location')
 
 
-    @staticmethod
-    def show_list(node, kw):
-        del node['created']
-        del node['message']
-        _id = node['_id']
-        del node['_id']
-        company = node['company']
-        del node['company']
-        companylink = SchemaNode(PassThru(), name='companylink', 
-            title = 'Company', widget=LinkFromId())
-        node.children.insert(0,companylink)
+class Wish(Base):
+    content = SchemaNode(
+        String(),
+        widget= TextAreaWidget(),
+        title= 'What would you like help buying...')
 
 
-class Email(Base):
-    _id = SchemaNode(String()) 
-    body = SchemaNode(String(),  
-        widget= TextAreaWidget())
-    sender = SchemaNode(String()) 
-    to = SchemaNode(String()) 
-    created = SchemaNode(PassThru(), widget=PrettyDate())
-
-class User(MappingSchema):
-    def unique_username(node, value):
-        user = User.by_username(value)
-        if user:
-            raise Invalid(node, 'That username already exists')
+class Buyer(MappingSchema):
     username = SchemaNode(
         String(),
-        validator = All( Length(min=3, max=50), unique_username ) )
+        validator = Length(min=3, max=50)) 
     email = SchemaNode(
         String(),
         validator = Email())
     password = SchemaNode(
         String(), 
         validator = Length(min=5, max=100),
-        widget =PasswordWidget())
+        widget = PasswordWidget())
 
+
+class Seller(MappingSchema):
+    username = SchemaNode(
+        String(),
+        validator = Length(min=3, max=50)) 
+    email = SchemaNode(
+        String(),
+        validator = Email())
+    password = SchemaNode(
+        String(), 
+        validator = Length(min=5, max=100),
+        widget = PasswordWidget())
+    company = SchemaNode(String(),  
+                         widget = TextInputWidget(css_class='name'),
+                         missing='')
+    website = SchemaNode(String(), missing='')
+    phone = SchemaNode(String(), missing='')
+
+@colander.deferred
+def deferred_came_from_default(node, kw):
+    came_from = kw.get('came_from')
+    return came_from
+
+class Login(MappingSchema):
+    username = SchemaNode(
+        String())
+    password = SchemaNode(
+        String(), 
+        widget = PasswordWidget())
+    came_from = SchemaNode(
+        String(),
+        widget = HiddenWidget(), 
+        default = deferred_came_from_default)
+
+
+
+
+class Contact(MappingSchema):
+    name = SchemaNode(String(),
+        validator = Length(min=2, max=200))
+    email = SchemaNode(String(),
+        validator = colander.Email())
+    message = SchemaNode(String(),
+        validator = Length(max=2000),
+        widget=TextAreaWidget())
+
+class SpecialUrl(MappingSchema):
+    wish_id = SchemaNode(String())
+
+
+class SupplierSchema(MappingSchema):
+    company_name = SchemaNode(String())
+    phone_number = SchemaNode(String())
+    locations = SchemaNode(String())
+    products_you_sell = SchemaNode(String())
+    area_you_serve = SchemaNode(String())
+    email = SchemaNode(
+        String(),
+        validator = colander.Email())
 

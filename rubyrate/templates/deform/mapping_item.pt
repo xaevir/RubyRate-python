@@ -5,7 +5,9 @@
   <!-- mapping_item -->
   <label tal:condition="not (field.widget.hidden or
                              field.widget.category == 'structural')"
-         class="desc"
+                           
+         tal:attributes="class 'required' if field.required else '' "
+         
          title="${field.description}"
          for="i-${field.oid}"
          >${field.title}

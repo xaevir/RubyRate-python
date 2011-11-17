@@ -11,19 +11,26 @@ def altrow(index):
 
 <table id="items">
     <tr>
-        <th>Product</th>
+        <th>Wish</th>
         <th>Update</th>
         <th>Delete</th>
-        <th>Answer</th>
+        <th>Owned By or Activation url</th>
     </tr>
     <% index = 0 %>
-    % for item in items:
+    % for wish in wishes:
         <% index +=1 %>
     <tr class="${altrow(index)}">
-        <td><a href="/wishes/${item['_id']}">${item['product']}</a></td>
-        <td><a href="/wishes/${item['_id']}/edit">edit</a></td>
-        <td><a href="/wishes/${item['_id']}/delete">delete</a></td>
-        <td><a href="/wishes/${item['_id']}/answers">Answer</a></td>
+        <td><a href="/wishes/${wish['_id']}">${wish['content']}</a></td>
+        <td><a href="/wishes/${wish['_id']}/edit">edit</a></td>
+        <td><a href="/wishes/${wish['_id']}/delete">delete</a></td>
+        <td style="width: 350px;">
+        <% user = get_wish_owner(wish['user_id']) %>
+        % try:
+            ${user['username']}     
+        % except:
+            rubyrate.com/users/${wish['user_id']}/activate
+        % endtry
+        </td>
     </tr>
     % endfor
 </table>

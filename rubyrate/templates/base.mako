@@ -1,3 +1,6 @@
+<%namespace file="/partials/admin_nav.mako" import="admin_nav"/>
+<%namespace file="/partials/heading_block.mako" import="heading_block"/>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -5,8 +8,9 @@
     <title>${self.title()}</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="shortcut icon" href=${request.static_url('rubyrate:static/favicon.png')} />
+    <link rel="shortcut icon" href="/static/favicon.png" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/main.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/js/fancybox/jquery.fancybox-1.3.4.css')}"/>
     <!--[if lt IE 8]>
     <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js"></script>
     <![endif]-->   
@@ -16,18 +20,19 @@
 
 <body id="${self.body_id()}" >
 
-
     <div id="hd" class="clearfix">
         <div class="content clearfix">
-            <a href="/" id="logo" class="ir">rubyrate</a>
+            <a href="/" id="logo">
+                <span class="ir">rubyrate</span>
+            </a>
             <ul id="nav" class="clearfix">
-                <li><a href="/wishes">Open Wishes</a></li>
-                <li><a href="/supplier">Suppliers</a></li>
+                <li><a href="/wishes">Wishes</a></li>
                 <li><a href="/contact">Contact</a></li>
             </ul>
             <ul id="login-nav" class="clearfix">
                 % if request.loggedin:
-                    <li><a href="/logout">Logout</a></li>
+                    <li><a href="/logout">Logout <span style="font-weight: normal">
+                        (${request.user.username})</span></a></li>
                 % else:
                     <li><a href="/users/create">Create Account</a></li>
                     <li><a href="/users/login">Login</a></li>
@@ -35,10 +40,8 @@
             </ul>
         </div>
     </div>
-
+    ${self.heading_caller()}
 <div id="doc2" class="clearfix" style="width: ${self.page_width()}">
-
-
     <div id="bd">
         % if request.session.peek_flash():
         <div id="flash">
@@ -69,6 +72,8 @@ ${self.footer_js()}
 </body>
 </html>
 
+
+
 <%def name="title()">Ruby Rate</%def>
 
 <%def name="footer_js()">
@@ -97,7 +102,9 @@ ${self.footer_js()}
        .script("http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js")
        .script("http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore-min.js")
        .script("http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js").wait()
-
+       .script("/static/js/fancybox/jquery.fancybox-1.3.4.pack.js").wait()
+       .script("/static/js/isotope.min.js")
+       .script("/static/js/isotope.min.js")
        .script("/static/js/main.js")
     </script>
     <script>
@@ -107,5 +114,6 @@ ${self.footer_js()}
 
 <%def name="body_id()">regular</%def>
 <%def name="page_width()"></%def>
+<%def name="heading_caller()"></%def>
 <%def name="bd_hd()"></%def>
 <%def name="header_css()"></%def>

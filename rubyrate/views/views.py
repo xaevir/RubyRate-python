@@ -1,38 +1,16 @@
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.renderers import render
+from pyramid.traversal import resource_path
 
-from pyramid_mailer import get_mailer
-from pyramid_mailer.message import Message
+import pyramid_mailer
 from pyramid.url import resource_url
 from pyramid.httpexceptions import HTTPFound
 
 import transaction
 
-from mako.template import Template
-
-from colander import MappingSchema
-from colander import SequenceSchema
-from colander import TupleSchema
-from colander import SchemaNode
-from colander import Schema
-from colander import String
-from colander import Boolean
-from colander import Integer
-from colander import Length
-from colander import OneOf
-from colander import Function
-from colander import Invalid
 import colander
-
-from markdown import markdown
-
 import deform
-from deform.widget import TextInputWidget
-from deform.widget import TextAreaWidget
-from deform.widget import Widget
-from deform.widget import RadioChoiceWidget
-from deform import ValidationFailure
 
 from rubyrate.my_deform.form import Button
 from rubyrate.my_deform.form import Form
@@ -42,72 +20,272 @@ from deform import ZPTRendererFactory
 from pprint import pprint
 p = pprint
 
-from rubyrate.resources import Root
-from rubyrate.resources import Wishes
-from rubyrate.resources import Wish
-from rubyrate.resources import Users
-from rubyrate.resources import User
-from rubyrate.resources import Admin
-from rubyrate.resources import Replies
-from rubyrate.resources import Reply
-from rubyrate.resources import Emails
-from rubyrate.resources import Email
+
+from rubyrate import resources
+from rubyrate import models 
+from rubyrate import schemas 
 
 from rubyrate.utility import allowed_methods
 from rubyrate.utility import render_form
+from rubyrate.utility import id_generator
 
-import smtplib
+@view_config(name="", context=resources.Root, renderer='home_page.mako')
+def create_wish_homepage(context, request):
+    schema = schemas.WishNoAccount()
+    # if a person is already logged in:
+    if 'admin' in request.user.groups:
+        schema = schemas.WishNoAccount()
+        schema['email'].missing=''
+    if 'member' in request.user.groups:
+        schema = schemas.Wish()
+    if 'visitor' in request.user.groups:
+        schema = schemas.WishNoAccount()
+    form = Form(schema, buttons=(Button(title='Make Wish', css_class='btn'),))
+    if request.method == 'GET': 
+        html = form.render()
+        return {'form': html}
+    # validate 
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render()}
+    # passed validation
+    content = captured.pop('content')
+    zip_code = captured.get('zip_code', '')
+    email = captured.get('email', '')
 
-from mako.template import Template
+    if 'member' in request.user.groups:
+        user = request.user 
+        zip_code = user.zip_code
+        email = user.email
+    else:
+        user = models.User()
+        user.zip_code = zip_code
+        user.email = email
+        user.groups = ['seller']
+        user.groups.append('member')
+        user.insert()
 
-from rubyrate.resources import del_autos
-
-
-
-def change_context(context, request):
-    if isinstance(context, Root):
-        request.context = context['wishes']
-    return True 
-
-@view_config(name="", context=Root, renderer='home_page.mako', 
-             custom_predicates=(allowed_methods('GET', 'POST'), 
-             change_context))
-def create_wish(context, request):
-    context = request.context # actual context
-    schema = context.schema(after_bind=context.schema.on_create).bind()
-    form = Form(schema, buttons=(
-        Button(title='Get Replies', css_class='btn'),))
-    def success(request):
-        # email notification
-        settings = request.registry.settings
-        email = Message(subject='New Wish',
-            sender=settings['to'],
-            recipients=[settings['to']],
-            body=' ')
-        mailer = get_mailer(request) 
-        mailer.send(email)
-        transaction.commit()
-        # show modal message
-        thank_you = 'Thank you. We are working on your wish.'    
-        request.session.flash(thank_you)
-        model = request.context.model
-        href = request.resource_url(context[model._id])
-        raise HTTPFound(href)             
-    return render_form(form, request, success=success)
+    wish = models.Wish()
+    wish.user_id = user._id
+    wish.content = content 
+    wish.zip_code = zip_code 
+    wish.insert()
+    # email notification
+    settings = request.registry.settings
+    email = pyramid_mailer.message.Message(subject='New Request',
+                                           sender=settings['to'],
+                                           recipients=[settings['to']],
+                                           body=' ')
+    mailer = pyramid_mailer.get_mailer(request) 
+    mailer.send(email)
+    transaction.commit()
+    # show modal message
+    # redirect
+    #resource = context['wishes'][wish._id]
+    href = request.resource_url(context, 'thanks-for-wish')
+    return HTTPFound(href)             
 
 
-@view_config(context=Wish, renderer='/wish/show.mako')
+@view_config(name="thanks-for-wish", context=resources.Root, 
+             renderer='/mini/thankyou_homepage.mako')
+def thankyou(context, request):
+    return {}
+
+@view_config(context=resources.Wish, renderer='/wishes/show.mako')
 def show_wish(context, request):
-    replies = context['replies']
-    str_id = str(context.model._id)
-    cursor = replies.Model.all_by_parent(str_id, replies.Model)
-    return dict(
-        wish = context.model,
-        replies = cursor,
-        page = 'show-wish',
-        create_link = request.resource_url(context['replies'], 'create')
-        )
+    return dict(wish = context,
+                page = 'show-wish')
 
+@view_config(context=resources.Wishes, renderer='/wishes/list.mako') 
+def list_wishes(context, request):
+    cursor = context.get_wishes()
+    return dict(wishes = cursor,
+                url = request.resource_url)
+
+@view_config(name='edit', context=resources.Wish, renderer='form.mako',
+             permission='edit')
+def edit_wish(context, request):
+    schema = schemas.Wish()
+    return render_form(schema, request, appstruct=context.__dict__)
+
+@view_config(name='delete', context=resources.Wish, renderer='form.mako', permission='edit')
+def delete_wish(context, request):
+    context.remove()
+    request.session.flash('Deleted')
+    root = resources.Root(request)
+    url = resource_path(root['admin'])
+    return HTTPFound(location = url)
+
+@view_config(name="create-first", context=resources.Messages, renderer='/messages/create.mako')
+def create_first_message(context, request):
+    if not request.loggedin:
+        href = '/users/create-seller/%s'% context.__parent__.__name__
+        return HTTPFound(href)            
+
+    # check if they already sent message
+    result = context.already_sent_message(context.__parent__.__name__, request.user.username)
+    if result is not None:
+        notice = 'We do not want to burden this person, so we wait for them to respond before you can send more messages'
+        tmp = render('notice.mako', {'notice': notice}, request)
+        return Response(tmp)
+
+    schema = schemas.Message()
+    schema['content'].title = 'Kindly add your message'
+    schema['parent'].default = context.__parent__.__name__
+    form = Form(schema, buttons=(Button(title='Send Message', css_class='btn'),))
+    if request.method == 'GET': 
+        return {'form': form.render(), 
+                'wish': context.__parent__}
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render(),
+                'wish': context.__parent__}
+    # passed validation
+    message = models.Message()
+    message.username = request.user.username 
+    message.content = captured['content'] 
+    message.parent = captured['parent']
+    message.ancestors = [captured['parent']]
+    message.insert()
+    thank_you = 'This customer has been contacted with your message'
+    request.session.flash(thank_you)
+    # redirect
+    href = request.resource_url(context)
+    return HTTPFound(href)             
+
+
+@view_config(context=resources.Convo, renderer='/convo/convo.mako')
+def convo(context, request):
+    if not request.loggedin:
+        href = '/users/create-seller/%s'% context.__parent__.__name__
+        return HTTPFound(href)            
+
+    schema = schemas.Message()
+    schema['content'].title = ''
+    schema['parent'].default = context.__parent__.__name__
+    form = Form(schema, 
+                buttons=(Button(title='Send Message', css_class='btn'),),
+                action = '/wishes/%s/messages/create'% context.__parent__.__name__,
+                formid = 'create-message')
+    if request.method == 'GET': 
+        return {'form': form.render(), 
+                'wish': context.__parent__}
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render(),
+                'wish': context.__parent__}
+    # passed validation
+    message = models.Message()
+    message.username = request.user.username 
+    message.content = captured['content'] 
+    message.parent = captured['parent']
+    message.ancestors = [captured['parent']]
+    message.insert()
+    thank_you = 'This customer has been contacted with your message'
+    request.session.flash(thank_you)
+    # redirect
+    href = request.resource_url(context)
+    return HTTPFound(href)    
+
+
+@view_config(name="create", context=resources.Messages, renderer='/messages/create.mako')
+def create_message(context, request):
+    if not request.loggedin:
+        href = '/users/create-seller/%s'% context.__parent__.__name__
+        return HTTPFound(href)            
+
+    schema = schemas.Message()
+    schema['parent'].default = context.__parent__.__name__
+    form = Form(schema, buttons=(Button(title='Send Message', css_class='btn'),))
+    if request.method == 'GET': 
+        return {'form': form.render(), 
+                'wish': context.__parent__}
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render(),
+                'wish': context.__parent__}
+    # passed validation
+    message = models.Message()
+    message.username = request.user.username 
+    message.content = captured['content'] 
+    message.parent = captured['parent']
+    message.ancestors = [captured['parent']]
+    message.insert()
+    thank_you = 'This customer has been contacted with your message'
+    request.session.flash(thank_you)
+    # redirect
+    href = request.resource_url(context)
+    return HTTPFound(href)             
+
+@view_config(context=resources.Messages, renderer='/messages/list.mako') 
+def list_messages(context, request):
+    parent = context.__parent__.__name__
+    cursor = context.get_messages(parent)
+    return dict(wish = context.__parent__, 
+                messages = cursor,
+                url = request.resource_url)
+
+@view_config(context=resources.Message, renderer='/messages/show.mako')
+def show_message(context, request):
+    return dict(message = context.content,
+                replies = {},
+                page = 'show-message',
+                create_link = request.resource_url(context))
+
+
+@view_config(name='contact', context=resources.Root, renderer="form.mako")
+def contact(context, request):
+    tpl_vars = {'heading'  : 'Say Hello...',
+                'content'  : '<p><b>email: </b>ruby@rubyrate.com</p>',
+                'page_name': 'contact'}  
+    
+    schema = schemas.Contact()
+    myform = Form(schema, 
+                buttons=(Button(title='Send', css_class='btn'),))
+    if request.method == "GET": 
+        tpl_vars['form'] = myform.render()
+        return tpl_vars
+    # validate            
+    try:
+        controls = request.POST.items()
+        captured = myform.validate(controls)
+    except deform.ValidationFailure, e:
+        tpl_vars['form'] = e.render()
+        return tpl_vars
+    # passed validation
+    # email the data
+    readonly_form = myform.render(captured, readonly=True)
+    settings = request.registry.settings
+    email = pyramid_mailer.message.Message(subject='Contact Page',
+                                           sender=settings['from'],
+                                           recipients=[settings['to']],
+                                           body=readonly_form)
+    mailer = pyramid_mailer.get_mailer(request) 
+    mailer.send(email)
+    transaction.commit()
+
+    request.session.flash('Thank you!')
+    return HTTPFound(location = request.path_url)             
+
+
+@view_config(context=resources.Admin, renderer='/admin/home.mako', permission='view')  
+def admin(context, request):
+    wishes = models.Wishes()
+    cursor = wishes.get_wishes()
+
+    return {'wishes': cursor,
+           'get_wish_owner': wishes.get_wish_owner}
+
+
+"""
 @view_config(name='summary', context=Wish, renderer='/wish/summary.mako')
 def summary_wish(context, request):
     replies = context['replies']
@@ -122,34 +300,16 @@ def summary_wish(context, request):
 
 
 
-@view_config(name='update', context=Reply, renderer='form.mako',
-             custom_predicates=(allowed_methods('GET', 'PUT'),))
-@view_config(name='update', context=Wish, renderer='form.mako',
-             custom_predicates=(allowed_methods('GET', 'PUT'),))
-def update_context(context, request):
-    schema = context.schema(after_bind=del_autos).bind()
-    form = Form(schema, 
-                _method='PUT', 
-                buttons=(Button(title='Update', css_class='btn'),))
-    return render_form(form, request, appstruct=context.model.__dict__)
 
 @view_config(context=Wishes, renderer='/wish/list.mako')
 def list_wishes(context, request):
     wishes = context.Model.get_all_without_email(context.Model)
     return {'wishes': wishes}
 
-@view_config(name='delete', context=Wish, renderer='form.mako',
-             custom_predicates=(allowed_methods('DELETE'),))
-def delete_wish(context, request):
-    context.remove()
-    request.session.flash('Deleted')
-    return HTTPFound(location = '/admin')
 
 @view_config(name="create", context=Emails, renderer='form.mako',
              custom_predicates=(allowed_methods('GET', 'POST'),))
-@view_config(name="create", context=Replies, renderer='form.mako',
-             custom_predicates=(allowed_methods('GET', 'POST'),))
-def create_reply(context, request):
+def create_email(context, request):
     parent_name = context.__parent__.__name__
     schema = context.schema(after_bind=context.schema.on_create)
     schema = schema.bind(parent_name=parent_name)
@@ -159,16 +319,45 @@ def create_reply(context, request):
     return render_form(form, request)
 
 
+@view_config(name="create", context=Replies, renderer='form.mako',
+             custom_predicates=(allowed_methods('GET', 'POST'),))
+def create_reply(context, request):
+    parent_name = context.__parent__.__name__
+    schema = context.schema(after_bind=context.schema.on_create)
+    schema = schema.bind(parent_name=parent_name)
+    form = Form(
+        schema, 
+        buttons=(Button(title='Submit Reply', css_class='btn'),))
+    if request.method == 'GET': 
+        html = form.render()
+        return {'form': html}
+    # validate 
+    try:
+        controls = request.POST.items()
+        captured = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render()}
+    # passed validation
+    if request.method == 'POST': 
+        #initialize model
+        message = {} 
+        message['content'] = captured.pop('message')
+        message['parent'] = captured.pop('parent')
+        half_user = models.HalfUser(captured)
+        half_user.insert()
 
-@view_config(context=Reply, renderer='form.mako')
+        
+        
+
+    return render_form(form, request)
+
+
+
+@view_config(context=Reply, renderer='/replies/show.mako')
 def show_reply(context, request):
-    schema = context.schema(after_bind=del_autos).bind()
-    form = Form(schema, 
-                buttons=(Button(title='Update', css_class='btn'),))
-    form_dct = render_form(form, request, appstruct=context.model.__dict__, 
-                       readonly=True, redirect=False)
-    return {'form': form_dct['form'], 
-            'page_name': 'show-reply'}
+    return {'message': context.model.message, 
+            'company': context.model.company,
+            'company_href': context.model._id}
 
 @view_config(context=Replies, renderer='form.mako')
 def list_replies(answers, request):
@@ -220,39 +409,6 @@ def list_replies(answers, request):
     return dct
 
 
-class ContactSchema(MappingSchema):
-    name = SchemaNode(String(),
-        validator = Length(min=2, max=200))
-    email = SchemaNode(String(),
-        validator = colander.Email())
-    message = SchemaNode(String(),
-        validator = Length(max=2000),
-        widget=TextAreaWidget())
-
-@view_config(name='contact', context=Root, renderer="contact.mako")
-def contact(context, request):
-    schema = ContactSchema()
-    myform = Form(schema, 
-                buttons=(Button(title='Send', css_class='btn'),))
-    if request.method == "GET": 
-        return {'form':myform.render()}
-    controls = request.POST.items()
-    try:
-        appstruct = myform.validate(controls)
-        # email the controls
-        readonly_form = myform.render(appstruct, readonly=True)
-        settings = request.registry.settings
-        email = Message(subject='Contact page',
-                        sender=settings['from'],
-                        recipients=['bobby.chambers33@gmail.com'], #settings['to']
-                        html=readonly_form)
-        mailer = get_mailer(request)
-        mailer.send(email)
-        transaction.commit()
-        request.session.flash('Thank you!')
-        return HTTPFound(location = request.path_url)             
-    except ValidationFailure, e:
-        return {'form':e.render()}
 
 
 
@@ -292,10 +448,4 @@ def supplier(context, request):
         return {'form':e.render()}
 
 
-@view_config(context=Admin, renderer='/admin/home.mako', 
-    permission='view')
-def item_admin(admin, request):
-    items = admin.get_items()
-    return {'items': items,
-            'give_pricing': '/prices/create'}
-
+"""

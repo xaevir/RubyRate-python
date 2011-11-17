@@ -7,7 +7,6 @@ from pyramid.security import authenticated_userid
 
 from pyramid.httpexceptions import HTTPUnauthorized
 
-from rubyrate.resources import groupfinder
 from rubyrate.resources import Root
 
 from pyramid.events import subscriber
@@ -23,6 +22,12 @@ from gridfs import GridFS
 import pymongo
 
 import os
+
+from pyramid.decorator import reify
+from pyramid.request import Request
+from pyramid.security import unauthenticated_userid
+
+import rubyrate.models
 
 import logging
 log = logging.getLogger(__name__)
@@ -80,6 +85,9 @@ def main(global_config, **settings):
     config.add_static_view('static', 'rubyrate:static')
     config.scan('rubyrate')
 
+    config.set_request_factory(RequestWithUserAttribute)
+
+
     return config.make_wsgi_app()
 
 
@@ -90,7 +98,40 @@ def add_mongo_db(event):
     event.request.db = db
     event.request.fs = GridFS(db)  
 
+import rubyrate.models
+class RequestWithUserAttribute(Request):
+    @reify
+    def user(self):
+        userid = unauthenticated_userid(self)
+        if userid is None:
+            user = models.User()
+            user.groups = ['visitor']  
+            user._id = 0
+            return user
+        else:
+            user = models.Users().by_username(userid) 
+            if not user:
+                user = models.User()
+                user.groups = ['visitor']
+                user._id = 0
+                return user
+            user.groups = getattr(user, 'groups', ['member'])
+            return user 
+             
 
+def groupfinder(name, request):
+    user = request.user
+    
+    # If the user is in the db then they have passed validation and are 
+    # a member. Since every user will be a member it does not make sense to
+    # add this field to the db. I will only add it if they are admins, etc...
+    # If down the road, I add an email verification, then I will alter this.
+    if user:
+        groups = getattr(user, 'groups', ['member'])
+        return ['group:%s'%group for group in groups]
+
+
+"""
 @subscriber(NewRequest)
 def csrf_validation_event(event):
     request = event.request
@@ -100,3 +141,4 @@ def csrf_validation_event(event):
        (user) and \
        (csrf != unicode(request.session.get_csrf_token())):
         raise HTTPUnauthorized
+"""

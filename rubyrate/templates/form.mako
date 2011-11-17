@@ -1,23 +1,18 @@
 <%inherit file="/base.mako"/>
+<%namespace file="/partials/heading_block.mako" import="heading_block"/>
 
-<%def name="body_id()">${page_name or 'general'}</%def>
+<%def name="body_id()">${page_name or 'form-page'}</%def>
 
-% if heading:
-   <h1>${heading}</h1>
-% endif
+    <%def name="heading_caller()">
+        % if heading:
+            ${heading_block(heading)}
+        % endif
+    </%def>
 
-% if answer:
-    ${literal(answer)}
-% endif
-
-% if answer:
-    <h1>${answer_heading}</h1>
+% if content:
+    <div id="c1">${literal(content)}</div>
 % endif
 
 ${literal(form)}
-
-% if button:
-    ${literal(button)}
-% endif
 
 

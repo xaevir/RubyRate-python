@@ -2,10 +2,37 @@ import re
 import colander
 from pyramid.httpexceptions import HTTPFound
 
-def render_form(form, request, appstruct=colander.null, redirect=True,
+from rubyrate.my_deform.form import Button
+from rubyrate.my_deform.form import Form
+
+
+import string
+import random
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits + 
+                 string.ascii_lowercase):
+    return ''.join(random.choice(chars) for x in range(size))
+
+
+def create_form(request, schema):
+    action = request.view_name
+    if action == 'create': 
+        button_title = 'Create'
+        method = 'POST'
+    if action == 'edit': 
+        button_title = 'Update'
+        method = 'PUT'
+    form = Form(schema, 
+                _method = method, 
+                buttons = (Button(
+                               title= button_title, 
+                               css_class='btn'),))
+    return form
+
+
+def render_form(schema, request, appstruct=colander.null, form=None,redirect=True,
                 success=None, readonly=False, flash=True):
-    #captured = None
-    url = request.resource_url(request.context.__parent__)
+    if not form:
+        form = create_form(request, schema)
 
     if request.method == 'GET': 
         html = form.render(appstruct, readonly=readonly)
@@ -16,15 +43,15 @@ def render_form(form, request, appstruct=colander.null, redirect=True,
         captured = form.validate(controls)
     except deform.ValidationFailure, e:
         return {'form': e.render()}
-
     # passed validation
-    if request.method == 'PUT': 
-        request.context.model.update(captured)
+    if request.POST['_method'] == 'PUT':
+        request.context.update(captured)
         flash_msg = 'Updated'
         url = request.resource_url(request.context.__parent__.__parent__)
-    if request.method == 'POST': 
+    if request.POST['_method'] == 'POST':
         #initialize model
-        request.context.model = request.context.Model(captured)
+        raise Exception('have to add specific model as a parameter')
+        request.context = request.context.Model(captured)
         request.context.model.insert()
         flash_msg = 'Created'
     if success:
@@ -32,6 +59,7 @@ def render_form(form, request, appstruct=colander.null, redirect=True,
     if flash:
         request.session.flash(flash_msg)
     if redirect:
+        url = request.resource_url(request.context)
         raise HTTPFound(url)  
     else:
         return form.render(captured)

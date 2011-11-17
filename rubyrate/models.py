@@ -19,21 +19,27 @@ def prepare_for_db(dct):
     dct = remove_private(dct)
     return dct
 
+
+class Collection(object):
+
+     def by_id(self,_id):
+        collection = get_current_request().db[self.__collection__]
+        doc = collection.find_one({'_id': ObjectId(_id)})
+        if doc:
+            cls = self.__contains__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj
+   
+
 class Crud(object):
     __collection__ = None
 
-    def __init__(self, doc):
-        for key, value in doc.iteritems():
-            setattr(self, key, value)
+    def __init__(self, doc = None):
+        if doc:
+            for key, value in doc.iteritems():
+                setattr(self, key, value)
         self.created = datetime.datetime.utcnow()
-
-    @staticmethod
-    def by_id(_id, cls):
-        collection = get_current_request().db[cls.__collection__]
-        doc = collection.find_one({'_id': ObjectId(_id)})
-        if doc is None:
-            return 
-        return doc 
 
     def insert(self):
         clean = prepare_for_db(self.__dict__)
@@ -41,23 +47,28 @@ class Crud(object):
         _id = collection.insert(clean)
         self._id = _id
 
-    def update(self, dct):
-        # first get orginal values ready 
-        original = prepare_for_db(self.__dict__)
-        # clean the new values for empties
-        new = prepare_for_db(dct)
-        # check original vs new values for changes
-        changed, removed = self.get_altered(new, original) 
+    def save(self):
+        clean = prepare_for_db(self.__dict__)
         collection = get_current_request().db[self.__collection__]
-        collection.update({'_id': self._id}, {'$set': changed})  # safe = True
-        #set the obj values
-        for key, value in changed.iteritems():
-            setattr(self, key, value)
+        collection.save(clean)
 
+
+#    def update(self, dct):
+#        # first get orginal values ready 
+#        original = prepare_for_db(self.__dict__)
+#        # clean the new values for empties
+#        new = prepare_for_db(dct)
+#        # check original vs new values for changes
+#        changed, removed = self.get_altered(new, original) 
+#        collection = get_current_request().db[self.__collection__]
+#        collection.update({'_id': self._id}, {'$set': changed})  # safe = True
+#        #set the obj values
+#        for key, value in changed.iteritems():
+#            setattr(self, key, value)"""
 
     def remove(self):
-        collection = self.__db__[self.__collection__]
-        self.collection.remove({'_id':self._id})
+        collection = get_current_request().db[self.__collection__]
+        collection.remove({'_id':self._id})
 
 
     def get_altered(self, dct, origdict):
@@ -71,57 +82,99 @@ class Crud(object):
         removed = dict((key, 1) for key in removed)
         return changed, removed 
 
-
 class Wish(Crud):
     __collection__ = 'wishes'
 
-    @staticmethod
-    def get_all_without_email(cls):
-        collection = get_current_request().db[cls.__collection__]
-        return collection.find( {}, { 'email' : 0 }).sort('created', 1)
+
+class Wishes(Collection):
+    __collection__ = 'wishes'
+    __contains__ = Wish 
+
+    def get_wishes(self):
+        collection = get_current_request().db[self.__collection__]
+        return collection.find().sort('created', -1)
+
+    def by_user_id(self, _id):
+        collection = get_current_request().db[self.__collection__]
+        doc = collection.find_one({'user_id': _id})
+        if doc:
+            cls = self.__contains__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj
+
+    def get_wish_owner(self, _id):
+        db = get_current_request().db
+        doc = db.users.find_one({'_id': _id})
+        return doc
+        
+
+class Convo(Collection):
+    __collection__ = 'messages'
 
 
-class Reply(Crud):
-    __collection__ = 'replies'
+
+class Messages(Collection):
+    __collection__ = 'messages'
+
+    def get_messages(self, _id):
+        collection = get_current_request().db[self.__collection__]
+        result = collection.find( { 'ancestors' : _id } ).sort('created', -1)
+        return result
+            
+    def already_sent_message(self, parent, username):                 
+        collection = get_current_request().db[self.__collection__]
+        result = collection.find_one({'parent': parent, 'username': username})  
+        return result
 
 
-    @staticmethod
-    def all_by_parent(_id, cls):
-        if not isinstance(_id, str):
-            raise Exception
-        collection = get_current_request().db[cls.__collection__]
-        return collection.find({'parent': _id}).sort('created', -1)
+class Message(Crud):
+    __collection__ = 'messages'
+
+    def __init__(self, doc = None, parent={}):
+        self.ancestors = parent.get('ancestors', '')
+        self.parent = parent.get('_id', '')
+        self.created  = datetime.datetime.utcnow()
+        if doc: 
+            for key, value in doc.iteritems():
+                setattr(self, key, value)
 
 
-class Email(Crud):
-    __collection__ = 'emails'
+class Admin(object):
+    pass
 
 
 class User(Crud):
     __collection__ = 'users'
-    __uses_descriptor__ = True
 
-    def __init__(self, data):
-        password = data.pop('password')
-        self.set_password(password)
+    def __init__(self, data=None):
         self.created  = datetime.datetime.utcnow()
-        for key, value in data.iteritems():
-            setattr(self, key, value)
+        if data:
+            for key, value in data.iteritems():
+                setattr(self, key, value)
 
-    def set_password(self, value):
+    def __setattr__(self, name, value):
+        if name == 'password': 
+            crypt = bcrypt.BCRYPTPasswordManager()
+            object.__setattr__(self, name, crypt.encode(value))
+        else:
+            object.__setattr__(self, name, value)
+
+    def check_password(self, freshly_submitted):
         crypt = bcrypt.BCRYPTPasswordManager()
-        self.password =  crypt.encode(value)
+        result =  crypt.check(self.password, freshly_submitted)
+        return result
 
-    @staticmethod
-    def check_password(freshly_submitted, from_db):
-        crypt = bcrypt.BCRYPTPasswordManager()
-        return crypt.check(from_db, freshly_submitted)
 
-    @staticmethod
-    def by_username(name):
-        collection = get_current_request().db[User.__collection__]
+class Users(Collection):
+    __collection__ = 'users'
+    __contains__ = User 
+
+    def by_username(self, name):
+        collection = get_current_request().db[self.__collection__]
         doc = collection.find_one({'username': name})
-        if doc is None:
-            return 
-        return doc 
-        
+        if doc:
+            cls = self.__contains__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj

@@ -1,13 +1,18 @@
-<div id="lightbox">
+<%inherit file="/base.mako"/>
+<%def name="body_id()">thankyou</%def>
+
     <p>
-    Thank you for choosing Ruby Rate.
-    <br />You will receive your quote in 5-7 business days.
+        Thank you for giving us the opportunity to serve you. 
+        We appreciate your business and the confidence you have 
+        placed in us. It takes us some time to contact the right
+        people to for you, but you should hear back from us today.
     </p>
     
-    <p style="float: right; margin-top: 50px;">
-        <img style="float: right; margin-top: 30px;" src="/static/ruby.png"/>
+    <p style="float: right;">
         Your Buddy, <br />
         Ruby
     </p>
-</div>
+    <div style="text-align: center; clear: both;">
+        <img src="/static/ruby.png" />
+    </div>
 

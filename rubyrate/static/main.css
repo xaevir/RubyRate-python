@@ -70,6 +70,7 @@ h1 {
     font-size: 28px;
     margin-bottom: 1em;/public
     border-bottom: 3px dotted #ccc;
+    font-weight: normal;
 }
 h2 {
     font-size: 14px;
@@ -139,15 +140,21 @@ input[type=submit], button {
 }
 input[type=text], input[type=password], textarea{
     border-color:#C0C0C0 #D9D9D9 #D9D9D9;
+    border-color: #9BE1F7;
     border-width: 1px;
     border-style: solid;
 }
 
-input[type=text]:hover, input[type=password]:hover, textarea:hover {
+input[type=text]:hover, 
+input[type=password]:hover, 
+textarea:hover,
+input[type=text]:focus, 
+input[type=password]:focus, 
+textarea:focus {
     border-color: #a0a0a0 #b9b9b9 #b9b9b9;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    border-color: #00C3FF;
+    /*box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;*/
 }
-
 
 
 input, select {
@@ -211,7 +218,7 @@ tr {
  */
 
 form {
-    width: 400px;
+    width: 300px;
     margin: 0 auto;
 }
 textarea{
@@ -246,7 +253,8 @@ input[type="submit"] {
     color: #ccc;
 }
 
-.deform .req {
+.required:after {
+    content: '*';
     color: red;
 }
 .deform label.desc {
@@ -403,6 +411,45 @@ div.deformReplaces {
 
 }
 
+
+@font-face {
+    font-family: 'DanielRegular';
+    src: url('/static/Daniel-fontfacekit/daniel-webfont.eot');
+    src: url('/static/Daniel-fontfacekit/daniel-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Daniel-fontfacekit/daniel-webfont.woff') format('woff'),
+         url('/static/Daniel-fontfacekit/daniel-webfont.ttf') format('truetype'),
+         url('/static/Daniel-fontfacekit/daniel-webfont.svg#DanielRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'DanielBold';
+    src: url('/static/Daniel-fontfacekit/danielbd-webfont.eot');
+    src: url('/static/Daniel-fontfacekit/danielbd-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Daniel-fontfacekit/danielbd-webfont.woff') format('woff'),
+         url('/static/Daniel-fontfacekit/danielbd-webfont.ttf') format('truetype'),
+         url('/static/Daniel-fontfacekit/danielbd-webfont.svg#DanielBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'DanielBlackRegular';
+    src: url('/static/Daniel-fontfacekit/danielbk-webfont.eot');
+    src: url('/static/Daniel-fontfacekit/danielbk-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/Daniel-fontfacekit/danielbk-webfont.woff') format('woff'),
+         url('/static/Daniel-fontfacekit/danielbk-webfont.ttf') format('truetype'),
+         url('/static/Daniel-fontfacekit/danielbk-webfont.svg#DanielBlackRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
 .clear {
     clear: both;
     float: none;
@@ -502,39 +549,42 @@ div.deformReplaces {
 }
 
 .btn{
-    font: bold 12px Helvetica, Arial, sans-serif;
-    text-decoration: none;
-    padding: 7px 12px;
+    padding: 7px 15px;
     position: relative;
     display: inline-block;
-    color: #333;
-    border: 1px solid #C3D9FF;
+    color: #fff;
 
-    text-shadow: 0 1px 0 #fff;
     -webkit-transition: border-color .218s;
     -moz-transition: border .218s;
     -o-transition: border-color .218s;
     transition: border-color .218s;
     /*gradient*/
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#f2f6ff));
-    background: -webkit-linear-gradient(#ffffff, #f2f6ff);
-    background: -moz-linear-gradient(#ffffff, #f2f6ff);
-    background: -ms-linear-gradient(#ffffff, #f2f6ff);
-    background: -o-linear-gradient(#ffffff, #f2f6ff);
-    background: linear-gradient(#ffffff, #f2f6ff);
-    -pie-background: linear-gradient(#ffffff, #f2f6ff);
+    background: #E8F6FF;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#E8F6FF), to(#C0DCED));
+    background: -webkit-linear-gradient(#E8F6FF, #C0DCED);
+    background: -moz-linear-gradient(#fff, #A8F9FF);
+    background: -ms-linear-gradient(#E8F6FF, #C0DCED);
+    background: -o-linear-gradient(#E8F6FF, #C0DCED);
+    background: linear-gradient(#FFF, #C0DCED);
+    -pie-background: linear-gradient(#E8F6FF, #C0DCED);   
     /*border*/
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
     behavior: url(/static/pie.htc);
+    border-width: 2px;
+    border-style: solid;
+    border-color: #00E8F4;
+    border: none;
+    text-shadow: 0 1px 1px #333;
+    box-shadow: 0 1px 2px #888;
+    background: -moz-linear-gradient(#A7A7A7, #656565);
+    -moz-border-radius: 30px;
 }
+
 .btn:hover {
-    border-color: #89B4FF;
-    -webkit-box-shadow: #ccc 0px 1px 0px;
-    -moz-box-shadow:    #ccc 0px 1px 0px;
-    box-shadow:         #ccc 0px 1px 0px;
-    behavior: url(/static/PIE.htc);
+    background: -moz-linear-gradient(#656565, #A7A7A7);
+    text-decoration: none;
+    box-shadow: none;
 }
 
 
@@ -559,12 +609,12 @@ html {
 }
 
 body {
-    /*background-color:#FDFDFD;*/
+    background-color:#FDFDFD;
     /*
     background: #F8F7F0 url('/static/bg-body.png') repeat top left;
     background: #F2FBFF url('/static/square_bg.png') repeat top left;
-    background: #F2FBFF url('/static/bg.png') repeat top left;
-    */
+*/
+    
 }   
 
 #doc2 {
@@ -575,7 +625,7 @@ body {
 #hd {
     margin: 0 auto;
     margin-bottom: 20px;
-    border-bottom: 1px solid #ADCCFF;
+    /*border-bottom: 1px solid #ADCCFF;*/
     background: #444444;
 
     background: #C3D9FF;
@@ -587,11 +637,41 @@ body {
     background: linear-gradient(#444444, #2B2B2B);
     -pie-background: linear-gradient(#444444, #2B2B2B);
     behavior: url(/PIE.htc);
-    background: -moz-linear-gradient(#E2EDFF, #D3E3FF)
+    background: -moz-linear-gradient(#fff, #FFFFCC);
+    background: -moz-linear-gradient(#FFFFCC, #FFFF8C);
+    border-color: #FFF02B;
+    border-width: 1px 0 1px 0;
+    border-style: solid;
 }
-#line {
-    height: 1px;
+
+#home heading {
+    padding: 15px 0;
+    background: -moz-linear-gradient(#fff, #D1FCE1);
+    border: 1px solid #94E8B3;
+    padding: 15px 0;
+    text-align: center;
+    margin-bottom: 30px;
+
 }
+
+#heading {
+    /*margin-top: -20px;*/
+    padding: 15px 0;
+    background-color: #E8FFF0;
+    border-bottom: 1px solid #C0EDD0;
+    border-top: 1px solid #C0EDD0;
+    padding: 10px 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#heading h1 {
+    margin: 0;
+    color: #06963A;
+    font-family: 'LinuxLibertineORegular';
+    font-size: 34px;
+}
+
 .content {
     width: 900px;
     margin: 0 auto;
@@ -600,13 +680,14 @@ body {
 #bd {
     margin: 0 auto;
 }
-
 #logo {
-    background: url('/static/logo.png') no-repeat bottom left;
-    width: 186px;
-    height: 45px;
     float: left;
     border: 1px solid transparent;
+}
+#logo span {
+    width: 150px;
+    height: 36px;
+    background-image: url('/static/logo.png');
 }
 #ft {
     margin: 0 auto;
@@ -621,6 +702,7 @@ body {
     margin: 0;
     margin-left: 60px;
     float: left;
+    margin-top: 5px;
 }
 #nav li {
     list-style-type: none;
@@ -628,177 +710,48 @@ body {
     margin-right: 10px;
 }
 #nav a, #login-nav a{
-    margin-top: 4px;
     display: block;
     font-weight: bold;
-    font-size: 14px;
     color: #006EB7;
-    /*border: 1px solid #eee;*/
     border: 1px solid transparent;
     text-shadow: 1px 1px 0px white;
-    -webkit-border-radius: 15px;
-    -moz-border-radius:15px;
-    border-radius:15px;
-    padding: 3px 5px;
-    behavior: url(/static/PIE.htc);
-    line-height: 2.3;
-
+    padding: 5px 10px;
 }
 
 #nav a:hover,
 #login-nav a:hover,
-#logo:hover{
+#logo:hover {
+    -webkit-border-radius: 15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
     text-decoration: none;
     background-color: #EDF3FF;
-    border: 1px solid #D3E3FF;
+    border: 1px solid #eee;
+    behavior: url(/static/PIE.htc);
+    background: -moz-linear-gradient(#FFFFFF, #fdfdfd);
+    border-radius: 2px;
 }
 #nav .active a{
     /*font-weight: bold;*/
     /*border-bottom: 2px solid DeepSkyBlue;*/
 }
-
+#login-nav {
+    margin-top: 5px;
+}
 #login-nav li{
     float: right;
 }
 
 #login-nav {
     float: right !important;
-    line-height: 2;
 }
 
 
 /*__________________________________________________________________Home*/
 
-
-
-
-.oval-speech-border:after {
-    background: none repeat scroll 0 0 transparent;
-    border-bottom-right-radius: 40px 50px;
-    border-color: #F3961C;
-    border-style: solid;
-    border-width: 0 10px 10px 0;
-    bottom: -40px;
-    content: "";
-    display: block;
-    height: 31px;
-    margin-right: 20px;
-    position: absolute;
-    right: 50%;
-    width: 20px;
-    z-index: 2;
-}
-.oval-speech-border:before {
-    background: none repeat scroll 0 0 transparent;
-    border-bottom-right-radius: 80px 50px;
-    border-color: #F3961C;
-    border-style: solid;
-    border-width: 0 10px 10px 0;
-    bottom: -40px;
-    content: "";
-    display: block;
-    height: 30px;
-    margin-right: -10px;
-    position: absolute;
-    right: 50%;
-    width: 50px;
-    z-index: 2;
-}
-.oval-speech-border {
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 10px solid #F3961C;
-    border-radius: 240px 240px 240px 240px / 140px 140px 140px 140px;
-    color: #333333;
-    margin: 1em auto 60px;
-    padding: 70px 30px;
-    position: relative;
-    text-align: center;
-}
-
-.oval-speech-border > *:first-child:after {
-    background: none repeat scroll 0 0 #FFFFFF;
-    bottom: -10px;
-    content: "";
-    height: 15px;
-    position: absolute;
-    right: 50%;
-    width: 30px;
-    z-index: 1;
-}
-.oval-speech-border > *:first-child:before {
-    background: none repeat scroll 0 0 #F3961C;
-    border-radius: 10px 10px 10px 10px;
-    bottom: -40px;
-    content: "";
-    height: 10px;
-    margin-right: 45px;
-    position: absolute;
-    right: 50%;
-    width: 10px;
-    z-index: 1;
-}
-
-
-
 #home #flash{
-    display: none;
+    /*display: none;*/
 }
-
-.triangle-border.left:after {
-    border-color: transparent #FFFFFF;
-    border-width: 9px 21px 9px 0;
-    bottom: auto;
-    left: -21px;
-    top: 16px;
-}
-.triangle-border:after {
-    border-color: #FFFFFF transparent;
-    border-style: solid;
-    border-width: 13px 13px 0;
-    bottom: -13px;
-    content: "";
-    display: block;
-    left: 47px;
-    position: absolute;
-    width: 0;
-}
-.triangle-border.left:before {
-    border-color: transparent #5A8F00;
-    border-width: 15px 30px 15px 0;
-    bottom: auto;
-    left: -30px;
-    top: 10px;
-}
-.triangle-border:before {
-    border-color: #5A8F00 transparent;
-    border-style: solid;
-    border-width: 20px 20px 0;
-    bottom: -20px;
-    content: "";
-    display: block;
-    left: 40px;
-    position: absolute;
-    width: 0;
-}
-.triangle-border.left {
-    margin-left: 30px;
-}
-.triangle-border {
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 5px solid #5A8F00;
-    border-radius: 10px 10px 10px 10px;
-    color: #333333;
-    margin: 1em 0 3em;
-    padding: 15px;
-    position: relative;
-}
-
-#third .triangle-border {
-    width: 255px;
-    float: right;
-    margin-top: 0;
-}
-
 
 .col_1, .col_2{
     width: 47%; 
@@ -811,16 +764,17 @@ body {
 }
 
 #home h1 {
-    color: #272727;
-    font-family: 'LinuxLibertineOItalic', georgia, serif;
-    font-size: 32px;
+    /*color: #272727;*/
+    font-family: 'LinuxLibertineORegular', georgia, serif;
+    font-size: 50px;
     font-weight: normal;
     padding-bottom: 0px;
     margin-bottom: 0px;
     border-bottom: none;
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 80px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+    /*text-shadow: 0 1px 1px #ccc;*/
 }
 #home h2 {
     font-size: 32px;
@@ -833,16 +787,16 @@ body {
 
 
 
-#home form {
-    text-align: center;
+
+#home .required:after {
+    content: none
+
 }
-
-
 #home td{
     font-size: 15px;
     text-align: left;
     padding: .5em 0;
-    border-bottom: 3px dotted #CDEB8B;
+    /*border-bottom: 3px dotted #CDEB8B;*/
 }
 #home td p{
     margin-bottom: 0;
@@ -860,7 +814,6 @@ body {
     font-size: 24px;
 }
 
-
 .circle{
     display: block;
     float: left;
@@ -875,7 +828,6 @@ body {
     font-weight: bold;
 
     background-color: #5A8F00;
-
 
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
@@ -925,6 +877,7 @@ body {
 
 #home #field1 label {
     margin-bottom: 5px;
+    font-size: 18px;
 }
 
 #home #field1 textarea {
@@ -937,7 +890,7 @@ body {
 
 #home #field2, #home #field3 {
     /*margin-top: -1px;*/
-    margin-left: 5px;
+   /* margin-left: 5px;*/
 }
 
 #home #field3 input{
@@ -952,10 +905,14 @@ body {
     margin-right: 10px;
 }
 
+#home .btn {
+    font-size: 24px;
+}
+
 #home #field2 label, #home #field3 label {
     line-height: 1.6;
-    display: inline;
-    width: 80px;
+    width: 130px;
+    float: left;
 }
 
 
@@ -966,17 +923,8 @@ body {
    padding-left: 5px;
 }
 
-#home #field3 label {
-    margin-left: -22px;
-}
 
-#lightbox {
-    font-family: georgia, serif;
-    font-style: italic;
-    font-size: 32px;
-    color: #000;
-    font-weight: normal;
-}
+
 
 
 #home .arrows li{
@@ -987,129 +935,109 @@ body {
 }
 
 
-/*______________________________________________________________List  Wishes*/
-#wishes blockquote {
-    width: 240px;
+/*______________________________________________________________ThankYou*/
+#thankyou #bd {
+    font-family: 'DanielRegular';
+    font-size: 32px;
+    color: #000;
+    border: 2px solid #FFFF00;
+    padding: 100px;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#FFFFCC));
+    background: -webkit-linear-gradient(#ffffff, #FFFFCC);
+    background: -moz-linear-gradient(#ffffff, #FFFFCC);
+    background: -ms-linear-gradient(#ffffff, #FFFFCC);
+    background: -o-linear-gradient(#ffffff, #FFFFCC);
+    background: linear-gradient(#ffffff, #FFFFCC);
+    -pie-background: linear-gradient(#ffffff, #FFFFCC);
+    behavior: url(/static/pie.htc);
 }
-#wishes li{
-    float: left;
-    margin: 0 20px 20px 0;
+
+
+.btn-reply {
+    border-color: #00E8F4;
+    background: -moz-linear-gradient(#FFFFFF, #A8F9FF);
+    display: inline-block;
+    color: #006EB7;
+    text-decoration: none;
+    margin:0;
+    float: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px 0 24px 0;
+    border-right: none;
+    border-bottom: none;
 }
-/*________________________________________________________________Show  Wish*/
-#main-bubble{
+.btn-reply:hover {
+    background: -moz-linear-gradient( #A8F9FF, #FFFFFF ) !important;
+    text-decoration: none;
+}
+.btn-reply-small {
+    font-size: 11px;
+    padding-right: 1em;
+    padding: 5px 8px;
+}
+.btn-reply-large {
+   font-size: 14px;
+   color: #006EB7;
+   padding: 5px 11px;
+   padding-right: 2em;
+}
+/*________________________________________________________________Wish*/
+
+
+
+
+#wish #bd {
+    text-align: center;
+}
+#wish blockquote {
+    display: inline-block;
+    margin: 1em auto;
     width: 500px;
-    margin: 0;
-    font-size: 24px;
-    float: left;
 }
 #wish blockquote p{
-    margin-bottom: 0;
+    margin-bottom: 1em;
+    font-size: 24px;
 }   
 
-#wish textarea {
-
-}   
-
-#replies {
-    margin-left: 80px; 
-}
-
-
-#replies blockquote p{
-   height: 3em; 
-}   
-
-#reply {
-    text-align: right;
-}
-
-
-#reply {
-   position: absolute;
-   right: 30px;
-   padding: 0 3px;
-   background-color: #fff;
-   bottom: -20px;
-}
-
-
-#reply a{
-   width: 66px; 
-   margin:0;
-   text-decoration: none;
-
-}   
-#reply svg{
+.btn-reply svg {
     float: left;
+    margin-top: -5px;
+    margin-right: 2px;
 }
 
-#wish blockquote:last-child {
-}
-#reply-sign {
+.reply-sign {
     float: left;
     margin-top: -6px;
 }
 
 
-#reply-sign svg path{
+.reply-sign svg path {
+    margin-top: -12px;
     fill: #fff;
     stroke: #89B4FF;
 }
 
-.reply {
-    float: left; 
-    width: 400px;
-    margin-right: 10px;
-    position: relative; 
-}
-.reply form {
-    width: 350px;
-}
-
-/*_______________________________________________________________Show  Reply*/
-
-#show-reply .desc{
-   font-weight: bold; 
-}
-
-/*_________________________________________________________________Answers*/
-
-
-
-/*_________________________________________________________________Conclusion*/
-#conclusion textarea {
-    width: 600px;
-    height: 300px;
-}
-
-/*_________________________________________________________________Item List*/
-#list th{
-    font-weight: bold;
+.zip-code {
     text-align: left;
-}
-
-table#list {
-    width: 100%;
-}
-
-/*_________________________________________________________________Summary*/
-
-#summary #list {
-    
-}
-
-
-#summary div#list .odd{
-    float: right; 
-    clear: right;
-}
-#summary #list ul {
-    width: 300px;
+    color: #ccc;
+    font-size: 11px;
     float: left;
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 25px;
+    position: absolute;
+    left: 12px;
+    bottom: 5px;
 }
+
+
+
+.thank-after-wish {
+    font-family: 'LinuxLibertineOItalic';
+    font-size: 24px;
+}
+
 
 
 /*__________________________________________________________________Letter*/
@@ -1138,116 +1066,165 @@ table#list {
     margin-top: 1em;
 }   
 
-/*__________________________________________________________________Bizcard*/
-#bizcard li{
-    margin-bottom: 5px; 
-    text-align: center;
-}
 
-#bizcard .company{
-    font-weight: bold;
-    text-align: center;
-}
-#bizcard .message{
-    text-align: left;
-}
 
 
 /*____________________________________________________________Speech Bubbles*/
-/* ============================================================================================================================
-== RECTANGLE-BORDER STYLE WITH CURVE
-** ============================================================================================================================ */
-
-#home #main-message {
-/*	-webkit-border-radius:65px;
-	-moz-border-radius:65px;
-	border-radius:65px;
-    behavior: url(/static/PIE.htc);
-    */
-}
 
 /*long stings like a link will overflow the quote */
-blockquote p{
+blockquote.bubble p{
     overflow: hidden;
 }
 .electric-blue {
     border-color: #00DEF2;
 }
-.more {
-    position: absolute;
-    bottom: -25px;
-    right: 0;
-    background: #fff;
-    padding: 5px;
-    font-size: 11px;
-    text-decoration: underline;
-}
-
 .title {
-    margin-bottom: -20px;
+    margin-right: -10px;
+    float: right;
     height: 1.3em;
     overflow: hidden;
     font-style: italic;
-    color: #888;
-    text-align: center;
-    z-index: 10;
-    position: relative;
 }
 .title a{
     background-color: #fff;
     padding: 0 5px;
 }
-.create-message {
-    background: none repeat scroll 0 0 #FFFFFF;
-    bottom: -13px;
-    font-size: 11px;
-    padding: 5px;
-    padding-top: 0;
-    position: absolute;
-    right: 10px;
-    text-decoration: underline;
-}
 .bubble{
 	position: relative; 
 	padding: 10px; 
-	margin: 1em 0 3em;
 	text-align: center; 
-	border: 1px solid #CDEB8B; 
-    border: 1px solid #FFFF88;
+    border-width: 2px;
+    border-style: solid;
 	color:#333;
-	background: #F7FFFB; 
-	-webkit-border-radius:20px;
-	-moz-border-radius:20px;
-	border-radius:20px;
+	background: #fff; 
+	-webkit-border-radius:30px;
+	-moz-border-radius:30px;
+	border-radius:30px;
     behavior: url(/static/PIE.htc);
 }
-.tip-container{
+.svg-speechpointer {
     position: absolute;
-    bottom: -18px;
+    bottom: -8px;
     z-index: 10;
+    stroke-width: 2px;
 }
-.tip-right .tip-container{
-    right: 44px
+.tip-right .svg-speechpointer {
+    right: -8px;
+
 }   
-.tip-left .tip-container{
-    left: -17px;
+.tip-left .svg-speechpointer {
+    left: -14px;
 } 
 blockquote.tip-right {
-    background: -moz-linear-gradient(#ffffff, #F0FFCE);
-    border-color:  #DDEFB3; 
+    border-color:  #FFFF00; 
 }
 .tip-right svg path{
-    stroke: #DDEFB3;    
-    fill: #F0FFCE;
+    stroke: #FFFF00;    
+    fill: #fff;
 }
 blockquote.tip-left {
-    background: -moz-linear-gradient(#ffffff, #FFFFCC);
-    border-color:  #F2F27B; 
+    border-color:  #B6FF00; 
+    border-color:  #FBCD30; 
+    background:  #fdfdfd; 
 }
-.tip-left svg path { 
-    stroke: #F2F27B;    
-    fill: #ffffcc;
+.tip-left svg.svg-speechpointer path { 
+    stroke: #B6FF00;    
+    stroke:  #FBCD30; 
+    fill: #fdfdfd;
 }
+/*
 blockquote .svg-top {
     stroke: #fff !important;
+}
+*/
+/*
+.form-message {
+   width: 400px;
+}
+.form-message textarea {
+   height: 50px; 
+}
+
+.form-message button {
+    float: right;
+}   
+
+.convo {
+    border: 1px solid #666;
+    padding: 5px;
+}
+*/
+
+/*______________________________________________________________Segments*/
+
+#isotope {
+    overflow: visible !important;
+}   
+#isotope blockquote {
+    width: 240px;
+}
+#isotope li{
+    float: left;
+    margin: 0 20px 20px 0;
+}
+
+/*____________________________________________________________Pages*/
+#contact #c1 {
+    text-align: center;
+    font-size: 15px;
+}
+
+
+#messages-create .tip-left {
+    margin-bottom: 2em;
+    width: 400px;
+}
+
+   
+#messages-create .tip-right {
+    width: 400px;
+    float: right;
+}   
+
+#messages-create form {
+        width: 400px;
+}
+
+#messages-create .required:after {
+    content: none;
+}
+
+
+#notice {
+    border: 1px solid #C0EDD0;
+    padding: 40px;
+    text-align: center;
+    margin-top: 50px;
+    background: -moz-linear-gradient(#fff, #E8FFF0)
+}
+
+#notice h1 {
+    margin: 0;
+    color: #06963A;
+    font-family: 'LinuxLibertineORegular';
+    font-size: 34px;
+}
+#convo {
+    background: #f7f7f7;
+}
+
+#convo-bottom {
+    margin-top: 30px;
+}
+#convo #doc2 {
+    width: 600px;
+}
+#convo .tip-left {
+    width: 400px;
+}
+#convo form {
+    width: 400px;
+}   
+#convo label{
+    display: none;
 }
