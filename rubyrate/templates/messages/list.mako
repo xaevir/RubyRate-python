@@ -4,24 +4,23 @@
 <%namespace file="/partials/message_block.mako" import="message_block"/>
 <%namespace file="/partials/wish_block.mako" import="wish_block"/>
 
-<div id="wish">
-    <blockquote class="bubble tip-left">
-        <p>
-            ${wish.content}
-        </p>
-        % if request.user._id != wish.user_id:
-            <a href="/wishes/${wish._id}/messages/create-first" class="btn-reply btn-reply-large"
-                >reply</a>
-        % endif
-        <div class="zip-code">
-            ${wish.zip_code}
-        </div>
-    </blockquote>
-</div>
+
+<blockquote class="bubble tip-left">
+    <p>
+        ${wish.content}
+    </p>
+    % if request.user._id != wish.user_id:
+        <a href="/wishes/${wish._id}/convo" class="btn-reply btn-reply-large"
+            >reply</a>
+    % endif
+    <div class="zip-code">
+        ${wish.zip_code}
+    </div>
+</blockquote>
 
 
 % if messages:
-<ul id="isotope" class="clearfix">
+<ul id="first-messages" class="clearfix isotope">
     % for message in messages:
     <li class="isotope-item">
         <blockquote class="bubble tip-right">

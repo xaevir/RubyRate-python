@@ -15,7 +15,10 @@ requires = ['pyramid',
             'cryptacular',
             'Markdown',
             'pytz',
-            'deform']
+            'deform',
+            'formencode',
+            'pydns',
+            ]
 
 setup(name='rubyrate',
       version='0.0',

@@ -12,6 +12,7 @@ from colander import Function
 from colander import Invalid
 from colander import DateTime
 from colander import All
+from colander import Regex
 import colander
 
 import deform
@@ -32,6 +33,14 @@ from rubyrate.my_deform.widgets import NoShowWidget
 
 
 import datetime
+
+
+class PlainText(Regex):
+    def __init__(self, msg=None):
+        if msg is None:
+            msg = 'Enter only letters, numbers, or _ (underscore)'
+        super(PlainText, self).__init__(
+            u'^[a-zA-Z_\-0-9]*$', msg=msg)
 
 class Base(MappingSchema):
     @staticmethod
@@ -72,16 +81,16 @@ class Wish(Base):
         title= 'What would you like help buying...')
 
 
-class Buyer(MappingSchema):
+class User(MappingSchema):
     username = SchemaNode(
         String(),
-        validator = Length(min=3, max=50)) 
+        validator = Length(min=2, max=60) )
     email = SchemaNode(
         String(),
         validator = Email())
     password = SchemaNode(
         String(), 
-        validator = Length(min=5, max=100),
+        validator = Length(min=5),
         widget = PasswordWidget())
 
 

@@ -7,8 +7,8 @@
 <head>
     <title>${self.title()}</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="shortcut icon" href="/static/favicon.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/main.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/js/fancybox/jquery.fancybox-1.3.4.css')}"/>
     <!--[if lt IE 8]>
@@ -18,47 +18,57 @@
     ${self.header_js()}
 </head>
 
+
+
 <body id="${self.body_id()}" >
 
-    <div id="hd" class="clearfix">
-        <div class="content clearfix">
-            <a href="/" id="logo">
-                <span class="ir">rubyrate</span>
-            </a>
-            <ul id="nav" class="clearfix">
-                <li><a href="/wishes">Wishes</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-            <ul id="login-nav" class="clearfix">
-                % if request.loggedin:
-                    <li><a href="/logout">Logout <span style="font-weight: normal">
-                        (${request.user.username})</span></a></li>
-                % else:
-                    <li><a href="/users/create">Create Account</a></li>
-                    <li><a href="/users/login">Login</a></li>
-                % endif
-            </ul>
-        </div>
-    </div>
-    ${self.heading_caller()}
-<div id="doc2" class="clearfix" style="width: ${self.page_width()}">
-    <div id="bd">
-        % if request.session.peek_flash():
-        <div id="flash">
-            <% flash = request.session.pop_flash() %>
+<div id="hd" class="clearfix">
+    <div class="content clearfix">
+        <a href="/" id="logo">
+            <span class="ir">rubyrate</span>
+        </a>
+        <ul id="nav" class="clearfix">
+            % if request.user:
+                <li><a href="/users/${request.user.username}">My Chats</a></li>
+            % endif
+            % if hasattr(request.user, 'has_wish'):
+                <li><a href="/users/${request.user.username}/wishes">My Wishes</a></li>
+            % endif
+            <li><a href="/wishes">All Wishes</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <ul id="login-nav" class="clearfix">
+            % if request.user:
+                <li><a href="/logout">Logout <span style="font-weight: normal">
+                    (<span id="username">${request.user.username}</span>)</span></a></li>
+            % else:
+                <li><a href="/users/create">Create Account</a></li>
+                <li><a href="/users/login">Login</a></li>
+            % endif
+        </ul>
+    </div>             
+</div>
+
+${self.heading_caller()}
+
+<div id="bd" class="clearfix">
+    <div id="flash">
+    % if request.session.peek_flash():
+        <div class="success">
+                <% flash = request.session.pop_flash() %>
                 % for message in flash:
                 ${literal(message)}<br>
                 % endfor
         </div>
-        % endif
-
-        ${next.body()}
-
-        <div class="clear"></div>
+    % endif
     </div>
-
+    <div id="${self.page_segment()}">
+        ${next.body()}
+    </div>
+    <div class="clear"></div>
 </div>
-<div id="ft">
+
+<div id="footer">
     <%doc>
         <ul id="ft-nav">
             <li><a href="contact">Contact</a></li>
@@ -67,8 +77,36 @@
     <p>
         &copy; Ruby Rate 2011
     </p>
-</div>
 ${self.footer_js()}
+<%text>
+<script type="text/template" id="message-form">
+    <form action="#" class="deform" id="convo-form">
+        <textarea name="content"></textarea>
+        <button name="submit" type="submit" class="btn" value="submit">
+            <span>Send Message</span>
+        </button>
+    </form>
+</div>
+</script>
+
+<script type="text/template" id="message-item">
+        <li class="${css_class}">
+            <blockquote class="bubble tip-${tip}">
+                <p>
+                ${message['content']}     
+                </p>
+
+            </blockquote>
+            % if author == 'me':
+                <span class="title">me</span>
+            % else:
+            <a class="title" href="/users/${author}"
+                        style="font-size: 12px">${author}</a>
+            % endif
+        </li>
+</script>
+
+</%text>
 </body>
 </html>
 
@@ -101,10 +139,12 @@ ${self.footer_js()}
        .script("http://cdnjs.cloudflare.com/ajax/libs/raphael/1.5.2/raphael-min.js")
        .script("http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js")
        .script("http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore-min.js")
-       .script("http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js").wait()
-       .script("/static/js/fancybox/jquery.fancybox-1.3.4.pack.js").wait()
-       .script("/static/js/isotope.min.js")
-       .script("/static/js/isotope.min.js")
+       .script("/static/js/doTimeout.js")
+       .script("/static/js/backbone/backbone.js").wait()
+       .script("http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js")
+       .script("/static/js/fancybox/jquery.fancybox-1.3.4.pack.js")
+       .script("/static/js/pinfooter.js")
+       .script("/static/js/isotope.min.js").wait()
        .script("/static/js/main.js")
     </script>
     <script>
@@ -114,6 +154,7 @@ ${self.footer_js()}
 
 <%def name="body_id()">regular</%def>
 <%def name="page_width()"></%def>
+<%def name="page_segment()"></%def>
 <%def name="heading_caller()"></%def>
 <%def name="bd_hd()"></%def>
 <%def name="header_css()"></%def>

@@ -10,18 +10,16 @@
     <%def name="header_css()">
         <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static//fancybox/jquery.fancybox-1.3.4.css')}"/>
     </%def>
-
 </%doc>
 
-    <%def name="heading_caller()">
-        ${heading_block('We connect you to people who want your business')}
-    </%def>
-
-
-    <div class="col_1">
-        <h1>Step: 1<br />
-        fill out this form</h1>
+<%def name="heading_caller()">
+    <div id="heading">
+        <div class="content">
+            <h1>Connecting you to people who want your business</h1>
+            ${literal(form)}
+        </div>
     </div>
+</%def>
 
   
 <%doc>
@@ -47,9 +45,6 @@
             </li>
         </ul>
 </%doc>
-    <div class="col_2">
-        ${literal(form)}
-    </div>
 
     <div class="clear"></div>
     <div class="col_1" id="how-it-works">
@@ -57,7 +52,7 @@
         <table>
             <tr>
                 <td class="num">
-                    <span>1</span>
+                    <p>1</p>
                 </td>
                 <td>
                     <p>You enter the product or service that 
@@ -66,7 +61,7 @@
             </tr>
             <tr>
                 <td class="num">
-                    <span>2</span>
+                    <p>2</p>
                 </td>
                 <td>
                     <p>
@@ -76,7 +71,7 @@
             </tr>
             <tr class="no-border">
                 <td class="num">
-                    <span>3</span>
+                    <p>3</p>
                 </td>
                 <td>
                     <p>
@@ -92,8 +87,15 @@
         <p><b>Phone:</b> 484.452.4064</p>
         <p>Or you can fill out the form on the <a href="/contact">contact page</a></p>
     </div>
+
     <div class="clear"></div>
-    <h2  style="margin-top: 1em;">Why its helpful</h2>
+    <div class="horizontal-rule ">
+        <span class="first"></span>
+        <span class="second"></span>
+        <span class="third"></span>
+    </div>
+
+    <h2>Why its helpful</h2>
     <ul id="points" class="clearfix">
         <li>
             <h3>Save Time</h3>

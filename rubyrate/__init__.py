@@ -99,36 +99,30 @@ def add_mongo_db(event):
     event.request.fs = GridFS(db)  
 
 import rubyrate.models
+
 class RequestWithUserAttribute(Request):
     @reify
     def user(self):
+        # <your database connection, however you get it, the below line
+        # is just an example>
         userid = unauthenticated_userid(self)
-        if userid is None:
-            user = models.User()
-            user.groups = ['visitor']  
-            user._id = 0
-            return user
-        else:
+        if userid is not None:
+            # this should return None if the user doesn't exist
+            # in the database
             user = models.Users().by_username(userid) 
-            if not user:
-                user = models.User()
-                user.groups = ['visitor']
-                user._id = 0
-                return user
-            user.groups = getattr(user, 'groups', ['member'])
-            return user 
-             
+            return user
+
 
 def groupfinder(name, request):
-    user = request.user
-    
-    # If the user is in the db then they have passed validation and are 
+    user = models.Users().by_username(name)
+    # If the user is in the db then they have passed validation and are
     # a member. Since every user will be a member it does not make sense to
     # add this field to the db. I will only add it if they are admins, etc...
     # If down the road, I add an email verification, then I will alter this.
     if user:
         groups = getattr(user, 'groups', ['member'])
         return ['group:%s'%group for group in groups]
+
 
 
 """

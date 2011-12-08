@@ -1,17 +1,151 @@
-/*
-if ($('#wish').length){
-   $LAB
-   .script("/static/js/mvc/application.js").wait()
-   .script("/static/js/mvc/models/document.js").wait()
-   .script("/static/js/mvc/routers/documents.js").wait()
-   .script("/static/js/mvc/views/edit.js").wait()
-   .script("/static/js/mvc/views/index.js")
-   .script("/static/js/mvc/views/notice.js")
-   .wait(function(){
-      App.init();
-   });
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+// how to use
+//var params = $('form', this.el).serializeObject();
+
+// Window load event used just in case window height is dependant upon images
+$(window).bind("load", function() { 
+
+       var footerHeight = 0,
+           footerTop = 0,
+           $footer = $("#footer");
+
+       positionFooter();
+
+       function positionFooter() {
+
+                footerHeight = $footer.height();
+                footerTop = ($(window).scrollTop()+$(window).height()-footerHeight)+"px";
+
+               if ( ($(document.body).height()+footerHeight) < $(window).height()) {
+                   $footer.css({
+                        position: "absolute"
+                   }).animate({
+                        top: footerTop
+                   })
+               } else {
+                   $footer.css({
+                        position: "static"
+                   })
+               }
+
+       }
+
+       $(window)
+               .scroll(positionFooter)
+               .resize(positionFooter)
+
+});
+
+//move the last list item before the first item. The purpose of this is if the user clicks previous he will be able to see the last item.  
+//$('#slide_nav_ul li:first').before($('#slide_nav_ul li:last'));  
+
+
+if ($('#slide_nav').length){
+    slide_items = $('#slide_nav_ul'); 
+
+    var slide_items = $('#slide_nav_ul li') 
+    slide_items = $.makeArray(slide_items)
+    visible_items = slide_items.slice(0,4)    
+    invisible_items_right = slide_items.slice(4)    
+    invisible_items_left = Array();    
 }
-*/
+
+
+
+//when user clicks the image for sliding right  
+$('#scroll_right').click(function(){  
+
+    
+    if (_.isEmpty(invisible_items_right)) return;  
+    // To remove and return the first element from an array, use shift() 
+
+    var firstHidden = invisible_items_right.shift()
+    visible_items.push(firstHidden)     
+
+
+    var firstVisible= visible_items.shift();
+    invisible_items_left.push(firstVisible)     
+
+
+    //get the width of the items ( i like making the jquery part dynamic, so if you change the width in the css you won't have o change it here too ) '  
+
+    var item_width = $('#slide_nav_ul li').outerWidth() + 13;  
+
+    //calculate the new left indent of the unordered list  
+    var left_indent = parseInt($('#slide_nav_ul').css('left')) - item_width;  
+
+    //make the sliding effect using jquery's anumate function '  
+    $('#slide_nav_ul').animate({'left' : left_indent},{queue:false, duration:500},function(){  
+
+        //and get the left indent to the default -210px  
+        $('#slide_nav_ul').css({'left' : '-210px'});  
+        //dont have to hide bc you cant see due to overflow 
+        
+        
+
+    });  
+});  
+
+//when user clicks the image for sliding left  
+$('#scroll_left').click(function(){  
+
+
+    if (_.isEmpty(invisible_items_left)) return;  
+    // To remove and return the first element from an array, use shift() 
+
+    var firstVisible= visible_items.pop();
+    invisible_items_right.push(firstVisible)   
+
+    var firstHidden = invisible_items_left.shift()
+    visible_items.unshift(firstHidden)     
+
+
+
+
+    var item_width = $('#slide_nav_ul li').outerWidth() + 15;  
+
+    /* same as for sliding right except that it's current left indent + the item width (for the sliding right it's - item_width) */  
+    var left_indent = parseInt($('#slide_nav_ul').css('left')) + item_width;  
+
+    $('#slide_nav_ul').animate({'left' : left_indent},{queue:false, duration:500},function(){  
+
+    /* when sliding to left we are moving the last item before the first item */  
+    //$('#slide_nav_ul li:first').before($('#slide_nav_ul li:last'));  
+
+    /* and again, when we make that change we are setting the left indent of our unordered list to the default -210px */  
+    $('#slide_nav_ul').css({'left' : '-210px'});  
+    });  
+
+});  
+
+
+$("#wishes blockquote").hover(
+  function () {
+    $(this).addClass('reverse-bubble');
+    this.path  = $(this).find("svg path")
+    this.prev_fill =  this.path.attr('fill')
+    this.path.attr('fill', '#fff')
+  }, 
+  function () {
+    $(this).removeClass('reverse-bubble');
+    this.path.attr('fill', this.prev_fill)
+  }
+);
 
 $('#isotope').isotope({
   // options
@@ -19,24 +153,17 @@ $('#isotope').isotope({
   layoutMode : 'masonry'
 });
 
-function createPerson() {
-    $('.zip-code').each(function(index) {
-        var paper = Raphael(this, 22, 29);
-        var person = paper.path("M21.021,16.349c-0.611-1.104-1.359-1.998-2.109-2.623c-0.875,0.641-1.941,1.031-3.103,1.031c-1.164,0-2.231-0.391-3.105-1.031c-0.75,0.625-1.498,1.519-2.111,2.623c-1.422,2.563-1.578,5.192-0.35,5.874c0.55,0.307,1.127,0.078,1.723-0.496c-0.105,0.582-0.166,1.213-0.166,1.873c0,2.932,1.139,5.307,2.543,5.307c0.846,0,1.265-0.865,1.466-2.189c0.201,1.324,0.62,2.189,1.463,2.189c1.406,0,2.545-2.375,2.545-5.307c0-0.66-0.061-1.291-0.168-1.873c0.598,0.574,1.174,0.803,1.725,0.496C22.602,21.541,22.443,18.912,21.021,16.349zM15.808,13.757c2.362,0,4.278-1.916,4.278-4.279s-1.916-4.279-4.278-4.279c-2.363,0-4.28,1.916-4.28,4.279S13.445,13.757,15.808,13.757z")
-        person.attr({'fill': '#666', 'stroke':'none'})
-        var svg = paper.canvas 
-        $(svg).removeAttr('style')
-        $(svg).attr('class', 'svg-person')
-    });
-}
 
-function addBubbleTip() {
+function addBubbleTip(el) {
     $('.tip-left').each(function(index) {
         var paper = Raphael(this, 22, 22);
         var arc_tip = paper.path('M16.5,0 Q16,10, 8,13Q15,15, 22,11')
+        arc_tip.attr({'stroke': '#C4E9FF', 'fill': '#E5F5FF'})
+        
         var svg = paper.canvas 
         $(svg).removeAttr('style')
         $(svg).attr('class', 'svg-speechpointer')
+        
         //var arc_top = paper.path('M35,0 H65')
         //var line = $(this).find('path:last-child')
         //$(line).attr({'class':'svg-top'})
@@ -66,15 +193,6 @@ function createReplyArrow() {
         reply_arrow.attr({'fill': '#006EB7', 'stroke':'none'})
         reply_arrow.scale(.8, .8, 0, 0)
     });
-
-/*
-    $('#messages .tip-left .btn-reply').each(function(index) {
-        var paper = Raphael(this, 24, 22);
-        var reply_arrow = paper.path("M12.981,9.073V6.817l-12.106,6.99l12.106,6.99v-2.422c3.285-0.002,9.052,0.28,9.052,2.269c0,2.78-6.023,4.263-6.023,4.263v2.132c0,0,13.53,0.463,13.53-9.823C29.54,9.134,17.952,8.831,12.981,9.073z")
-        reply_arrow.attr({'fill': '#006EB7', 'stroke':'none'})
-        reply_arrow.scale(.8, .8, 0, 0)
-    });
-*/
 }
 
 
@@ -87,21 +205,270 @@ if ( $(".btn-reply").length ) {
 }   
 
 // load template library
-var app = {
-        template : Array()
-    };
+/*
+tpl = Array()
 
 $.get('/static/js/mvc/templates.html',function(result){
     $('.template', $(result)).each(function(){
-        app.template[this.id] = _.template( $(this).html() );
+        tpl[this.id] = $(this).html();
     });
 });
 
+*/
 
+
+var NoticeView = Backbone.View.extend({
+    className: "success",
+    displayLength: 5000,
+    defaultMessage: '',
+    
+    initialize: function() {
+        _.bindAll(this, 'render');
+        this.message = this.options.message || this.defaultMessage;
+        this.render();
+    },
+    
+    render: function() {
+        var view = this;
+        
+        $(this.el).html(this.message);
+        $(this.el).hide();
+        $('#flash').html(this.el);
+        $(this.el).slideDown();
+        $.doTimeout(this.displayLength, function() {
+            $(view.el).slideUp();
+            $.doTimeout(2000, function() {
+                view.remove();
+            });
+        });
+        return this;
+    }
+});
+
+
+if ( $("#flash .success").length ) {
+    var msg = $("#flash .success").html()
+    new NoticeView({message: msg})
+}
+
+var ErrorView = NoticeView.extend({
+    className: "error",
+    defaultMessage: 'Uh oh! Something went wrong. Please try again.'
+});
+
+
+var Message = Backbone.Model.extend({
+    initialize : function(attributes, options) {
+    },
+});
+
+
+var Messages = Backbone.Collection.extend({
+    model: Message,
+});
+
+
+var NavItem = Backbone.Model.extend({ });
+
+var NavItems = Backbone.Collection.extend({
+    model: NavItem,
+    url: '/chats/nav',
+});
+
+var Chat = Backbone.Model.extend({
+    url: '/chats',
+    initialize: function(attributes, options) {
+        this.messages = new Messages();
+        //this.messages.url = '/chats/' + this.id + '/messages';
+
+        this.bind("change:id", function() {
+            this.messages.url = '/chats/' + this.id + '/messages';
+        });
+    },
+});
+
+var App = {
+    Views: {},
+    Routers: {},
+    Collections: {},
+    init: function() {
+
+        // get subject from url
+        var url = window.location.pathname;
+        var urlSlash = url.split('/');
+        var subject_id = urlSlash[2]
+
+        // is the chat new 
+         $.ajax({
+            url: 'chats/is-new',
+            dataType: 'json',
+            data: {'subject': subject_id},
+            context: this,
+            success: function(data) {
+                if (!_.isEmpty(data)) {
+                    var chat = new Chat({ id: data['id'] });
+                    chat.fetch();
+                    chat.messages.fetch();
+                    new App.Views.Chat({'model': chat} )
+                    //chat.messages.reset()
+                
+                } else {
+                    var url = window.location.pathname;
+                    var urlSlash = url.split('/');
+                    var subject = urlSlash[2]
+
+                    var chat = new Chat({subject: subject});
+                    new App.Views.Chat({'model': chat})
+
+                }
+            }
+        });
+
+    }
+};
+
+App.Views.Message = Backbone.View.extend({
+
+    tagName: 'li', 
+
+    template: _.template('<blockquote class="bubble tip-right"><p><%= content %></p></blockquote>'),
+
+    initialize: function() {
+        _.bindAll(this, 'render'); 
+    },
+
+    render: function(){
+        $(this.el).html(this.template(this.model.toJSON()));
+        return this; 
+    },
+});
+
+
+App.Views.Chat = Backbone.View.extend({
+
+    el: $('#app'), 
+
+    template : _.template( $("#message-form").html()),
+
+    events: {
+      "submit form":  "sendMessage",
+    },
+
+    initialize: function() {
+        this.model.messages.bind('add', this.addOne, this);
+        this.model.messages.bind('reset', this.addAll, this);
+        _.bindAll(this, 'render', 'submitHandler', 'sendMessage', 'createChat'); 
+        this.render();
+        $('form', this.el).validate({
+            rules: {content: 'required'},
+            submitHandler: this.submitHandler,
+        })
+    },
+
+    render: function() {
+        $(this.el).append(this.template({}));
+    },
+
+    addOne: function(message){
+        var view = new App.Views.Message({ model: message });
+        $('ul', this.el).append(view.render().el);
+        addBubbleTip()
+    },
+
+    addAll: function() {
+        this.model.messages.each(this.addOne);
+    },
+    
+    submitHandler: function(form) {
+        if (this.model.isNew()) {
+            this.createChat()
+        } else {
+            this.sendMessage()
+        }
+    },
+
+    createChat: function(){
+        var data =  this.model.toJSON()
+        var content = this.$('[name=content]').val();
+        data['content'] = content
+        $.ajax({
+            type: 'POST',
+            url: this.model.url,
+            dataType: 'json',
+            data: JSON.stringify(data),
+            context: this,
+            success: function(data) {
+                this.model.set({id: data['id']});              
+                var message = new Message({'content': data['content']})
+                this.model.messages.add(message)
+                this.success()  
+            },
+            error: function(data) {
+                $('html').html(data.responseText)
+            }
+        });
+    },
+
+    sendMessage: function() {
+        var content = this.$('[name=content]').val();
+        this.model.messages.create({'content': content},{error:
+            function(model, resp){
+                $('html').html(resp.responseText)    
+            }}
+        );
+        this.success()
+    },
+    success: function() {
+        var msg = 'Your message has been sent. We will email you when their is a reply'
+        new NoticeView({message: msg})
+        this.$('[name=content]').val('');
+    }
+
+});
+
+
+App.Views.Nav = Backbone.View.extend({
+
+    el: $('#slide_nav_ul'), 
+
+
+    template : _.template( $("#chat-nav").html()),
+
+    events: {
+      "click a":  "loadChat",
+    },
+
+    initialize: function() {
+        _.bindAll(this, 'loadChat'); 
+        NavItems.fetch();
+        this.render();
+
+    },
+
+
+    loadChat: function(e) {
+
+    },
+
+    render: function() {
+        $(this.el).append(this.template({}));
+    },
+
+});
+
+
+
+if ( $("#app").length ) {
+    App.init();
+    App.Views.Nav()
+}
+
+
+/*
   var ListView = Backbone.View.extend({
     el: $('convo-messages'), // el attaches to existing element
     events: {
-      'click button#create-messagesubmit': 'addItem'
+      'click button#.create-message': 'addItem'
     },
     initialize: function(){
       _.bindAll(this, 'render', 'addItem'); // every function that uses 'this' as the current object should be in here
@@ -124,7 +491,7 @@ $.get('/static/js/mvc/templates.html',function(result){
   });
 
   var listView = new ListView();      
-
+*/
 /***
     Draw the speech bubble tips
 ****/

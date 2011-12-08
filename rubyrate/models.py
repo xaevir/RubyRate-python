@@ -3,6 +3,8 @@ from pymongo.objectid import ObjectId
 import datetime
 from cryptacular import bcrypt 
 from rubyrate.utility import DictDiffer
+from rubyrate.utility import slugify
+from bson.code import Code
 
 def remove_empty(dct):
     non_empty = dict((key, dct[key]) for key,value in dct.iteritems() 
@@ -26,20 +28,19 @@ class Collection(object):
         collection = get_current_request().db[self.__collection__]
         doc = collection.find_one({'_id': ObjectId(_id)})
         if doc:
-            cls = self.__contains__
+            cls = self.__model__
             obj = cls.__new__(cls)
             obj.__dict__ = doc
             return obj
    
 
-class Crud(object):
+class Model(object):
     __collection__ = None
 
     def __init__(self, doc = None):
         if doc:
             for key, value in doc.iteritems():
                 setattr(self, key, value)
-        self.created = datetime.datetime.utcnow()
 
     def insert(self):
         clean = prepare_for_db(self.__dict__)
@@ -82,13 +83,18 @@ class Crud(object):
         removed = dict((key, 1) for key in removed)
         return changed, removed 
 
-class Wish(Crud):
+class Wish(Model):
     __collection__ = 'wishes'
+
+    def update_with_username(self, user):
+        collection = get_current_request().db[self.__collection__]
+        collection.update({'user_id': user._id}, 
+                          {'$set': {'username':user.username}})
 
 
 class Wishes(Collection):
     __collection__ = 'wishes'
-    __contains__ = Wish 
+    __model__ = Wish 
 
     def get_wishes(self):
         collection = get_current_request().db[self.__collection__]
@@ -98,10 +104,11 @@ class Wishes(Collection):
         collection = get_current_request().db[self.__collection__]
         doc = collection.find_one({'user_id': _id})
         if doc:
-            cls = self.__contains__
+            cls = self.__model__
             obj = cls.__new__(cls)
             obj.__dict__ = doc
             return obj
+
 
     def get_wish_owner(self, _id):
         db = get_current_request().db
@@ -109,17 +116,105 @@ class Wishes(Collection):
         return doc
         
 
-class Convo(Collection):
-    __collection__ = 'messages'
+class MyWish(Model):
+    __collection__ = 'wishes'
 
+
+class MyWishes(Collection):
+    __collection__ = 'wishes'
+    __model__ = MyWish 
+
+    def get_wishes(self):
+        request = get_current_request()
+        user = request.user  
+        collection = request.db[self.__collection__]
+        return collection.find({'user_id':user._id}).sort('created', -1)
+
+
+class Chat(Model):
+    __collection__ = 'chats'
+
+    def push(self, message):
+        collection = get_current_request().db[self.__collection__]
+        now = datetime.datetime.utcnow()
+        message['created'] = now 
+        request = get_current_request()
+        for _id in self.shared_by:
+            if request.user._id != _id:
+                other_id = _id
+        
+        collection.update({'_id': self._id, 'user_data._id': other_id}, 
+                          {'$push': {'messages': message},
+                           '$set': {'date_modified': now },
+                           '$inc': {'user_data.$.new' : 1},  
+                           })
+
+    def push_all(self, messages):
+        collection = get_current_request().db[self.__collection__]
+        now = datetime.datetime.utcnow()
+        messages[1]['created'] = now 
+        collection.update({'_id': self._id}, 
+                          {'$pushAll': {'messages': messages},
+                           '$set': {'date_modified': now }})
+                                     
+
+class Chats(Collection):
+    __collection__ = 'chats'
+    __model__ = Chat
+
+    def exists(self, user_id, subject_id):
+        collection = get_current_request().db[self.__collection__]
+        doc = collection.find_one({'shared_by': user_id, 'subject_id': subject_id})
+        return doc
+
+    def get_chats(self):
+        request = get_current_request()
+        user = request.user  
+        collection = request.db[self.__collection__]
+        return collection.find({'shared_by':user._id}).sort('created', -1)
+
+    def update_with_username(self, subject_id, user):
+        request = get_current_request()
+        collection = request.db[self.__collection__]
+        collection.update({'subject_id': subject_id}, 
+                          {'$set': {'messages.0.username':user.username}}, 
+                          upsert=False, multi=True, safe=True)
+
+    def nav(self):
+        request = get_current_request()
+        user = request.user  
+        collection = get_current_request().db[self.__collection__]
+
+        map = Code("function() {"
+                "if (!this.messages) {"
+                     " this.messages = new Array();"
+                 "}"
+                   "    var msg_total = this.messages.length;"
+                   "    var key = {subject_id: this.subject_id," 
+                                  "content: this.subject_content,};"
+                   "    emit( key, {msg_total: msg_total});"
+                   "}")
+
+        reduce = Code("function(key, values) {"
+                      "    var total = 0;"
+                      "    values.forEach(function(doc) {"
+                      "        total += doc.msg_total;"
+                      "    });"
+                      "    return {msg_total: total};"
+                      "}")
+        result = collection.map_reduce(map, reduce, "nav", query={"shared_by": user._id} )
+        arr = []
+        for doc in result.find():
+            arr.append(doc)
+        return arr            
 
 
 class Messages(Collection):
     __collection__ = 'messages'
 
-    def get_messages(self, _id):
+    def messages_of_parent(self, parent_id):
         collection = get_current_request().db[self.__collection__]
-        result = collection.find( { 'ancestors' : _id } ).sort('created', -1)
+        result = collection.find( { 'parent' : parent_id } ).sort('created', -1)
         return result
             
     def already_sent_message(self, parent, username):                 
@@ -127,24 +222,27 @@ class Messages(Collection):
         result = collection.find_one({'parent': parent, 'username': username})  
         return result
 
+    def chat(self, ancestor_id, user):
+        collection = get_current_request().db[self.__collection__]
+        result = collection.find( { 'ancestor' : ancestor_id,  } ).sort('created', -1)
+        return result
 
-class Message(Crud):
+
+
+class Message(Model):
     __collection__ = 'messages'
 
-    def __init__(self, doc = None, parent={}):
-        self.ancestors = parent.get('ancestors', '')
-        self.parent = parent.get('_id', '')
+    def __init__(self, doc):
         self.created  = datetime.datetime.utcnow()
-        if doc: 
-            for key, value in doc.iteritems():
-                setattr(self, key, value)
+        self.username = doc['username']
+        self.content = doc['content'] 
 
 
 class Admin(object):
     pass
 
 
-class User(Crud):
+class User(Model):
     __collection__ = 'users'
 
     def __init__(self, data=None):
@@ -157,6 +255,9 @@ class User(Crud):
         if name == 'password': 
             crypt = bcrypt.BCRYPTPasswordManager()
             object.__setattr__(self, name, crypt.encode(value))
+        elif name == 'username':
+            object.__setattr__(self, 'slug', slugify(value))
+            object.__setattr__(self, name, value)
         else:
             object.__setattr__(self, name, value)
 
@@ -165,16 +266,19 @@ class User(Crud):
         result =  crypt.check(self.password, freshly_submitted)
         return result
 
+    def get_nav(self):
+        pass 
+
 
 class Users(Collection):
     __collection__ = 'users'
-    __contains__ = User 
+    __model__ = User 
 
     def by_username(self, name):
         collection = get_current_request().db[self.__collection__]
         doc = collection.find_one({'username': name})
         if doc:
-            cls = self.__contains__
+            cls = self.__model__
             obj = cls.__new__(cls)
             obj.__dict__ = doc
             return obj

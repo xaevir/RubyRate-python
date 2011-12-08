@@ -9,6 +9,8 @@ from pyramid.httpexceptions import HTTPFound
 
 import transaction
 
+from pymongo.objectid import ObjectId
+
 import colander
 import deform
 
@@ -20,6 +22,9 @@ from deform import ZPTRendererFactory
 from pprint import pprint
 p = pprint
 
+
+import formencode
+from formencode import validators
 
 from rubyrate import resources
 from rubyrate import models 
@@ -33,12 +38,16 @@ from rubyrate.utility import id_generator
 def create_wish_homepage(context, request):
     schema = schemas.WishNoAccount()
     # if a person is already logged in:
-    if 'admin' in request.user.groups:
-        schema = schemas.WishNoAccount()
-        schema['email'].missing=''
-    if 'member' in request.user.groups:
-        schema = schemas.Wish()
-    if 'visitor' in request.user.groups:
+    if request.user:
+        if 'admin' in request.user.groups:
+            schema = schemas.WishNoAccount()
+            schema['email'].missing=''
+        if 'member' in request.user.groups:
+            schema = schemas.WishNoAccount()
+            del schema['email']
+            if hasattr(request.user, 'zip_code'):
+                del schema['zip_code']
+    else:
         schema = schemas.WishNoAccount()
     form = Form(schema, buttons=(Button(title='Make Wish', css_class='btn'),))
     if request.method == 'GET': 
@@ -57,7 +66,8 @@ def create_wish_homepage(context, request):
 
     if 'member' in request.user.groups:
         user = request.user 
-        zip_code = user.zip_code
+        if hasattr(user, 'zip_code'):
+            zip_code = user.zip_code
         email = user.email
     else:
         user = models.User()
@@ -65,7 +75,9 @@ def create_wish_homepage(context, request):
         user.email = email
         user.groups = ['seller']
         user.groups.append('member')
+        user.has_wish = True
         user.insert()
+
 
     wish = models.Wish()
     wish.user_id = user._id
@@ -95,14 +107,17 @@ def thankyou(context, request):
 
 @view_config(context=resources.Wish, renderer='/wishes/show.mako')
 def show_wish(context, request):
+    parent_id = str(context._id)
+    cursor = models.Messages().messages_of_parent(parent_id)
     return dict(wish = context,
-                page = 'show-wish')
+                messages = cursor)
 
 @view_config(context=resources.Wishes, renderer='/wishes/list.mako') 
 def list_wishes(context, request):
     cursor = context.get_wishes()
     return dict(wishes = cursor,
                 url = request.resource_url)
+
 
 @view_config(name='edit', context=resources.Wish, renderer='form.mako',
              permission='edit')
@@ -158,80 +173,120 @@ def create_first_message(context, request):
     return HTTPFound(href)             
 
 
-@view_config(context=resources.Convo, renderer='/convo/convo.mako')
-def convo(context, request):
-    if not request.loggedin:
-        href = '/users/create-seller/%s'% context.__parent__.__name__
-        return HTTPFound(href)            
+@view_config(name='is-new', context=resources.Chats, xhr=True, renderer='json', 
+             request_method='GET')
+def is_new_chat(context, request):
+    subject = context.__parent__._id
+    chat = models.Chats().exists(request.user._id, subject)
+    if chat is None:
+        return {}        
+    return {'id':str(chat['_id']) }
 
-    schema = schemas.Message()
-    schema['content'].title = ''
-    schema['parent'].default = context.__parent__.__name__
-    form = Form(schema, 
-                buttons=(Button(title='Send Message', css_class='btn'),),
-                action = '/wishes/%s/messages/create'% context.__parent__.__name__,
-                formid = 'create-message')
-    if request.method == 'GET': 
-        return {'form': form.render(), 
-                'wish': context.__parent__}
+
+@view_config(name='reply', context=resources.Wish, renderer='/chats/reply.mako')
+def reply(context, request):
+    # is new 
+    chat = models.Chats().exists(request.user._id, context._id)
+    if chat is not None: 
+        #load previous messages
+        raise Exception('load previous chats')
+    return {'wish': context}
+
+
+
+class ChatSchema(formencode.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    subject = validators.String(not_empty=True)
+    content = validators.String(not_empty=True)
+
+@view_config(context=resources.Chats, xhr=True, renderer='json', 
+             request_method='POST')
+def chats(context, request):
+    schema = ChatSchema()
     try:
-        controls = request.POST.items()
-        captured = form.validate(controls)
-    except deform.ValidationFailure, e:
-        return {'form': e.render(),
-                'wish': context.__parent__}
+        captured = schema.to_python(request.json_body)
+    except formencode.Invalid, error:
+        request.response.status_int = 400
+        return error.unpack_errors()
     # passed validation
-    message = models.Message()
-    message.username = request.user.username 
-    message.content = captured['content'] 
-    message.parent = captured['parent']
-    message.ancestors = [captured['parent']]
-    message.insert()
-    thank_you = 'This customer has been contacted with your message'
-    request.session.flash(thank_you)
-    # redirect
-    href = request.resource_url(context)
-    return HTTPFound(href)    
+    wish = models.Wishes().by_id(str(captured['subject']))
+    chat = models.Chat()
+    chat.user_data = [{'_id': wish.user_id, 'new': 1},
+                     {'_id': request.user._id, 'new': 0}]
+    chat.shared_by = [request.user._id, wish.user_id]
+    chat.subject_id = ObjectId(captured['subject'])
+    chat.subject_content = wish.content 
+    chat.insert()  
+    messages = [{'content' : wish.content},
+               {'username': request.user.username,
+                'content' : captured['content']} ]
+    chat.push_all(messages)
+    return {'id': str(chat._id), 
+            'subject': captured['subject'],
+            'content': captured['content']}
 
 
-@view_config(name="create", context=resources.Messages, renderer='/messages/create.mako')
-def create_message(context, request):
-    if not request.loggedin:
-        href = '/users/create-seller/%s'% context.__parent__.__name__
-        return HTTPFound(href)            
+@view_config(context=resources.Chats, xhr=True, renderer='json', 
+             request_method='GET', permission='view')
+def get_chats(context, request):
+    cursor = context.get_chats()
+    return cursor
 
-    schema = schemas.Message()
-    schema['parent'].default = context.__parent__.__name__
-    form = Form(schema, buttons=(Button(title='Send Message', css_class='btn'),))
-    if request.method == 'GET': 
-        return {'form': form.render(), 
-                'wish': context.__parent__}
+
+@view_config(name="nav", context=resources.Chats, xhr=True, renderer='json', 
+             request_method='GET', permission='view')
+def chats_nav(context, request):
+    return context.nav()
+
+
+
+@view_config(context=resources.User, permission='view', renderer="app.mako")
+def user_home(context, request):
+    #request.subpath[0]
+    cursor = models.Chats().get_chats()
+    count = cursor.count() 
+    if count:
+        recent_chat = cursor[0] 
+        messages = recent_chat['messages']
+    else:
+        recent_chat = {} 
+        messages = {} 
+    return {'chats': cursor, 
+            'messages': messages,
+            'count': count}
+
+
+@view_config(context=resources.Messages, xhr=True, renderer='json', 
+             request_method='GET')
+def messages(context, request):
+    chat = context.__parent__
+    return chat.messages
+
+
+
+class MessageForm(formencode.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    content = validators.String(not_empty=True)
+
+@view_config(context=resources.Messages, xhr=True, renderer='json', 
+             request_method='POST')
+def _messages(context, request):
+    schema = MessageForm()
     try:
-        controls = request.POST.items()
-        captured = form.validate(controls)
-    except deform.ValidationFailure, e:
-        return {'form': e.render(),
-                'wish': context.__parent__}
+        captured = schema.to_python(request.json_body)
+    except formencode.Invalid, error:
+        request.response.status_int = 400
+        return error.unpack_errors()
     # passed validation
-    message = models.Message()
-    message.username = request.user.username 
-    message.content = captured['content'] 
-    message.parent = captured['parent']
-    message.ancestors = [captured['parent']]
-    message.insert()
-    thank_you = 'This customer has been contacted with your message'
-    request.session.flash(thank_you)
-    # redirect
-    href = request.resource_url(context)
-    return HTTPFound(href)             
+    message = {'username': request.user.username,
+               'content' : captured['content']}
+    chat = context.__parent__  
+    chat.push(message)
+    return {'content': captured['content']} 
+    
 
-@view_config(context=resources.Messages, renderer='/messages/list.mako') 
-def list_messages(context, request):
-    parent = context.__parent__.__name__
-    cursor = context.get_messages(parent)
-    return dict(wish = context.__parent__, 
-                messages = cursor,
-                url = request.resource_url)
 
 @view_config(context=resources.Message, renderer='/messages/show.mako')
 def show_message(context, request):

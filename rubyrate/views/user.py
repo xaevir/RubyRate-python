@@ -18,6 +18,9 @@ from rubyrate.my_deform.form import Form
 import colander
 import deform
 
+import formencode
+from formencode import validators
+from formencode import htmlfill
 
 from pymongo.objectid import ObjectId
 
@@ -37,48 +40,67 @@ def unique_username(node, value):
     if user:
         raise colander.Invalid(node, 'That username already exists')
 
-@view_config(name='activate', context=resources.User, renderer='form.mako')
+class UniqueUsername(formencode.FancyValidator):
+    def _to_python(self, value, state):
+        user = state.by_username(value)
+        if user:
+            raise formencode.Invalid(
+                'That username already exists',
+                 value, state)
+        return value
+
+
+class BuyerSchema(formencode.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    username = formencode.All(validators.PlainText(not_empty=True),
+                              validators.MinLength(2),
+                              validators.MaxLength(60),
+                              UniqueUsername())
+    email = validators.Email(resolve_domain=True, not_empty=True)
+    password = validators.MinLength(5, not_empty=True)
+
+
+@view_config(name='activate', context=resources.User, permission='activate')
 def activate_buyer(user, request):
+    tpl = '/users/activate.mako'
     if hasattr(user, 'username'):
         #already activated
         html = '<h1>Already Activated</h1>'
         tmp = render('writeable.mako', {'html':html}, request)
         return Response(tmp)
-    heading = 'Please activate your account, so you can respond to your messages'
-    schema = schemas.Buyer()
-    if hasattr(user, 'email'):
-        del schema['email']
-    form = Form(schema, buttons=(Button(title="Activate Account", css_class='btn'),)) 
+    schema = BuyerSchema()
     if request.method == "GET": 
-        return {'form':form.render(),
-                'heading': heading}
+         return Response(render(tpl, {}, request))
     try:
-        controls = request.POST.items()
-        # add unique username validation
-        username = schema['username']
-        username.validator = colander.All(colander.Length(min=2, max=50), unique_username)
-        captured = form.validate(controls)
-    except deform.ValidationFailure, e:
-        return {'form':e.render(),
-                'heading': heading}
+        params = schema.to_python(request.params, user.__parent__)
+    except formencode.Invalid, e:
+        html = htmlfill.render(render(tpl, {}, request),
+                                          defaults=e.value,
+                                          errors=e.error_dict)
+        return Response(html)
     # passed validation
-    for key, value in captured.items():
+    for key, value in params.items():
         setattr(user, key, value)
     user.save()
     request.session.flash('Thank you for activating your account.')
-    wish = models.Wishes().by_user_id(user._id)
-    url = '/wishes/%s/messages'%wish._id
+     
+    wish = models.Wishes().by_user_id(user._id) 
+    wish.update_with_username(user) 
+    models.Chats().update_with_username(wish._id, user)
+    url = '/users/%s/chats'%user.username
     headers = remember(request, user.username)
     return HTTPFound(location = url, headers = headers)
 
 
-@view_config(name='create-buyer', context=resources.Users, renderer='form.mako')
-def create_buyer(context, request):
-    schema = schemas.Buyer()
+@view_config(name='create', context=resources.Users, renderer='form.mako')
+def create_user(context, request):
+    heading = 'Kindly Sign Up'
+    schema = schemas.User()
     form = Form(schema,
         buttons=(Button(title="Create Account", css_class='btn'),)) 
     if request.method == "GET": 
-        return {'form':form.render()}
+        return {'form':form.render(), 'heading': heading}
     # validate      
     try:
         controls = request.POST.items()
@@ -87,7 +109,7 @@ def create_buyer(context, request):
         username.validator = colander.All(colander.Length(min=2, max=50), unique_username)
         captured = form.validate(controls)
     except deform.ValidationFailure, e:
-        return {'form':e.render()}
+        return {'form':e.render(), 'heading': heading}
     # passed valication
     user = models.User(captured)
     user.insert()
@@ -95,8 +117,8 @@ def create_buyer(context, request):
     headers = remember(request, user.username)
     return HTTPFound(location = '/', headers = headers)
     
-@view_config(name='create-seller', context=resources.Users, renderer='/users/create_seller.mako')
-def create_seller(context, request):
+@view_config(name='create-reply', context=resources.Users, renderer='/users/create_seller.mako')
+def create_reply_user(context, request):
     heading = 'Please create an account so that you can reply to this wish'
     wish = models.Wishes().by_id(request.subpath[0])
     schema = schemas.Seller()
@@ -123,16 +145,20 @@ def create_seller(context, request):
     request.session.flash('Thank you for signing up')
     headers = remember(request, user.username)
     try:
-        url = '/wishes/%s/messages/create'%request.subpath[0]
+        url = '/wishes/%s/reply'%request.subpath[0]
     except:
         url = '/wishes' 
     return HTTPFound(location = url, headers = headers)
 
 
+@view_config(context=resources.MyWishes, renderer='/my_wishes/list.mako', permission='view') 
+def list_wishes(context, request):
+    cursor = context.get_wishes()
+    return dict(wishes = cursor,
+                url = request.resource_url)
 
-@view_config(name='', context=resources.User, permission='view')
-def view_user(user, request):
-    return Response('You are viewing the user' + user.username) 
+
+
 
 @view_config(name='edit', context=resources.User, permission='edit')
 def edit_user(user, request):
