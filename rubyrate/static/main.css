@@ -1324,13 +1324,11 @@ blockquote .svg-top {
 }
 #app .tip-left {
     width: 400px;
-    margin-top: 10px;
 
 }
 #app .tip-right {
     width: 400px;
     float: right;
-    margin-top: 10px;
     clear: both;
 }
 #app form {
@@ -1344,10 +1342,10 @@ blockquote .svg-top {
 #main-chat{
     width: 600px;    
     margin: 0 auto;
+    margin-top: 10px;
 }
 
 #main-chat li {
-    margin-bottom: 15px;
     clear: both;
     width: 400px;
 }
@@ -1367,13 +1365,16 @@ blockquote .svg-top {
 
 #main-chat .tip-left {
     width: 350px;
-    margin-top: 10px;
 
 }
+#main-chat blockquote p{
+   margin-bottom: 0; 
+}
+
+
 #main-chat .tip-right {
     width: 350px;
     float: right;
-    margin-top: 10px;
     clear: both;
 }
 .horizontal-rule {
@@ -1418,7 +1419,6 @@ blockquote .svg-top {
     padding: 10px 8px;
     position: relative;
     overflow: hidden;
-
 }
 #slide_nav_inner {
     float:left; /* important for inline positioning */
@@ -1440,7 +1440,6 @@ blockquote .svg-top {
     /*float: left; /* important for inline positioning of the list items */
     width:192px;  /* fixed width, important */
     padding:0px;
-    height:110px;
     margin-top:10px;
     margin-bottom:10px;
     margin-left:5px;
@@ -1475,7 +1474,7 @@ blockquote .svg-top {
 #scroll_left, #scroll_right {
     background-image: -moz-linear-gradient(center top , #FFFFFF 0pt, #E0E0E0 100%);
     width: 32px;
-    height: 135px;
+    height: 102px;
     min-width: 0;
     border-color: #CCCCCC #CCCCCC #AAAAAA;
     border-radius: 3px 3px 3px 3px;

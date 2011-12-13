@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="shortcut icon" href="/static/favicon.png"/>
     <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/main.css')}"/>
-    <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/js/fancybox/jquery.fancybox-1.3.4.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_url('rubyrate:static/js/libs/fancybox/jquery.fancybox-1.3.4.css')}"/>
     <!--[if lt IE 8]>
     <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js"></script>
     <![endif]-->   
@@ -131,21 +131,23 @@ ${self.footer_js()}
 </%def>
 
 <%def name="header_js()">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/labjs/2.0.3/LAB.min.js"></script>
+    <script src="/static/js/libs/LABjs/LAB.js"></script>
     <script>
        $LAB
        .setOptions({AlwaysPreserveOrder:true})
-       .script("http://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js").wait()
-       .script("http://cdnjs.cloudflare.com/ajax/libs/raphael/1.5.2/raphael-min.js")
-       .script("http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js")
-       .script("http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore-min.js")
-       .script("/static/js/doTimeout.js")
-       .script("/static/js/backbone/backbone.js").wait()
+       .script("/static/js/libs/jquery/jquery.js").wait()
+       //.script("http://cdnjs.cloudflare.com/ajax/libs/raphael/1.5.2/raphael-min.js")
+       //.script("http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js")
+       .script("/static/js/libs/underscore/underscore.js")
+       .script("/static/js/libs/doTimeout.js")
+       .script("/static/js/libs/backbone/backbone.js").wait()
        .script("http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js")
-       .script("/static/js/fancybox/jquery.fancybox-1.3.4.pack.js")
-       .script("/static/js/pinfooter.js")
-       .script("/static/js/isotope.min.js").wait()
-       .script("/static/js/main.js")
+       //.script("/static/js/libs/fancybox/jquery.fancybox-1.3.4.pack.js")
+       .script("/static/js/libs/pinfooter.js")
+       .script("/static/js/libs/isotope.min.js").wait()
+       .script("/static/js/app.js").wait()
+       .script("/static/js/modules/nav.js").wait()
+       .script("/static/js/main.js").wait()
     </script>
     <script>
     </script>

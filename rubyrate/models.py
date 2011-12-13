@@ -190,7 +190,7 @@ class Chats(Collection):
                      " this.messages = new Array();"
                  "}"
                    "    var msg_total = this.messages.length;"
-                   "    var key = {subject_id: this.subject_id," 
+                   "    var key = {wish_id: this._id, subject_id: this.subject_id," 
                                   "content: this.subject_content,};"
                    "    emit( key, {msg_total: msg_total});"
                    "}")
@@ -204,8 +204,17 @@ class Chats(Collection):
                       "}")
         result = collection.map_reduce(map, reduce, "nav", query={"shared_by": user._id} )
         arr = []
+         
         for doc in result.find():
-            arr.append(doc)
+            x = {} 
+            x.update(doc['_id'])
+            x.update(doc['value'])
+            for key, value in x.items():
+                if not isinstance(value, str):
+                    x[key] = str(value)
+            #doc['_id'].extend( ) 
+            #doc['_id'] = str(doc['_id'])
+            arr.append(x)
         return arr            
 
 

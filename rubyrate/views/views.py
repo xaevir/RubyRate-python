@@ -187,9 +187,9 @@ def is_new_chat(context, request):
 def reply(context, request):
     # is new 
     chat = models.Chats().exists(request.user._id, context._id)
-    if chat is not None: 
+    #if chat is not None: 
         #load previous messages
-        raise Exception('load previous chats')
+    #    raise Exception('load previous chats')
     return {'wish': context}
 
 
@@ -231,13 +231,19 @@ def chats(context, request):
              request_method='GET', permission='view')
 def get_chats(context, request):
     cursor = context.get_chats()
-    return cursor
+    x = {} 
+    for doc in cursor:
+        for key, value in doc.items():
+            if not isinstance(value, str):
+                x[key] = str(value)
+    return x 
 
 
 @view_config(name="nav", context=resources.Chats, xhr=True, renderer='json', 
              request_method='GET', permission='view')
 def chats_nav(context, request):
     return context.nav()
+
 
 
 
@@ -261,7 +267,12 @@ def user_home(context, request):
              request_method='GET')
 def messages(context, request):
     chat = context.__parent__
-    return chat.messages
+    x = {} 
+    for doc in chat.messages:
+        for key, value in doc.items():
+            if not isinstance(value, str):
+                x[key] = str(value)
+    return x 
 
 
 

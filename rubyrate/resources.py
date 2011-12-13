@@ -101,7 +101,6 @@ class Messages(models.Messages):
         self.__parent__ = parent 
 
 
-
 class Message(models.Message):
     def __init__(self, name, parent):
         self.__name__   = name
@@ -131,6 +130,7 @@ class Users(models.Users):
             model = self.by_username(key)
         if not model:
             raise KeyError
+
         resource = User(key, self)
         resource.__dict__.update(model.__dict__) 
         resource.__acl__ = [ (Allow, Everyone, 'activate'),    
