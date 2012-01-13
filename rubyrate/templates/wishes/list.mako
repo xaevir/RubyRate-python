@@ -1,10 +1,42 @@
 <%inherit file="/base.mako"/>
-<%def name="body_id()">wishes</%def>
-<%def name="page_width()">900px</%def>
+<%def name="page_segment()">wishes</%def>
+<%def name="scripts()">
+    <script src="/static/js/libs/LABjs/LAB.js"></script>
+    <script>
+       $LAB
+       .script("/static/js/libs/jquery/jquery.js")
+       .script("/static/js/libs/underscore/underscore.js").wait()
+       .script("/static/js/libs/backbone/backbone.js")
+       .script("/static/js/libs/jquery-validation/jquery.validate.js")
+       .script("/static/js/libs/raphael-min.js").wait()
+       .script("/static/js/libs/isotope.min.js")
+       .wait(function(){
+          myplugin.init();
+          framework.init();
+          framework.doSomething();
+       });
+
+    </script>
+</%def>
+
+
+
+
 <%namespace file="/partials/wish_block.mako" import="wish_block"/>
 
-<ul id="isotope" class="clearfix">
 
+<%text>
+    <script type="text/template" id="wish-item">
+        <blockquote class="bubble tip-right">
+            <p>
+                <%= content %>     
+            </p>
+        </blockquote>
+    </script>
+
+</%text>
+
+<%doc>
 % if not wishes:
     <li>There are no wishes</li>
 % else:
@@ -30,4 +62,8 @@
     </li>
     % endfor
 % endif
+</%doc>
+
 </ul>
+
+

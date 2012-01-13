@@ -7,7 +7,7 @@ from pyramid.security import authenticated_userid
 
 from pyramid.httpexceptions import HTTPUnauthorized
 
-from rubyrate.resources import Root
+from rubyrate.resources import appmaker
 
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender
@@ -41,14 +41,14 @@ def main(global_config, **settings):
     settings['from'] = 'ruby_robot@rubyrate.com'
     settings['to'] = 'ruby@rubyrate.com'
 
-    settings['session.secret'] = 'u3wawf7jmvypAz8hpE8Yfu7J4fGZzbkg'
-    settings['session.key'] = 'rubyrate' 
-    settings['session.auto'] = True 
-    settings['session.cookie_expires'] = True 
-    settings['session.type'] = 'file' 
-
-    settings['session.data_dir'] = here + '/data/sessions/data'     
-    settings['session.lock_dir'] = here + '/data/sessions/lock' 
+#    settings['session.secret'] = 'u3wawf7jmvypAz8hpE8Yfu7J4fGZzbkg'
+#    settings['session.key'] = 'rubyrate' 
+#    settings['session.auto'] = True 
+#    settings['session.cookie_expires'] = True 
+#    settings['session.type'] = 'file' 
+#
+#    settings['session.data_dir'] = here + '/data/sessions/data'     
+#    settings['session.lock_dir'] = here + '/data/sessions/lock' 
 
     settings['mako.directories'] = 'rubyrate:templates'
     settings['mako.module_directory'] = 'rubyrate:data/templates'
@@ -69,7 +69,7 @@ def main(global_config, **settings):
         callback=groupfinder)
     authz_policy = ACLAuthorizationPolicy()
 
-    config = Configurator(root_factory=Root,
+    config = Configurator(root_factory=appmaker,
         settings=settings,
         authentication_policy=authn_policy,
         authorization_policy=authz_policy)
@@ -82,7 +82,7 @@ def main(global_config, **settings):
 
     config.include('pyramid_mailer')
 
-    config.add_static_view('static', 'rubyrate:static')
+    config.add_static_view('static', 'rubyrate:static', cache_max_age=315360000)
     config.scan('rubyrate')
 
     config.set_request_factory(RequestWithUserAttribute)
@@ -109,12 +109,12 @@ class RequestWithUserAttribute(Request):
         if userid is not None:
             # this should return None if the user doesn't exist
             # in the database
-            user = models.Users().by_username(userid) 
+            user = models.Users().by_login(userid) 
             return user
 
 
 def groupfinder(name, request):
-    user = models.Users().by_username(name)
+    user = models.Users().by_login(name)
     # If the user is in the db then they have passed validation and are
     # a member. Since every user will be a member it does not make sense to
     # add this field to the db. I will only add it if they are admins, etc...

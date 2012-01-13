@@ -1,4 +1,4 @@
-<%inherit file="/base.mako"/>
+<%inherit file="/base-orig.mako"/>
 <%namespace file="/partials/heading_block.mako" import="heading_block"/>
 
 <%def name="body_id()">${page_name or 'form-page'}</%def>

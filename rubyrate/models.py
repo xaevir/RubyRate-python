@@ -84,7 +84,7 @@ class Model(object):
         return changed, removed 
 
 class Wish(Model):
-    __collection__ = 'wishes'
+    __collection__ = 'messages'
 
     def update_with_username(self, user):
         collection = get_current_request().db[self.__collection__]
@@ -93,12 +93,12 @@ class Wish(Model):
 
 
 class Wishes(Collection):
-    __collection__ = 'wishes'
+    __collection__ = 'messages'
     __model__ = Wish 
 
     def get_wishes(self):
         collection = get_current_request().db[self.__collection__]
-        return collection.find().sort('created', -1)
+        return collection.find({'labels': 'wish'}).sort('created', -1)
 
     def by_user_id(self, _id):
         collection = get_current_request().db[self.__collection__]
@@ -108,7 +108,6 @@ class Wishes(Collection):
             obj = cls.__new__(cls)
             obj.__dict__ = doc
             return obj
-
 
     def get_wish_owner(self, _id):
         db = get_current_request().db
@@ -217,8 +216,107 @@ class Chats(Collection):
             arr.append(x)
         return arr            
 
+class Message(Model):
+    __collection__ = 'messages'
+    def init(self, args):
+        for key, value in args.iteritems():
+            setattr(self, key, value)
 
-class Messages(Collection):
+#    def post(self):
+#        db = get_current_request().db
+#        db.messages.insert(self.__dict__)
+                
+
+class Messages(object):
+
+
+
+    def send(self, subject_id, body, recipient):
+        db = get_current_request().db
+        user = request.user  
+
+        message = Message(subject, body)   
+        message.labels = [{'name':'sent'}]
+        message.recipient = recipient
+
+        Chat = Chats().get_if_exists(message)
+
+        if chat is None:
+            chat = Chat(message) 
+            chat.insert()
+        else:
+            db.chats.update({'_id': chat._id}, 
+                      {'$push': {'messages': message.__dict__},
+                       '$set': {'modified': message._id.generation_time()},
+                       '$inc': {'total' : 1},  
+                       })
+
+        self.receive(subject_id, body, recipient, sender)
+
+
+    def receive(message):
+        db = get_current_request().db
+        user = request.user  
+        chat = Chats().get_if_exists(user, subject_id, recipient)
+
+        if chat is None:
+            chat = Chat() 
+            chat._id = ObjectId()
+            chat.user_id = user._id 
+            chat.username = user.username 
+
+        message = Message()   
+        message._id = ObjectId()
+        message.subject_id = subject_id
+        message.body = body
+        message.labels = [{'name':'inbox'}]
+        message.sent_by = 'jose'
+        db.mailboxes.update({'username': recipient}, {'$push': {'messages': message.__dict__ }})
+
+    
+
+
+class Chat(Model):
+    def init(self, message):
+        user = get_current_request().user
+        self.modified = message._id.generation_time() 
+        self.user_id = user._id 
+        self.username = user.username 
+        self.msg_total = 1  
+        self.messages = [message._dict__] 
+
+    def insert(self):
+        request = get_current_request()
+        user = request.user  
+        db = request.db
+        db.chats.insert(self.__dict__)
+
+    
+
+class Chats(object):
+    # collection = mailboxes    
+    def get_if_exists(self, subject_id, user, recipient=None, sender=None):
+        request = get_current_request()
+        db = request.db
+        if sender:
+            doc = db.chats.find_one({'subject_id': subject_id , 'user_id': user._id,
+                                             '$or': [{'messages.recipient': sender} , 
+                                                     {'messages.sender': sender}]})
+        if recipient:
+            doc = db.chats.find_one({'subject_id': subject_id , 'user_id': user._id,
+                                             '$or': [{'messages.recipient': recipient},
+                                                     {'messages.sender': recipient}]})
+        if doc:
+            cls = self.__model__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj
+
+         
+"""    
+
+
+class MessagesOld(Collection):
     __collection__ = 'messages'
 
     def messages_of_parent(self, parent_id):
@@ -238,7 +336,7 @@ class Messages(Collection):
 
 
 
-class Message(Model):
+class MessageOld(Model):
     __collection__ = 'messages'
 
     def __init__(self, doc):
@@ -246,7 +344,7 @@ class Message(Model):
         self.username = doc['username']
         self.content = doc['content'] 
 
-
+"""
 class Admin(object):
     pass
 
@@ -283,9 +381,32 @@ class Users(Collection):
     __collection__ = 'users'
     __model__ = User 
 
+
+    def by_login(self, name):
+        collection = get_current_request().db[self.__collection__]
+        doc = collection.find_one({'username': name})
+        if doc is None:
+            doc = collection.find_one({'email': name})
+        if doc:
+            cls = self.__model__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj
+       
+
+
     def by_username(self, name):
         collection = get_current_request().db[self.__collection__]
         doc = collection.find_one({'username': name})
+        if doc:
+            cls = self.__model__
+            obj = cls.__new__(cls)
+            obj.__dict__ = doc
+            return obj
+
+    def by_email(self, name):
+        collection = get_current_request().db[self.__collection__]
+        doc = collection.find_one({'email': name})
         if doc:
             cls = self.__model__
             obj = cls.__new__(cls)

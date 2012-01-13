@@ -151,25 +151,17 @@ def create_reply_user(context, request):
     return HTTPFound(location = url, headers = headers)
 
 
-@view_config(context=resources.MyWishes, renderer='/my_wishes/list.mako', permission='view') 
-def list_wishes(context, request):
-    cursor = context.get_wishes()
-    return dict(wishes = cursor,
-                url = request.resource_url)
-
-
-
 
 @view_config(name='edit', context=resources.User, permission='edit')
 def edit_user(user, request):
     return Response('This page is secret' + user.username) 
 
 
-def match_user_password(node, value):
-    user = models.Users().by_username(value['username'])
+def match_login_password(node, value):
+    user = models.Users().by_login(value['login'])
     if user and user.check_password(value['password']):
         return True
-    raise colander.Invalid(node, 'Please check your username or password')
+    raise colander.Invalid(node, 'Please check your login or password')
 
 @view_config(name='login', context=resources.Users, renderer="form.mako")
 @view_config(context='pyramid.exceptions.Forbidden', renderer="form.mako")
@@ -181,7 +173,7 @@ def login(context, request):
         referrer = '/' # never use the login form itself as came_from
     came_from = request.params.get('came_from', referrer)
     schema = schemas.Login(
-        validator = match_user_password).bind(came_from = came_from)
+        validator = match_login_password).bind(came_from = came_from)
     form = Form(schema, buttons=(
         Button(title='Login', css_class='btn'),))
     heading = 'Kindly, sign in'            
@@ -196,13 +188,13 @@ def login(context, request):
         return {'form': e.render(), 
                 'heading': heading}
     # passed validation
-    headers = remember(request, captured['username'])
+    headers = remember(request, captured['login'])
     request.session.flash('Welcome.')
     ## redirect
     return HTTPFound(location = came_from, headers = headers)
 
 
-@view_config(name='logout', context=resources.Root)
+@view_config(name='logout', context=resources.App)
 def logout(context, request):
     headers = forget(request)
     return HTTPFound(location = request.application_url, headers = headers)

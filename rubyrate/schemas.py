@@ -54,31 +54,30 @@ class Base(MappingSchema):
         del node['created']
 
 
-class Message(Base):
-    content = SchemaNode(
+class Reply(Base):
+    body = SchemaNode(
         String(),
-        widget= TextAreaWidget())
+        title= '',
+        widget= TextAreaWidget(css_class='required'))
     parent = SchemaNode(String(), widget=HiddenWidget())
+    labels = SchemaNode(String(), widget=HiddenWidget(), default='reply')
 
 
-class WishNoAccount(Base):
-    content = SchemaNode(
+
+class Wish(Base):
+    body = SchemaNode(
         String(),
-        widget= TextAreaWidget(),
+        widget= TextAreaWidget(css_class='xlarge required'),
         title= 'What would you like help buying...')
     email = SchemaNode(
         String(),
         title= 'Email (never shared)',
-        validator = Email())
+        validator = Email(),
+        widget = TextInputWidget(css_class='xlarge required email'))
     zip_code = SchemaNode(String(),
-        title= 'Zip Code or Relevant Location')
-
-
-class Wish(Base):
-    content = SchemaNode(
-        String(),
-        widget= TextAreaWidget(),
-        title= 'What would you like help buying...')
+        title= 'Zip Code or Relevant Location',
+        widget = TextInputWidget(css_class='span2 required'))
+    labels = SchemaNode(String(), widget=HiddenWidget(), default='wish')
 
 
 class User(MappingSchema):
@@ -117,7 +116,7 @@ def deferred_came_from_default(node, kw):
     return came_from
 
 class Login(MappingSchema):
-    username = SchemaNode(
+    login = SchemaNode(
         String())
     password = SchemaNode(
         String(), 
@@ -132,7 +131,9 @@ class Login(MappingSchema):
 
 class Contact(MappingSchema):
     name = SchemaNode(String(),
-        validator = Length(min=2, max=200))
+        validator = Length(min=2, max=200),
+        widget = TextInputWidget(css_class='span2 required'))
+        
     email = SchemaNode(String(),
         validator = colander.Email())
     message = SchemaNode(String(),

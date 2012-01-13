@@ -3,11 +3,6 @@
     title="${field.description}" i18n:domain="deform">
   <!-- sequence_item -->
 
-  <span class="deformClosebutton"
-        id="${field.oid}-close"
-        tal:condition="not field.widget.hidden"
-        title="Remove"
-        onclick="javascript:deform.removeSequenceItem(this);"></span>
 
   <span tal:replace="structure field.serialize(cstruct)"/>
 

@@ -1,652 +1,3 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-b {
-    font-weight: bold;
-}
-/*_____________________________________________________________________Base_*/
-html {
-    height: 100%;
-}
-
-body {
-    height: 100%;
-    color: #333;
-    font-size: 13px; /*/1.231 arial,helvetica,clean,sans-serif;*/
-    line-height: 1.231;
-    font-family: 'DroidSans'; /*,Arial,sans-serif;*/
-
-}
-h1,h2,h3,h4,h5,h6,strong {
-   /*bringing boldness back to headers and the strong element*/
-    font-weight: bold;
-    margin-bottom: .3em;
-}
-h1 {
-    font-size: 28px;
-    margin-bottom: 1em;/public
-    border-bottom: 3px dotted #ccc;
-    font-weight: normal;
-}
-h2 {
-    font-size: 14px;
-}
-h3 {
-   /*14px via YUI Fonts CSS foundation*/
-   font-size:108%;  
-}
-h2,h3 {
-   /* top & bottom margin based on font size */
-   margin-bottom: .3;
-}
-hr {
-   border: none;
-   height:1px;
-   background-color: #DFECFF;
-   clear: both;
-}
-abbr,acronym {
-   /*indicating to users that more info is available */
-   border-bottom:1px dotted #000;
-   cursor:help;
-} 
-em {
-   /*bringing italics back to the em element*/
-   font-style:italic;
-}
-blockquote,ul,ol,dl {
-   /*giving blockquotes and lists room to breath*/
-   /* margin:1em; */
-}
-ol,ul,dl {
-   /*bringing lists on to the page with breathing room */
-    /*margin-left:2em; */
-}
-ol li {
-   /*giving OL's LIs generated numbers*/
-   list-style: decimal inside;  
-}
-ul li {
-   /*giving UL's LIs generated disc markers*/
-   /*list-style: disc outside;*/
-}
-dl dd {
-   /*giving UL's LIs generated numbers*/
-   margin-left:1em;
-}
-dt {
-	font-weight: bold;
-}
-caption {
-   /*coordinated marking to match cell's padding*/
-   margin-bottom:.5em;
-   /*centered so it doesn't blend in to other content*/
-   text-align:center;
-}
-p,fieldset,table {
-   /*so things don't run into each other*/
-   /*margin-bottom:1em;*/
-}
-p {
-   margin-bottom:1em;
-   color: #666;
-}
-input[type=submit], button {
-    cursor: pointer;
-    padding: 3px;
-}
-input[type=text], input[type=password], textarea{
-    border-color: #9BE1F7;
-    border-color: #ccc;
-    border-width: 1px;
-    border-style: solid;
-    padding: .5em;
-    box-shadow: 0 1px 2px #EEEEEE inset;
-	-moz-border-radius:3px;
-}
-
-input[type=text]:hover, 
-input[type=password]:hover, 
-textarea:hover,
-input[type=text]:focus, 
-input[type=password]:focus, 
-textarea:focus {
-    border-color: #a0a0a0 #b9b9b9 #b9b9b9;
-    /*box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;*/
-}
-
-
-input, select {
-   padding: 2px;
-}
-button, input[type=submit] {
-	/*padding: 4px 10px;*/
-}
-
-/* only works if img is a block */
-a img {
-    text-decoration: none;
-}
-a {
-    color: #0099ff;;
-	text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-p {
-    line-height: 1.5;
-}
-
-/*____________________________________________________________________Table_*/
-table{
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-thead {
-	border-spacing: 0;
-}
-
-th {
-	font-weight: normal;
-	text-align:center;
-}
-
-tr.odd {
-	background-color:#EDF5FF;
-
-}
-th,td {
-    padding:4px 10px;
-    vertical-align: top; 
-}
-
-td {
-}
-
-tr {
-	align: top;
-}
-
-/*_____________________________________________________________________Form_*/
-
-/*
- * 1. Remove default vertical scrollbar in IE6/7/8/9
- * 2. Allow only vertical resizing
- */
-
-form {
-    width: 300px;
-    margin: 0 auto;
-}
-textarea{
-   height: 100px;
-   overflow: auto; 
-   vertical-align: top; 
-   /*resize: vertical;*/
-}
-
-textarea, input {
-     width:100%;
-     -moz-box-sizing: border-box;
-     -ms-box-sizing: border-box;
-     -webkit-box-sizing: border-box;
-     box-sizing: border-box;
-}
-
-input[type=text], input[type=password], textarea{
-}
-label{
-    /*font-size: 18px;*/
-    display: block;
-}
-
-
-input[type="submit"] {
-    display: block;
-}
-
-.ui-placeholder{
-    color: #ccc;
-}
-
-.required:after {
-    content: '*';
-    color: red;
-}
-.deform label.desc {
-    display: block;
-}
-.deform ul {
-    margin: 0;
-    padding: 0;
-}
-.deform li {
-    clear: both;
-    display: block;
-    margin: 6px 0;
-    padding: 3px;
-}
-.deformClosebuttonActive {
-    border: 0 none;
-    cursor: pointer;
-    float: left;
-}
-.deformClosebuttonActive:before {
-    color: red;
-    content: "✖";
-    margin-right: 2px;
-}
-a.deformSeqAdd:visited {
-    color: blue;
-}
-div.deformReplaces {
-    float: left;
-}
-.deformSet-item {
-    padding: 1px;
-    float: left;
-    clear: none !important;
-}
-.deform ul.inline > li {
-    display: inline-block;
-}
-.deform .errorLi {
-    text-align: center;
-    padding-top: 10px;
-}
-.deform p.error, 
-.deform p.errorMsg {
-    color: #DF0000;
-}
-
-label.error { 
-    color: red; 
-    color: #DF0000;
-    float: none; 
-}
-
-.deform p.error {
-    /*font-size: 70%;*/
-}
-.deform li.error input,
-.deform li.error textarea {
-    /*border: 1px solid #EE6666;*/
-}
-.deform p.error {
-    font-size: 13px;
-    margin-bottom: 0;
-}
-
-/*__________________________________________________________________Fonts*/
-
-@font-face {
-    font-family: 'DroidSans';
-    src: url('/static/font/Droid-Sans/DroidSans-webfont.eot');
-    src: url('/static/font/Droid-Sans/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/font/Droid-Sans/DroidSans-webfont.woff') format('woff'),
-         url('/static/font/Droid-Sans/DroidSans-webfont.ttf') format('truetype'),
-         url('/static/font/Droid-Sans/DroidSans-webfont.svg#DroidSansRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'DroidSansBold';
-    src: url('/static/font/Droid-Sans/DroidSans-Bold-webfont.eot');
-    src: url('/static/font/Droid-Sans/DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/font/Droid-Sans/DroidSans-Bold-webfont.woff') format('woff'),
-         url('/static/font/Droid-Sans/DroidSans-Bold-webfont.ttf') format('truetype'),
-         url('/static/font/Droid-Sans/DroidSans-Bold-webfont.svg#DroidSansBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
-
-@font-face {
-    font-family: 'LinuxLibertineORegular';
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.eot');
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.eot?iefix') format('eot'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.woff') format('woff'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.ttf') format('truetype'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_re-4.7.5ro-webfont.svg#webfontIgdJI780') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-@font-face {
-    font-family: 'LinuxLibertineOItalic';
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.eot');
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.eot?iefix') format('eot'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.woff') format('woff'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.ttf') format('truetype'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_it-4.2.6ro-webfont.svg#webfontk0WmrDaO') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-@font-face {
-    font-family: 'LinuxLibertineOBold';
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.eot');
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.eot?iefix') format('eot'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.woff') format('woff'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.ttf') format('truetype'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bd-4.1.5ro-webfont.svg#webfontvwcjcclS') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-@font-face {
-    font-family: 'LinuxLibertineOBoldItalic';
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.eot');
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.eot?iefix') format('eot'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.woff') format('woff'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.ttf') format('truetype'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_bi-4.1.0ro-webfont.svg#webfontmbtC8Tcg') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-@font-face {
-    font-family: 'LinuxLibertineOCRegular';
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.eot');
-    src: url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.eot?iefix') format('eot'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.woff') format('woff'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.ttf') format('truetype'),
-         url('/static/Linux-Libertine-fontfacekit/linlibertine_c-4.0.4ro-webfont.svg#webfont07SwYHhC') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-@font-face {
-    font-family: 'ComfortaaThin';
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.eot');
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.woff') format('woff'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.ttf') format('truetype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Thin-webfont.svg#ComfortaaThin') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'ComfortaaRegular';
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.eot');
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.woff') format('woff'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.ttf') format('truetype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Regular-webfont.svg#ComfortaaRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'ComfortaaBold';
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.eot');
-    src: url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.woff') format('woff'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.ttf') format('truetype'),
-         url('/static/Comfortaa-fontfacekit/Comfortaa_Bold-webfont.svg#ComfortaaBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
-@font-face {
-    font-family: 'DanielRegular';
-    src: url('/static/Daniel-fontfacekit/daniel-webfont.eot');
-    src: url('/static/Daniel-fontfacekit/daniel-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Daniel-fontfacekit/daniel-webfont.woff') format('woff'),
-         url('/static/Daniel-fontfacekit/daniel-webfont.ttf') format('truetype'),
-         url('/static/Daniel-fontfacekit/daniel-webfont.svg#DanielRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'DanielBold';
-    src: url('/static/Daniel-fontfacekit/danielbd-webfont.eot');
-    src: url('/static/Daniel-fontfacekit/danielbd-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Daniel-fontfacekit/danielbd-webfont.woff') format('woff'),
-         url('/static/Daniel-fontfacekit/danielbd-webfont.ttf') format('truetype'),
-         url('/static/Daniel-fontfacekit/danielbd-webfont.svg#DanielBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'DanielBlackRegular';
-    src: url('/static/Daniel-fontfacekit/danielbk-webfont.eot');
-    src: url('/static/Daniel-fontfacekit/danielbk-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Daniel-fontfacekit/danielbk-webfont.woff') format('woff'),
-         url('/static/Daniel-fontfacekit/danielbk-webfont.ttf') format('truetype'),
-         url('/static/Daniel-fontfacekit/danielbk-webfont.svg#DanielBlackRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandLight';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Light-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Light-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light-webfont.svg#QuicksandLight') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandLightOblique';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Light_Oblique-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Light_Oblique-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light_Oblique-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light_Oblique-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Light_Oblique-webfont.svg#QuicksandLightOblique') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandBook';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Book-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Book-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book-webfont.svg#QuicksandBook') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandBookOblique';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Book_Oblique-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Book_Oblique-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book_Oblique-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book_Oblique-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Book_Oblique-webfont.svg#QuicksandBookOblique') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandBold';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Bold-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold-webfont.svg#QuicksandBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandBoldOblique';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Bold_Oblique-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Bold_Oblique-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold_Oblique-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold_Oblique-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Bold_Oblique-webfont.svg#QuicksandBoldOblique') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QuicksandDash';
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Dash-webfont.eot');
-    src: url('/static/Quicksand-fontfacekit/Quicksand_Dash-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Dash-webfont.woff') format('woff'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Dash-webfont.ttf') format('truetype'),
-         url('/static/Quicksand-fontfacekit/Quicksand_Dash-webfont.svg#QuicksandDash') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-.clear {
-    clear: both;
-    float: none;
-    font-size: 0;
-    height: 1px
-    line-height: 0;
-    overflow: hidden;
-    width: 1px;
-}
-
-.clearfix:after {
-    content:".";
-    display:block;
-    height:0;
-    clear:both;
-    visibility:hidden;
-} 
-/* ie 7 clear fix 
- * www.456bereastreet.com/archive/200603/new_clearing_method_needed_for_ie7/  
- */
-.clearfix {display:inline-block;}
-
-/* Hides from IE-mac \*/
-    * html .clearfix { height:1% }
-    .clearfix {display:block;} /* ie7 clear fix */
-/* End hide from IE-mac */
-
-.has-disc li{
-   list-style-type: disc;     
-}
-/*
-.rounded {
-	-moz-border-radius:7px;
-	-webkit-border-radius:7px;
-}
-*/
-.spaced li{
-	margin-bottom: 1em;
-}
-
-.red {
-	color: #cd0000;
-}
-
-.bold {
-    font-weight: bold;
-}   
-#flash .success,
-#flash .error {
-    background-color: #FFFFCC;
-    border: 2px solid #FFFF00;
-    font-size: 15px;
-    margin-bottom: 15px;
-    padding: 10px 20px;
-    text-align: center;
-    display: none;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#FFFFCC));
-    background: -webkit-linear-gradient(#ffffff, #FFFFCC);
-    background: -moz-linear-gradient(#ffffff, #FFFFCC);
-    background: -ms-linear-gradient(#ffffff, #FFFFCC);
-    background: -o-linear-gradient(#ffffff, #FFFFCC);
-    background: linear-gradient(#ffffff, #FFFFCC);
-    -pie-background: linear-gradient(#ffffff, #FFFFCC);
-    behavior: url(/static/pie.htc);
-}
-
-.shadow {
-    -moz-box-shadow: 0px 2px 1px #ccc;
-    -webkit-box-shadow: 0px 2px 1px #ccc;
-    box-shadow: 1px 1px 2px #ddd;
-    behavior: url(/static/PIE.htc);
-}
-.rounded{
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    behavior: url(/static/PIE.htc);
-}
-
-.error-message{
-    color: red;
-}
-
 /* For image replacement */
 .ir { display: block; 
     border: 0; text-indent: -999em; 
@@ -654,514 +5,117 @@ label.error {
     background-color: transparent; 
     background-repeat: no-repeat; text-align: left; direction: ltr; 
 }
-.ir br { display: none; }
 
-/*___________________________________________________________________Buttons*/
-.buttons {
-    padding-bottom: 20px;
-    clear: both;
-    text-align: center;
-}
-
-.btn{
-    padding: 7px 15px;
-    position: relative;
-    display: inline-block;
-    display: block;
-    margin: 0 auto;
-    margin-top: 10px;
-    color: #fff;
-
-    -webkit-transition: border-color .218s;
-    -moz-transition: border .218s;
-    -o-transition: border-color .218s;
-    transition: border-color .218s;
-    /*gradient*/
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 3px;
-    background-color: #6891E7;
-    background-image: -moz-linear-gradient(center top , #6891E7 0pt, #304EA6 100%);
-    border-color: #304EA6 #304EA6 #000000;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset;
-    color: #FFFFFF;
-    text-shadow: 0 0 0 transparent, 0 1px 0 rgba(0, 0, 0, 0.45);
-}
-
-.btn:hover {
-    text-decoration: none;
-    background: -moz-linear-gradient(center bottom , #557CD1 93%, #304EA6 100%)
-}
-
-
-
-.green {
-    background: #CDEB8B;
-    border-color:#CDEB8B;
-    color: #666;
-    text-shadow: none;
-}
-.green:hover {
-    border-color:#85BF00;
-}
-
-
-
-/*___________________________________________________________Main Div Setup_*/
-
-
-html {
-    background: #BFD6EE url(/static/bg.png) repeat top left;
-}
 
 body {
+    /*border-top: 2px solid #D51535;*/
+    background: #BFD6EE url(/static/bg.png) repeat top left;
+
+}
+
+
+.container > footer p {
+    text-align: center; /* center align it with the container */
+}
+
+
+.alert-message {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.topbar {
+    position: static;
+}
+
+.topbar-inner, .topbar .fill {
+
     border-top: 2px solid #D51535;
-}   
-
-#doc2 {
-    width: 900px;
-    margin: 0 auto;
-    /*-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);*/
-}
-
-#hd {
-    margin: 0 auto;
-    margin-bottom: 20px;  
-    /*border-bottom: 1px s;olid #ADCCFF;*/
-    /*border-bottom: 1px solid #EEF8FB;*/
-    /*-moz-box-shadow: 0px 2px 3px rgba(204, 204, 204, 0.3);*/
-    position: relative;
-    z-index: 2;
+    background: none;
+    box-shadow: none;
     /*
-    background: #F2FBFF url('/static/bg.jpg') repeat top left;
-*/
-
-
+    background-color: #ddd;
+    background-image: -moz-linear-gradient(center top , #ddd, #fff);
+    background-repeat: repeat-x;
+    box-shadow: none
+    */
 }
 
 
-#heading {
-    text-align: center;
-    margin-bottom: 20px;
-    background-color: #2C2C2C;
-    background-image: -moz-radial-gradient(50% 50% , rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.15)), url("/img/browse_stage_noise.png");
-    border-color: #444444;
-    border-style: solid;
-    border-width: 1px 0;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) inset;
-    padding: 10px 0;
+.topbar a {
+    color: #BFBFBF;
+    color: #333;
 }
-
-#heading h1 {
-    margin: 0;
-    color: #EFF4FA;
-    font-family: 'LinuxLibertineORegular';
-    font-size: 34px;
-}
-
-.content {
-    width: 900px;
-    margin: 0 auto;
-}
-
-
-#logo {
-    float: left;
-    border: 1px solid transparent;
-}
-#logo span {
-    width: 150px;
-    height: 36px;
-    background-image: url('/static/logo.png');
-}
-#footer {
-}
-/*__________________________________________________________Main Navigation_*/
-
-#nav {
-    margin: 0;
-    margin-left: 60px;
-    float: left;
-    margin-top: 5px;
-}
-#nav li {
-    list-style-type: none;
-    float: left;
-    margin-right: 10px;
-}
-#nav a, #login-nav a{
+/*.topbar a, #login-nav a{
     display: block;
     color: #333;
     border: 1px solid transparent;
     text-shadow: 1px 1px 0px white;
     padding: 5px 10px;
 }
-
-#nav a:hover,
-#login-nav a:hover,
-#logo:hover {
-    -webkit-border-radius: 15px;
-    -moz-border-radius:15px;
-    border-radius:15px;
-    text-decoration: none;
-    background-color: #EDF3FF;
-    border: 1px solid #eee;
-    behavior: url(/static/PIE.htc);
-    background: -moz-linear-gradient(#FFFFFF, #fdfdfd);
-    border-radius: 2px;
-}
-#nav .active a{
-    /*font-weight: bold;*/
-    /*border-bottom: 2px solid DeepSkyBlue;*/
-}
-#login-nav {
-    margin-top: 5px;
-}
-#login-nav li{
-    float: right;
-}
-
-#login-nav {
-    float: right !important;
-}
-
-/*_____________________________________________________________Sticky Footer*/
-
-
-#bd {
-	padding-bottom: 50px;
-    margin: 0 auto;
-    width: 900px;
-    }  /* must be same height as the footer */
-
-#footer {
-    text-align: center;
-    clear: both;
-} 
-
-
-
-/*__________________________________________________________________Home*/
-
-
-#home #flash{
-    /*display: none;*/
-}
-
-.col_1, .col_2{
-    width: 47%; 
-}
-.col_1 {
-    float: left;
-}
-.col_2{
-    float: right; 
-}
-
-#home h1 {
-    font-size: 32px;
-    font-weight: normal;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    border-bottom: none;
-    text-align: center;
-    padding: 20px 0;
-    text-shadow: none;
-}
-#home h2 {
-    font-size: 32px;
-    margin-bottom: .5em;
-    color: #111;
-    font-family: 'LinuxLibertineORegular', serif;
-    border-bottom: 1px solid #F3F3F3;
-    font-weight: normal;
-    text-shadow: 1px 1px 0px white;
-}
-
-#home p {
-    text-shadow: 1px 1px 0px white;
-}
-
-
-#home .required:after {
-    content: none
-
-}
-#home td{
-    font-size: 15px;
-    text-align: left;
-    padding: .5em 0;
-    /*border-bottom: 3px dotted #CDEB8B;*/
-}
-#home td p{
-    margin-bottom: 0;
-}
-
-#home .num {
+*/
+.topbar .brand {
+    padding: 0;
     padding-right: 20px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 24px;
 }
 
-.circle{
-    display: block;
-    float: left;
-    width: 30px;
-    height: 30px;
-    color: #fff;
-    text-align: center;
-    line-height: 1.6;
-    margin-right: 20px;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #5A8F00;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
-    /*
-    -webkit-box-shadow: #666 0px 1px 1px;
-    -moz-box-shadow: #666 0px 1px 1px;
-    box-shadow: #666 0px 1px 1px;*/
-    /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#C91E24), to(#8E0609));
-    background: -moz-linear-gradient(center right, #850C12, #E04E73);
-    background: -webkit-linear-gradient(#E04E73, #850C12);
-    background: linear-gradient(#E04E73, #850C12);
-    -pie-background: linear-gradient(#E04E73, #850C12);*/
-    behavior: url(/static/PIE.htc);
+.brand span {
+    width: 150px;
+    height: 36px;
+    background-image: url('/static/logo.png');
 }
 
-#points h3{
-   font-size: 18px; 
-}
+/*______________________________________________________________Segments*/
 
-#points {
-    font-size: 15px;
-}
-#points li {
-    margin-bottom: 1em;
-    width: 30%;
-    float: left;
-    margin-right: 3%;
-}
-
-#home .horizontal-rule {
-    margin: 20px 0;
-}
-
-#home .deform .buttons{
-    float: none;
-}
-
-#home form{
-    width: 350px;
-    margin: 0 auto;
-    position: relative;
-}
-
-
-#home #field1 {
-    position: relative;
-}
-
-#home #field1 label {
-    margin-bottom: 5px;
-    font-size: 18px;
-    color: #EFF4FA;
-    text-shadow: none;
-}
-
-#home #field1 textarea {
-    margin: 0 auto;
-    height: 100px;
-    font-size: 16px;
-}
-
-
-
-#home #field2, #home #field3 {
-    /*margin-top: -1px;*/
-   /* margin-left: 5px;*/
-}
-
-#home #field3 input{
-    /*margin-left: -1px;*/
-}
-
-#home .buttons {
-    margin-top: 0;
+#wishes {
+    overflow: visible !important;
 }   
-
-#home .buttons {
-    margin-right: 10px;
+#wishes blockquote {
+    width: 220px;
 }
-
-#home .btn {
-    font-size: 24px;
-}
-
-#home #field2 label, #home #field3 label {
-    line-height: 1.6;
-    width: 130px;
+#wishes > li{
     float: left;
+    margin: 0 20px 20px 0;
+    display: inline-block;
+}
+
+.altered {
+    background: url('/static/fabric_plaid.png');
+
+    background: -moz-linear-gradient(#fefefe, #fff) ;
+    padding: 20px;
+    box-shadow: 1px 1px 4px #999;
 }
 
 
-#home #field2 input,
-#home #field3 input {
-   width: 165px; 
-   padding: 2px;
-   padding-left: 5px;
+.reply-form {
+/*    background: #BFD6EE url(/static/bg.png) repeat top left;*/
+    /*background-color: #f7f7f7;*/
+    padding-left: 0;
+    margin-top: -20px;
 }
 
+.reply-form textarea {
+     width:100%;
+     -moz-box-sizing: border-box;
+     -ms-box-sizing: border-box;
+     -webkit-box-sizing: border-box;
+     box-sizing: border-box;
+}
 
-
-
-
-#home .arrows li{
-    background: url(/static/arrow_red.png) no-repeat top left;
-    padding-left: 50px;
-    margin-bottom: 30px;
+.reply-form label{
+    display: none;
+}
+form ul li { 
     list-style: none;
 }
 
-
-/*______________________________________________________________ThankYou*/
-#thankyou #bd {
-    font-family: 'DanielRegular';
-    font-size: 32px;
-    color: #000;
-    border: 2px solid #FFFF00;
-    padding: 100px;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffffff), to(#FFFFCC));
-    background: -webkit-linear-gradient(#ffffff, #FFFFCC);
-    background: -moz-linear-gradient(#ffffff, #FFFFCC);
-    background: -ms-linear-gradient(#ffffff, #FFFFCC);
-    background: -o-linear-gradient(#ffffff, #FFFFCC);
-    background: linear-gradient(#ffffff, #FFFFCC);
-    -pie-background: linear-gradient(#ffffff, #FFFFCC);
-    behavior: url(/static/pie.htc);
-    width: 500px;
-    margin: 0 auto;
+.hero-unit form .buttons {
+    margin-left: 200px;
 }
-
-
-.btn-reply {
-    border-color: #00E8F4;
-    background: -moz-linear-gradient(#FFFFFF, #A8F9FF);
-    display: inline-block;
-    color: #006EB7;
-    text-decoration: none;
-    margin:0;
-    float: right;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 10px 0 24px 0;
-    border-right: none;
-    border-bottom: none;
+.hero-unit form {
+    margin-left: 130px;
 }
-.btn-reply:hover {
-    background: -moz-linear-gradient( #A8F9FF, #FFFFFF ) !important;
-    text-decoration: none;
-}
-.btn-reply-small {
-    font-size: 11px;
-    padding-right: 1em;
-    padding: 5px 8px;
-}
-.btn-reply-large {
-   font-size: 14px;
-   color: #006EB7;
-   padding: 5px 11px;
-   padding-right: 2em;
-}
-/*________________________________________________________________Wish*/
-
-
-
-
-#wish > blockquote:first-child {
-    text-align: center;
-    display: block;
-    margin: 1em auto;
-    width: 500px;
-}
-
-#wish > blockquote:first-child p{
-    margin-bottom: 1em;
-    font-size: 24px;
-}   
-
-.btn-reply svg {
-    float: left;
-    margin-top: -5px;
-    margin-right: 2px;
-}
-
-.reply-sign {
-    float: left;
-    margin-top: -6px;
-}
-
-
-.reply-sign svg path {
-    margin-top: -12px;
-    fill: #fff;
-    stroke: #89B4FF;
-}
-
-.zip-code {
-    text-align: left;
-    color: #ccc;
-    font-size: 11px;
-    float: left;
-    position: absolute;
-    left: 12px;
-    bottom: 5px;
-}
-
-
-
-.thank-after-wish {
-    font-family: 'LinuxLibertineOItalic';
-    font-size: 24px;
-}
-
-
-
-/*__________________________________________________________________Letter*/
-#letter {
-    font-size: 16px;
-    border: 5px solid skyblue;
-    padding: 20px;
-    margin-bottom: 20px;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-    behavior: url(/static/PIE.htc);
-}
-
-#letter p{
-    text-indent: 20px;
-}
-
-#salutation {
-    margin-bottom: .5em;
-    font-weight: bold;
-}
-#closing {
-    float: right;
-    margin-right: 50px;
-    margin-top: 1em;
-}   
-
-
-
-
 /*____________________________________________________________Speech Bubbles*/
 
 /*long stings like a link will overflow the quote */
@@ -1182,6 +136,11 @@ blockquote.bubble p{
     background-color: #fff;
     padding: 0 5px;
 }
+
+blockquote p {
+    font-size: 13px;
+}
+
 .bubble{
 	position: relative; 
 	padding: 10px; 
@@ -1225,7 +184,7 @@ blockquote.tip-right {
     fill: #FFFFCC;
 }
 blockquote.tip-left {
-    border-color: #C4E9FF;
+    border-color: #70CAFF;
     background: -moz-linear-gradient(#fff, #E5F5FF);
     /*text-shadow: 1px 1px 0px #666;*/
 }
@@ -1233,150 +192,47 @@ blockquote.tip-left {
 .reverse-bubble {
     background: -moz-linear-gradient( #E5F5FF, #fff) !important;
 }
-/*.tip-left svg.svg-speechpointer path { 
-    stroke: #B6FF00;    
-    stroke:  #C4E9FF; 
-    fill: #E5F5FF;
+.zip-code {
+    text-align: left;
+    color: #ccc;
+    font-size: 11px;
+    float: left;
+    position: absolute;
+    left: 12px;
+    bottom: 5px;
 }
-*/
-/*
-blockquote .svg-top {
-    stroke: #fff !important;
-}
-*/
-/*
-.form-message {
-   width: 400px;
-}
-.form-message textarea {
-   height: 50px; 
-}
-
-.form-message button {
+.reply {
     float: right;
-}   
+    margin-top: -5px;
+    margin-right: 2px;
 
-.convo {
-    border: 1px solid #666;
-    padding: 5px;
 }
-*/
+.clearfx:after {
+    content:".";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+} 
+/* ie 7 clear fix 
+ * www.456bereastreet.com/archive/200603/new_clearing_method_needed_for_ie7/  
+ */
+.clearfx {display:inline-block;}
+
+/* Hides from IE-mac \*/
+    * html .clearfx { height:1% }
+    .clearfx {display:block;} /* ie7 clear fix */
+/* End hide from IE-mac */
+
+
 
 /*______________________________________________________________Segments*/
-
-#isotope {
-    overflow: visible !important;
-}   
-#isotope blockquote {
-    width: 240px;
-}
-#isotope li{
-    float: left;
-    margin: 0 20px 20px 0;
-}
-
-/*____________________________________________________________Pages*/
-#contact #c1 {
-    text-align: center;
-    font-size: 15px;
+.sidenav li a{
+  text-shadow: 1px 1px 0 #fff;
 }
 
 
-#messages-create .tip-left {
-    margin-bottom: 2em;
-    width: 400px;
-}
-
-   
-#messages-create .tip-right {
-    width: 400px;
-    float: right;
-}   
-
-#messages-create form {
-        width: 400px;
-}
-
-#messages-create .required:after {
-    content: none;
-}
-
-
-#notice {
-    border: 1px solid #C0EDD0;
-    padding: 40px;
-    text-align: center;
-    margin-top: 50px;
-    background: -moz-linear-gradient(#fff, #E8FFF0)
-}
-
-#notice h1 {
-    margin: 0;
-    color: #06963A;
-    font-family: 'LinuxLibertineORegular';
-    font-size: 34px;
-}
-#app {
-    margin-top: 30px;
-}
-#app #doc2 {
-    width: 600px;
-}
-#app .tip-left {
-    width: 400px;
-
-}
-#app .tip-right {
-    width: 400px;
-    float: right;
-    clear: both;
-}
-#app form {
-    width: 400px;
-    margin-top: 30px;
-}   
-#app label{
-    display: none;
-}
-
-#main-chat{
-    width: 600px;    
-    margin: 0 auto;
-    margin-top: 10px;
-}
-
-#main-chat li {
-    clear: both;
-    width: 400px;
-}
-
-#main-chat .first-person {
-    float: left;
-}
-
-
-#main-chat .first-person .title{
-    float: left;
-}
-
-#main-chat .second-person {
-    float: right;
-}
-
-#main-chat .tip-left {
-    width: 350px;
-
-}
-#main-chat blockquote p{
-   margin-bottom: 0; 
-}
-
-
-#main-chat .tip-right {
-    width: 350px;
-    float: right;
-    clear: both;
-}
+/*______________________________________________________________Reusable*/
 .horizontal-rule {
     border-bottom: 1px solid #FFFFFF;
     border-top: 1px solid #DDDDDD;
@@ -1412,105 +268,12 @@ blockquote .svg-top {
     position: relative;
     top: -80px;
 }
-#slide_nav {
-    padding: 10px;
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.03);
-    box-shadow: 0 5px 5px #DEDEDE inset;
-    padding: 10px 8px;
-    position: relative;
-    overflow: hidden;
-}
-#slide_nav_inner {
-    float:left; /* important for inline positioning */
-    width:820px; /* important (this width = width of list item(including margin) * items shown */
-    overflow: hidden;  /* important (hide the items outside the div) */
-    /* non-important styling bellow */
-}
 
-#slide_nav_ul {
-    /* non-important styling bellow */
-    overflow: hidden;
-    width: 10000px; 
-    position:relative;  
-
-}
-
-#slide_nav_ul li{
-    display: inline-block;
-    /*float: left; /* important for inline positioning of the list items */
-    width:192px;  /* fixed width, important */
-    padding:0px;
-    margin-top:10px;
-    margin-bottom:10px;
-    margin-left:5px;
-    margin-right:5px;
-}
-
-#slide_nav .tile {
-    background: #fff;
-    box-shadow: 0 1px 2px #CCCCCC;
-    border-radius: 3px 3px 3px 3px;
-    font-size: 11px;
-    padding: 6px;
-    overflow: hidden; 
-}
-
-#slide_nav .tile blockquote{
-    overflow: hidden; 
-    height: 70px; 
-}
-
-#slide_nav .tile:hover {
-    background-image: -moz-linear-gradient(center top , #FFFFFF 0pt, #F0F0F0 100%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 -1px 0 #FFFFFF inset;
-}
-
-#scroll_left {
-    float: left;
-}
-#scroll_right {
+.modal form .buttons {
     float: right;
 }
-#scroll_left, #scroll_right {
-    background-image: -moz-linear-gradient(center top , #FFFFFF 0pt, #E0E0E0 100%);
-    width: 32px;
-    height: 102px;
-    min-width: 0;
-    border-color: #CCCCCC #CCCCCC #AAAAAA;
-    border-radius: 3px 3px 3px 3px;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 0 1px #FFFFFF inset;
-    color: #555555;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 0 0.91em;
-    text-shadow: 0 0 0 transparent, 0 1px 0 #FFFFFF;
-    -moz-transition: all 0.218s ease 0s;
-}
 
-#scroll_left:hover, #scroll_right:hover {
-    background-image: -moz-linear-gradient(center top , #FFFFFF 0pt, #E0E0E0 100%);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 3px #FFFFFF inset;
-    border-color: #AAAAAA;
-}
-#scroll_left img, #scroll_right img {
-    border: 1px solid transparent;
-    width: 0;
-    height: 0;
-}
-
-#scroll_left img{
-    border-width: 10px 10px 10px 0;
-    border-right-color: #999999;
-}
-#scroll_right img {
-    border-width: 10px 0 10px 10px;
-    border-left-color: #999999;
-}
-#scroll_left:hover img {
-    border-right-color: #333333;
-}
-#scroll_right:hover img {
-    border-left-color: #333333;
-}
+.modal form fieldset {
+    margin: 0;
+    padding: 0;
+  }
