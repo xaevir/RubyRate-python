@@ -1,0 +1,26 @@
+<blockquote class="clearfx <%= context %>">
+    <p>
+        <% if (body.length > 160) { %> 
+            <%= body.substr(0, 160) %>
+            <span class="more"> ...</span>
+        <% } else { %>
+            <%= body %>     
+        <% } %>
+    </p>
+    <div class="zip-code">
+        <%= zip_code %>
+    </div>
+
+    <% if (reply) { %>
+        <a href="#" class="action-reply"
+            >reply</a>
+    <% } %>
+
+
+    <div class="tip">
+    </div>
+
+
+
+</blockquote>
+

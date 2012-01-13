@@ -1,0 +1,56 @@
+// SPEECH BUBBLES 
+// -------------
+
+.wish {
+  // long stings like a link will overflow the quote
+    p {
+        overflow: hidden;
+    }
+    .base-mixin {
+        position: relative; 
+        padding: 10px; 
+        text-align: center; 
+        border-width: 1px;
+        border-style: solid;
+        color:#333;
+        background: #fff; 
+        .border-radius(20px);
+    }
+
+    .tip { 
+        position: absolute;
+        bottom: -8px;
+        z-index: 10;
+        stroke-width: 1px;
+    }
+
+    .sender {
+        .base-mixin;
+        border-color: #70CAFF;
+        #gradient > .vertical(#fff, #E5F5FF);
+        .tip {
+            left: -14px;
+        }
+    }
+
+    .recipient {
+        .base-mixin;
+        border-color: #FFFF00; 
+        #gradient > .vertical(#fff, #FFFFCC);
+        .svg-speechpointer {
+            right: -8px;
+        }   
+    }
+
+}
+
+
+
+
+
+
+
+// undo isotope rule
+#wishes {
+    overflow: visible !important;
+}

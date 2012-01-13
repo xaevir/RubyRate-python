@@ -1,0 +1,27 @@
+@base-url: "static/fonts";
+
+@font-face {
+    font-family: 'Calluna';
+    @folder: 'Calluna/regular';
+    @name: 'Calluna-Regular';
+    src: url("/@{base-url}/@{folder}/@{name}.eot");
+    src: url("/@{base-url}/@{folder}/@{name}.eot?#iefix") format('embedded-opentype'),
+         url("/@{base-url}/@{folder}/@{name}.woff") format('woff'),
+         url("/@{base-url}/@{folder}/@{name}.ttf") format('truetype'),
+         url("/@{base-url}/@{folder}/@{name}.svg#") format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CallunaBold';
+    @folder: 'Calluna/bold';
+    @name: 'Calluna-Bold';
+    src: url("/@{base-url}/@{folder}/@{name}.eot");
+    src: url("/@{base-url}/@{folder}/@{name}.eot?#iefix") format('embedded-opentype'),
+         url("/@{base-url}/@{folder}/@{name}.woff") format('woff'),
+         url("/@{base-url}/@{folder}/@{name}.ttf") format('truetype'),
+         url("/@{base-url}/@{folder}/@{name}.svg#") format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
